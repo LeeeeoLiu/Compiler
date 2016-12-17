@@ -1,0 +1,26 @@
+struct hh
+{
+	int a;
+	char b,c;
+};
+
+
+int main()
+{
+	int e,f,g; 
+	float h;
+	char w,v; 
+	e = 2;
+	f = 1;
+	g = 0;
+	if (g+f)
+	{
+	g = 3*5-e;
+	}
+	while(e-2*f)
+	{
+	g=e+f;
+	}
+	w=3;
+	return 0;
+}

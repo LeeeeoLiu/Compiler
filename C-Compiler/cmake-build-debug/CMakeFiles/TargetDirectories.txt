@@ -1,0 +1,3 @@
+/Users/liuyuanxing/Code/Compiler/C-Compiler/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/liuyuanxing/Code/Compiler/C-Compiler/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/liuyuanxing/Code/Compiler/C-Compiler/cmake-build-debug/CMakeFiles/C_Compiler.dir

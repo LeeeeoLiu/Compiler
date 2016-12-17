@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/liuyuanxing/Code/Compiler/C-Compiler/cifa.cpp
+cifa.h
+/Users/liuyuanxing/Code/Compiler/C-Compiler/cifa.h
+
+/Users/liuyuanxing/Code/Compiler/C-Compiler/cifa.h
+global.h
+/Users/liuyuanxing/Code/Compiler/C-Compiler/global.h
+
+/Users/liuyuanxing/Code/Compiler/C-Compiler/global.h
+iostream
+-
+sstream
+-
+fstream
+-
+vector
+-
+string
+-
+algorithm
+-
+stack
+-
+stdlib.h
+-
+
+/Users/liuyuanxing/Code/Compiler/C-Compiler/main.cpp
+global.h
+/Users/liuyuanxing/Code/Compiler/C-Compiler/global.h
+cifa.h
+/Users/liuyuanxing/Code/Compiler/C-Compiler/cifa.h
+
