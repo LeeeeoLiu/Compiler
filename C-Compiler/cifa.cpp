@@ -105,8 +105,7 @@ int duqu()
 int duAsm()
 {
     zifushu = 0;
-    FILE *fp = fopen("D:"
-                     "/Code/Compiler/C-Compiler/test.asm", "r");
+    FILE *fp = fopen("D:/Code/Compiler/C-Compiler/test.asm", "r");
     if (fp == NULL){ printf("No File\n"); fclose(fp); return 0; }
     else
     {

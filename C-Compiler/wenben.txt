@@ -7,16 +7,19 @@ struct hh
 
 int main()
 {
-	int e,f,g; 
+	int e,f,g,i,j,k; 
 	float h;
 	char w,v; 
 	e = 2;
 	f = 1;
 	g = 0;
-        cout<<"hello word";
+    cout<<"hello word";
 	if (g+f)
 	{
 	g = 3*5-e;
+        i=3+5;
+        j=5-3;
+        k=5/3;
 	}
 	while(e-2*f)
 	{
