@@ -7,6 +7,7 @@ using namespace std;
 int main()
 {
     _tmain();
+    jjkhjkhjkhk
 //    QApplication a(argc, argv);
 //    MainWindow w;
 //    w.show();
