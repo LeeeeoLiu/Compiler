@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionHelp, SIGNAL(triggered(bool)), this, SLOT(Help_actionHelp_Slot()));
     connect(ui->actionOpen,SIGNAL(triggered(bool)),this,SLOT(File_actionOpen_Slot()));
+    connect(ui->actionSave,SIGNAL(triggered(bool)),this,SLOT(File_actionSave_Slot()));
 }
 
 MainWindow::~MainWindow()
@@ -31,12 +32,12 @@ void MainWindow::Help_actionHelp_Slot()
 
 void MainWindow::File_actionOpen_Slot()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), ".", tr("Code Files(*.c)"));
+    path = QFileDialog::getOpenFileName(this, tr("Open File"), ".", tr("Code Files(*.c)"));
             if(path.length() == 0) {
                     QMessageBox::information(NULL, tr("Path"), tr("You didn't select any files."));
-            } else {
+            } /*else {
                     QMessageBox::information(NULL, tr("Path"), tr("You selected ") + path);
-            }
+            }*/
 
      QFile file(path);
      QString code;
@@ -48,7 +49,27 @@ void MainWindow::File_actionOpen_Slot()
              QString line = in.readLine();
              code =code+line+"\n";
          }
-
      ui->codeArea->setText(code);
+}
 
+void MainWindow::File_actionSave_Slot()
+{
+    if(path.length() == 0) {
+        path = QFileDialog::getSaveFileName(this,
+            tr("Open Config"),
+            "",
+            tr("Config Files (*.c *.h)"));
+    }
+    if (!path.isNull())
+    {
+        QFile f(path);
+             if(!f.open(QIODevice::WriteOnly | QIODevice::Text))
+             {
+                  QMessageBox::information(NULL, tr("Path"), tr("Open failed."));
+             }
+             QTextStream txtOutput(&f);
+             QString codeSave =ui->codeArea->toPlainText();
+             txtOutput << codeSave;
+             f.close();
+     }
 }

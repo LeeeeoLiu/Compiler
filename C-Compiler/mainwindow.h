@@ -30,9 +30,11 @@ public:
 private slots:
     void Help_actionHelp_Slot();
     void File_actionOpen_Slot();
+    void File_actionSave_Slot();
 
 private:
     Ui::MainWindow *ui;
+    QString path;
 };
 
 #endif // MAINWINDOW_H
