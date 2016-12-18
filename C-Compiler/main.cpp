@@ -4,13 +4,13 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
-    _tmain();
-//    QApplication a(argc, argv);
-//    MainWindow w;
-//    w.show();
-    cout<<"test"<<endl;
-//    return a.exec();
-    return 0;
+//    _tmain();
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+//    cout<<"test"<<endl;
+    return a.exec();
+//    return 0;
 }

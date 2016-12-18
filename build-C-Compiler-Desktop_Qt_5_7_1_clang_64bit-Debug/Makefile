@@ -12,10 +12,10 @@ MAKEFILE      = Makefile
 
 CC            = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
 CXX           = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
-DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk -mmacosx-version-min=10.8 -g -Wall -W -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -stdlib=libc++ -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk -mmacosx-version-min=10.8 -g -std=gnu++11 -Wall -W -fPIC $(DEFINES)
-INCPATH       = -I../C-Compiler -I. -I../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers -I../../Qt/5.7/clang_64/lib/QtGui.framework/Headers -I../../Qt/5.7/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AGL.framework/Headers -I. -I../../Qt/5.7/clang_64/mkspecs/macx-clang -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib
+INCPATH       = -I../C-Compiler -I. -I../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers -I../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers -I../../Qt/5.7/clang_64/lib/QtGui.framework/Headers -I../../Qt/5.7/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/AGL.framework/Headers -I. -I../../Qt/5.7/clang_64/mkspecs/macx-clang -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib
 QMAKE         = /Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -36,7 +36,7 @@ DISTNAME      = C-Compiler1.0.0
 DISTDIR = /Users/liuyuanxing/Code/Compiler/build-C-Compiler-Desktop_Qt_5_7_1_clang_64bit-Debug/.tmp/C-Compiler1.0.0
 LINK          = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
 LFLAGS        = -headerpad_max_install_names -stdlib=libc++ -Wl,-syslibroot,/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk -mmacosx-version-min=10.8 -Wl,-rpath,/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib
-LIBS          = $(SUBLIBS) -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib -framework QtWidgets -framework QtGui -framework QtCore -framework DiskArbitration -framework IOKit -framework OpenGL -framework AGL 
+LIBS          = $(SUBLIBS) -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib -framework opengl -framework glut -framework QtOpenGL -framework QtWidgets -framework QtGui -framework QtCore -framework DiskArbitration -framework IOKit -framework OpenGL -framework AGL 
 AR            = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar cq
 RANLIB        = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib -s
 SED           = sed
@@ -53,14 +53,22 @@ SOURCES       = ../C-Compiler/main.cpp \
 		../C-Compiler/cifa.cpp \
 		../C-Compiler/yufa_analysis.cpp \
 		../C-Compiler/compile.cpp \
-		../C-Compiler/optimize.cpp moc_mainwindow.cpp
+		../C-Compiler/optimize.cpp \
+		../C-Compiler/help.cpp \
+		../C-Compiler/view.cpp moc_mainwindow.cpp \
+		moc_help.cpp \
+		moc_view.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		cifa.o \
 		yufa_analysis.o \
 		compile.o \
 		optimize.o \
-		moc_mainwindow.o
+		help.o \
+		view.o \
+		moc_mainwindow.o \
+		moc_help.o \
+		moc_view.o
 DIST          = ../C-Compiler/wenben.txt \
 		../../Qt/5.7/clang_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.7/clang_64/mkspecs/qdevice.pri \
@@ -208,12 +216,16 @@ DIST          = ../C-Compiler/wenben.txt \
 		../C-Compiler/cifa.h \
 		../C-Compiler/yufa_analysis.h \
 		../C-Compiler/compile.h \
-		../C-Compiler/optimize.h ../C-Compiler/main.cpp \
+		../C-Compiler/optimize.h \
+		../C-Compiler/help.h \
+		../C-Compiler/view.h ../C-Compiler/main.cpp \
 		../C-Compiler/mainwindow.cpp \
 		../C-Compiler/cifa.cpp \
 		../C-Compiler/yufa_analysis.cpp \
 		../C-Compiler/compile.cpp \
-		../C-Compiler/optimize.cpp
+		../C-Compiler/optimize.cpp \
+		../C-Compiler/help.cpp \
+		../C-Compiler/view.cpp
 QMAKE_TARGET  = C-Compiler
 DESTDIR       = 
 TARGET        = C-Compiler.app/Contents/MacOS/C-Compiler
@@ -222,7 +234,7 @@ TARGET        = C-Compiler.app/Contents/MacOS/C-Compiler
 first: all
 ####### Build rules
 
-$(TARGET): ui_mainwindow.h $(OBJECTS)  
+$(TARGET): ui_mainwindow.h ui_help.h $(OBJECTS)  
 	@test -d C-Compiler.app/Contents/MacOS/ || mkdir -p C-Compiler.app/Contents/MacOS/
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
@@ -368,6 +380,7 @@ Makefile: ../C-Compiler/C-Compiler.pro ../../Qt/5.7/clang_64/mkspecs/macx-clang/
 		../../Qt/5.7/clang_64/mkspecs/features/yacc.prf \
 		../../Qt/5.7/clang_64/mkspecs/features/lex.prf \
 		../C-Compiler/C-Compiler.pro \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/QtOpenGL.prl \
 		../../Qt/5.7/clang_64/lib/QtWidgets.framework/QtWidgets.prl \
 		../../Qt/5.7/clang_64/lib/QtGui.framework/QtGui.prl \
 		../../Qt/5.7/clang_64/lib/QtCore.framework/QtCore.prl
@@ -514,6 +527,7 @@ Makefile: ../C-Compiler/C-Compiler.pro ../../Qt/5.7/clang_64/mkspecs/macx-clang/
 ../../Qt/5.7/clang_64/mkspecs/features/yacc.prf:
 ../../Qt/5.7/clang_64/mkspecs/features/lex.prf:
 ../C-Compiler/C-Compiler.pro:
+../../Qt/5.7/clang_64/lib/QtOpenGL.framework/QtOpenGL.prl:
 ../../Qt/5.7/clang_64/lib/QtWidgets.framework/QtWidgets.prl:
 ../../Qt/5.7/clang_64/lib/QtGui.framework/QtGui.prl:
 ../../Qt/5.7/clang_64/lib/QtCore.framework/QtCore.prl:
@@ -546,9 +560,9 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../C-Compiler/mainwindow.h ../C-Compiler/global.h ../C-Compiler/cifa.h ../C-Compiler/yufa_analysis.h ../C-Compiler/compile.h ../C-Compiler/optimize.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../C-Compiler/main.cpp ../C-Compiler/mainwindow.cpp ../C-Compiler/cifa.cpp ../C-Compiler/yufa_analysis.cpp ../C-Compiler/compile.cpp ../C-Compiler/optimize.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../C-Compiler/mainwindow.ui $(DISTDIR)/
+	$(COPY_FILE) --parents ../C-Compiler/mainwindow.h ../C-Compiler/global.h ../C-Compiler/cifa.h ../C-Compiler/yufa_analysis.h ../C-Compiler/compile.h ../C-Compiler/optimize.h ../C-Compiler/help.h ../C-Compiler/view.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../C-Compiler/main.cpp ../C-Compiler/mainwindow.cpp ../C-Compiler/cifa.cpp ../C-Compiler/yufa_analysis.cpp ../C-Compiler/compile.cpp ../C-Compiler/optimize.cpp ../C-Compiler/help.cpp ../C-Compiler/view.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../C-Compiler/mainwindow.ui ../C-Compiler/help.ui $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -574,23 +588,70 @@ benchmark: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_mainwindow.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_help.cpp moc_view.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_help.cpp moc_view.cpp
 moc_mainwindow.cpp: ../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
 		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QGLWidget \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
 		../C-Compiler/mainwindow.h \
 		../../Qt/5.7/clang_64/bin/moc
-	/Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/mkspecs/macx-clang -I/Users/liuyuanxing/Code/Compiler/C-Compiler -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtWidgets.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtGui.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib ../C-Compiler/mainwindow.h -o moc_mainwindow.cpp
+	/Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/mkspecs/macx-clang -I/Users/liuyuanxing/Code/Compiler/C-Compiler -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtWidgets.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtGui.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib ../C-Compiler/mainwindow.h -o moc_mainwindow.cpp
+
+moc_help.cpp: ../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../C-Compiler/help.h \
+		../../Qt/5.7/clang_64/bin/moc
+	/Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/mkspecs/macx-clang -I/Users/liuyuanxing/Code/Compiler/C-Compiler -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtWidgets.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtGui.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib ../C-Compiler/help.h -o moc_help.cpp
+
+moc_view.cpp: ../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QtOpenGL \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglcolormap.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglframebufferobject.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglfunctions.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglpixelbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglshaderprogram.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglglobal.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglversion.h \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QPoint \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qpoint.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QWheelEvent \
+		../C-Compiler/view.h \
+		../../Qt/5.7/clang_64/bin/moc
+	/Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/mkspecs/macx-clang -I/Users/liuyuanxing/Code/Compiler/C-Compiler -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtWidgets.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtGui.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib ../C-Compiler/view.h -o moc_view.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h
+compiler_uic_make_all: ui_mainwindow.h ui_help.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h
+	-$(DEL_FILE) ui_mainwindow.h ui_help.h
 ui_mainwindow.h: ../C-Compiler/mainwindow.ui \
-		../../Qt/5.7/clang_64/bin/uic
+		../../Qt/5.7/clang_64/bin/uic \
+		../C-Compiler/view.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QtOpenGL \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglcolormap.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglframebufferobject.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglfunctions.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglpixelbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglshaderprogram.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglglobal.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglversion.h \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QPoint \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qpoint.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QWheelEvent
 	/Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/uic ../C-Compiler/mainwindow.ui -o ui_mainwindow.h
+
+ui_help.h: ../C-Compiler/help.ui \
+		../../Qt/5.7/clang_64/bin/uic
+	/Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/uic ../C-Compiler/help.ui -o ui_help.h
 
 compiler_rez_source_make_all:
 compiler_rez_source_clean:
@@ -607,6 +668,8 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 main.o: ../C-Compiler/main.cpp ../C-Compiler/mainwindow.h \
 		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
 		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QGLWidget \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
 		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QApplication \
 		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qapplication.h \
 		../C-Compiler/cifa.h \
@@ -619,7 +682,27 @@ main.o: ../C-Compiler/main.cpp ../C-Compiler/mainwindow.h \
 mainwindow.o: ../C-Compiler/mainwindow.cpp ../C-Compiler/mainwindow.h \
 		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
 		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
-		ui_mainwindow.h
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QGLWidget \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
+		ui_mainwindow.h \
+		../C-Compiler/view.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QtOpenGL \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglcolormap.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglframebufferobject.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglfunctions.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglpixelbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglshaderprogram.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglglobal.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglversion.h \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QPoint \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qpoint.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QWheelEvent \
+		../C-Compiler/help.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../C-Compiler/mainwindow.cpp
 
 cifa.o: ../C-Compiler/cifa.cpp ../C-Compiler/cifa.h \
@@ -641,8 +724,38 @@ optimize.o: ../C-Compiler/optimize.cpp ../C-Compiler/optimize.h \
 		../C-Compiler/global.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o optimize.o ../C-Compiler/optimize.cpp
 
+help.o: ../C-Compiler/help.cpp ../C-Compiler/help.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		ui_help.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o help.o ../C-Compiler/help.cpp
+
+view.o: ../C-Compiler/view.cpp ../C-Compiler/view.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QtOpenGL \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglcolormap.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglframebufferobject.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglfunctions.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglpixelbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglshaderprogram.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglglobal.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglversion.h \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QPoint \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qpoint.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QWheelEvent
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o view.o ../C-Compiler/view.cpp
+
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+moc_help.o: moc_help.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_help.o moc_help.cpp
+
+moc_view.o: moc_view.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_view.o moc_view.cpp
 
 ####### Install
 
