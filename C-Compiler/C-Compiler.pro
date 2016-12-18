@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -29,16 +29,26 @@ SOURCES += main.cpp\
     cifa.cpp \
     yufa_analysis.cpp \
     compile.cpp \
-    optimize.cpp
+    optimize.cpp \
+    help.cpp \
+    view.cpp
 
 HEADERS  += mainwindow.h \
     global.h \
     cifa.h \
     yufa_analysis.h \
     compile.h \
-    optimize.h
+    optimize.h \
+    help.h \
+    view.h
 
-FORMS    += mainwindow.ui
+FORMS    += \
+    mainwindow.ui \
+    help.ui
 
 DISTFILES += \
     wenben.txt
+
+mac{
+    LIBS += -framework opengl -framework glut
+}
