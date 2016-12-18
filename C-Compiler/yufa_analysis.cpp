@@ -340,7 +340,7 @@ void senten_list() {
             if (i == SYNBL.size())
             {
                 token_pointer--;
-                errorHappenedWithMessage("未定义的标识符");
+               // errorHappenedWithMessage("未定义的标识符");
                 next();
             }
 
@@ -350,7 +350,7 @@ void senten_list() {
                 next();
             else {
                 token_pointer -= 2;//kk
-                errorHappenedWithMessage("标识符赋值语句缺少等号");
+                //errorHappenedWithMessage("标识符赋值语句缺少等号");
                 next();
                 next();
             }
@@ -361,7 +361,7 @@ void senten_list() {
             }
             else {
                 token_pointer -= 2;//kk
-                errorHappenedWithMessage("标识符赋值语句缺少分号");
+               // errorHappenedWithMessage("标识符赋值语句缺少分号");
                 next();
                 next();
             }
@@ -523,7 +523,7 @@ void param_list() {		//参数表
     }
     else {
         token_pointer -= 2;//kk
-        errorHappenedWithMessage("函数参数表中缺少标识符（参数名称）");
+        //errorHappenedWithMessage("函数参数表中缺少标识符（参数名称）");
         next();
         next();
     }
@@ -535,7 +535,7 @@ void param_list() {		//参数表
             next();
         else {
             token_pointer -= 2;//kk
-            errorHappenedWithMessage("函数参数表中缺少标识符（参数名称）");
+            //errorHappenedWithMessage("函数参数表中缺少标识符（参数名称）");
             next();
             next();
         }
@@ -557,7 +557,7 @@ void structure() {
             next();
         else {
             token_pointer -= 2;//kk
-            errorHappenedWithMessage("结构体struct标记后没有接标识符");
+            //errorHappenedWithMessage("结构体struct标记后没有接标识符");
             next();
             next();
         }

@@ -113,7 +113,15 @@ void DAG_optimaize(int front, int end){
                 if (inter_pro[pointer].arg2.code == -1)
                     str = ConstNum[inter_pro[pointer].arg1.value];	//只有C1，在下面的循环中会在constnum中找到对应的value值
                 else{
+                    if(inter_pro[pointer].op.code == 11)
+                    constnum = atof(ConstNum[inter_pro[pointer].arg1.value].c_str())+atof(ConstNum[inter_pro[pointer].arg2.value].c_str());
+                    if(inter_pro[pointer].op.code == 12)
+                    constnum = atof(ConstNum[inter_pro[pointer].arg1.value].c_str())-atof(ConstNum[inter_pro[pointer].arg2.value].c_str());
+                    if(inter_pro[pointer].op.code == 13)
                     constnum = atof(ConstNum[inter_pro[pointer].arg1.value].c_str())*atof(ConstNum[inter_pro[pointer].arg2.value].c_str());
+                    if(inter_pro[pointer].op.code == 14)
+                    constnum = atof(ConstNum[inter_pro[pointer].arg1.value].c_str())/atof(ConstNum[inter_pro[pointer].arg2.value].c_str());
+                 //   cout<<constnum<<endl;
                     char temp[10];
                     str = ftos(constnum);
 
