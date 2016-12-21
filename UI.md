@@ -6,6 +6,6 @@
 2. 导入文件到源码区
 
 ### 默认窗口大小
-![](/Users/liuyuanxing/Code/Compiler/UI/UIverstion1_0.png)
+![](./UI/UIverstion1_0.png)
 ### 全屏大小
-![](/Users/liuyuanxing/Code/Compiler/UI/UIverstion1_0full.png)
+![](./UI/UIverstion1_0full.png)
