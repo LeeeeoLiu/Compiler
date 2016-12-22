@@ -29,7 +29,7 @@ struct GCToken
 void dcqk();
 int duqu();
 int duAsm();
-int zfleixing(char zi);
+int zfleixing(char w);
 int fhleixing(char* dc);
 int quzi();
 void huaci();

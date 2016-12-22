@@ -21,18 +21,18 @@ Token串数组中的Token串数量
 */
 int zongzishu;
 
-char shuzi[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+/*char shuzi[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 char zimu[] = { '_', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k',
 'l', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F',
 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M' };
-char bianbiefu[] = { '.', '\'', '"', ' ' };
+char bianbiefu[] = { '.', '\'', '"', ' ' };*/
 char yunsuanfu[][4] = { "!", "&", "~", "^", "*", "/", "%", "+", "-", "<", ">", "=", "->", "++", "--", "<<",
 ">>", "<=", ">=", "==", "!=", "&&", "||", "+=", "-=", "*=", "/=", "^=", "&=", "~=", "%=", "|", "<<=", ">>=" }; // +61
 char xianjiefu[][4] = { "(", ")", "[", "]", "{", "}", ".", "#", ",", ";", "'", "\"" }; //+100
 char guanjianzi[][100] = { "auto", "break", "case", "char", "const", "continue", "default", "do",
 "double", "else", "enum", "extern", "float", "for", "goto", "if", "inline", "int", "long", "register",
 "restrict", "return", "short", "signed", "sizeof", "static", "struct", "switch", "typedef", "union",
-"unsigned", "void", "volatile", "while", "bool", "Complex", "Imaginary" }; //+1
+"unsigned", "void", "volatile", "while", "bool", "Complex", "Imaginary","cin","cout"}; //+1
 
 void Psynbl()
 {
@@ -70,7 +70,7 @@ int InsertConstNum(string strToken){
 char zf;    //字符
 char dqdc[100];
 char wenben[10000];
-int wenbenxuhao;
+int wtp;//指向当前字符 替换wenbenxuhao
 int zifushu;
 
 
@@ -88,7 +88,7 @@ void dcqw()
 int duqu()
 {
     zifushu = 0;
-    FILE *fp = fopen("/Users/liuyuanxing/Code/Compiler/C-Compiler/wenben.txt", "r");
+    FILE *fp = fopen("D:/Code/Compiler/C-Compiler/wenben.txt", "r");
     if (fp == NULL){ printf("No File\n"); fclose(fp); return 0; }
     else
     {
@@ -105,7 +105,8 @@ int duqu()
 int duAsm()
 {
     zifushu = 0;
-    FILE *fp = fopen("/Users/liuyuanxing/Code/Compiler/C-Compiler/test.asm", "r");
+    FILE *fp = fopen("D:"
+                     "/Code/Compiler/C-Compiler/test.asm", "r");
     if (fp == NULL){ printf("No File\n"); fclose(fp); return 0; }
     else
     {
@@ -119,9 +120,9 @@ int duAsm()
     return 1;
 }
 
-int zfleixing(char zi)
+int zfleixing(char w)
 {
-    for (int bijiao = 0; bijiao<53; bijiao++)
+   /* for (int bijiao = 0; bijiao<53; bijiao++)
     {
         if (zi == zimu[bijiao])return 0;
     }
@@ -133,7 +134,14 @@ int zfleixing(char zi)
     {
         if (zi == bianbiefu[bijiao])return bijiao + 55;
     }
-    return 1;
+    return 1;*/
+    if((w>='a'&&w<='z')||(w>='A'&&w<='Z')||(w=='_'))return 0;//字母，包括下划线
+    else if(w>='0'&&w<='9')return 52;//数字
+    else if(w=='.') return 55;//以下为有特殊作用的符号，小数点区分整数和浮点数，单双引号区别字符常量字符串常量与自定义标识符
+    else if(w=='\'')return 56;
+    else if(w=='"')return 57;
+    else if(w==' ')return 58;
+    else return 1;
 }
 
 int fhleixing(char* dc)
@@ -151,57 +159,60 @@ int fhleixing(char* dc)
 }
 
 
-int quzi()
-{
+int quzi(){
+    //按一定词法规则划分完整的单词
     dcqk();
     int i = 0;
     int biaoji = 999;
-    while (wenben[wenbenxuhao] == ' ')wenbenxuhao++;
-    if (wenbenxuhao<zifushu){
-    while (wenben[wenbenxuhao] != ' ')
-    {
-        biaoji = zfleixing(wenben[wenbenxuhao]);
-        dqdc[i++] = wenben[wenbenxuhao++];
-        if (biaoji == 0)
+    while (wenben[wtp] == ' ')wtp++;//从非空开始读
+    if (wtp<zifushu){
+        while (wenben[wtp] != ' ')
         {
-            while (zfleixing(wenben[wenbenxuhao]) == 0 || zfleixing(wenben[wenbenxuhao]) == 52)
+            biaoji = zfleixing(wenben[wtp]);
+            dqdc[i++] = wenben[wtp++];
+            if (biaoji == 0)//首字母是字母或_，可能是标识符/变量名/保留字
             {
-                dqdc[i++] = wenben[wenbenxuhao++];
+                while (zfleixing(wenben[wtp]) == 0 || zfleixing(wenben[wtp]) == 52)//字母或_或数字，符合标识符定义规则
+                {
+                    dqdc[i++] = wenben[wtp++];
+                }
+                dqdc[i] = '\0'; return 0;
             }
-            dqdc[i] = '\0'; return 0;
+            else if (biaoji == 56)//首字符是单引号 字符常量
+            {
+                dqdc[i++] = wenben[wtp++];
+                if (zfleixing(wenben[wtp]) == 56)
+                {
+                    dqdc[i++] = wenben[wtp++];
+                    dqdc[i] = '\0'; return 56;
+                }
+                else { dqdc[i] = '\0'; return 990; } //单字符错误
+            }
+            else if (biaoji == 57)//首字符是双引号 字符串常量
+            {
+                while (zfleixing(wenben[wtp]) != 57){ dqdc[i++] = wenben[wtp++]; }
+                dqdc[i++] = wenben[wtp++];
+                dqdc[i] = '\0'; return 57;
+            }
+            else if (biaoji == 52)
+            {
+                while (zfleixing(wenben[wtp]) == 52){ dqdc[i++] = wenben[wtp++]; }
+                if (zfleixing(wenben[wtp]) == 55){ dqdc[i++] = wenben[wtp++]; }//小数点
+                else { dqdc[i] = '\0'; return 51; }
+                if (zfleixing(wenben[wtp]) == 52){ dqdc[i++] = wenben[wtp++]; }
+                else { dqdc[i] = '\0'; return 991; } //数字错误
+                while (zfleixing(wenben[wtp]) == 52){ dqdc[i++] = wenben[wtp++]; }
+                if (wenben[wtp] == 'f'){ dqdc[i++] = wenben[wtp++]; dqdc[i] = '\0'; return 53; }
+                else if (wenben[wtp] == 'd'){ dqdc[i++] = wenben[wtp++]; dqdc[i] = '\0'; return 54; }
+                dqdc[i] = '\0'; return 53;
+            }
+            else if (biaoji == 1)
+            {
+                while (zfleixing(wenben[wtp]) == 1 && wenben[wtp] != ' ' && wtp < zifushu){ dqdc[i++] = wenben[wtp++]; }
+                dqdc[i] = '\0'; return 1;
+            }
+            else { dqdc[i] = '\0'; return biaoji; }
         }
-        else if (biaoji == 56)
-        {
-            dqdc[i++] = wenben[wenbenxuhao++];
-            if (zfleixing(wenben[wenbenxuhao]) == 56){ dqdc[i++] = wenben[wenbenxuhao++]; dqdc[i] = '\0'; return 56; }
-            else { dqdc[i] = '\0'; return 990; } //单字符错误
-        }
-        else if (biaoji == 57)
-        {
-            while (zfleixing(wenben[wenbenxuhao]) != 57){ dqdc[i++] = wenben[wenbenxuhao++]; }
-            dqdc[i++] = wenben[wenbenxuhao++];
-            dqdc[i] = '\0'; return 57;
-        }
-        else if (biaoji == 52)
-        {
-            while (zfleixing(wenben[wenbenxuhao]) == 52){ dqdc[i++] = wenben[wenbenxuhao++]; }
-            if (zfleixing(wenben[wenbenxuhao]) == 55){ dqdc[i++] = wenben[wenbenxuhao++]; }
-            else { dqdc[i] = '\0'; return 51; }
-            if (zfleixing(wenben[wenbenxuhao]) == 52){ dqdc[i++] = wenben[wenbenxuhao++]; }
-            else { dqdc[i] = '\0'; return 991; } //数字错误
-            while (zfleixing(wenben[wenbenxuhao]) == 52){ dqdc[i++] = wenben[wenbenxuhao++]; }
-            if (wenben[wenbenxuhao] == 'f'){ dqdc[i++] = wenben[wenbenxuhao++]; dqdc[i] = '\0'; return 53; }
-            else if (wenben[wenbenxuhao] == 'd'){ dqdc[i++] = wenben[wenbenxuhao++]; dqdc[i] = '\0'; return 54; }
-            dqdc[i] = '\0'; return 53;
-        }
-        else if (biaoji == 1)
-        {
-            while (zfleixing(wenben[wenbenxuhao]) == 1 && wenben[wenbenxuhao] != ' ' && wenbenxuhao < zifushu){ dqdc[i++] = wenben[wenbenxuhao++]; }
-            dqdc[i] = '\0'; return 1;
-        }
-        else { dqdc[i] = '\0'; return biaoji; }
-    }
-
     }
     //下面的return肯定走不到，但是不写的话，编译器会报错，所以必须写。
     return 1000;
@@ -211,19 +222,19 @@ void huaci()
 {
     int fuhaobiaoaddr = 0;
     zongzishu = 0;
-    for (wenbenxuhao = 0; wenbenxuhao<zifushu;)
+    for (wtp = 0; wtp<zifushu;)
     {
         int leix = quzi();
         if (leix == 1000)
         {
-            wenbenxuhao = zifushu;
+            wtp = zifushu;
         }
         else if (leix == 0)
         {
             int bijiao;
-            for (bijiao = 0; bijiao <= 36; bijiao++)
+            for (bijiao = 0; bijiao <= 38; bijiao++)
             {
-                if (strcmp(dqdc, guanjianzi[bijiao]) == 0)
+                if (strcmp(dqdc, guanjianzi[bijiao]) == 0)//关键字表！！为什么不直接做成token序列！！！！
                 {
                     strcpy(token_cifa[zongzishu].content, dqdc);
                     strcpy(token_cifa[zongzishu].describe, "KEY_DESC\0");
@@ -234,31 +245,31 @@ void huaci()
                 }
 
             }
-            if (bijiao == 37)
+            if (bijiao == 39)//用户自定义标识符，放入符号表
             {
                 strcpy(token_cifa[zongzishu].content, dqdc);
                 strcpy(token_cifa[zongzishu].describe, "IDENTIFER_DESC\0");
                 token_cifa[zongzishu].type = 40;
-                token_cifa[zongzishu].addr = fuhaobiaoaddr++;
+                token_cifa[zongzishu].addr = fuhaobiaoaddr++;//！！
                 zongzishu++;
             }
 
         }
-        else if (leix == 56)
+        else if (leix == 56)//字符常量
         {
             strcpy(token_cifa[zongzishu].content, dqdc);
             strcpy(token_cifa[zongzishu].describe, "ACHAR_DESC\0");
             token_cifa[zongzishu].type = leix;
             zongzishu++;
         }
-        else if (leix == 57)
+        else if (leix == 57)//字符串常量
         {
             strcpy(token_cifa[zongzishu].content, dqdc);
             strcpy(token_cifa[zongzishu].describe, "ASTRING_DESC\0");
             token_cifa[zongzishu].type = leix;
             zongzishu++;
         }
-        else if (leix <= 54 && leix >= 51)
+        else if (leix <= 54 && leix >= 51)//数字常量
         {
             strcpy(token_cifa[zongzishu].content, dqdc);
             strcpy(token_cifa[zongzishu].describe, "CONSTANT_DESC\0");
@@ -273,9 +284,9 @@ void huaci()
                 if (fhlx == 0)
                 {
                     dcqw();
-                    wenbenxuhao--;
+                    wtp--;
                 }
-                else if (fhlx == 994)
+                else if (fhlx == 994)//fhleixing返回值994 if (strlen(dc) == 1)return 994;
                 {
                     strcpy(token_cifa[zongzishu].content, dqdc);
                     strcpy(token_cifa[zongzishu].describe, "ERROR_OPE\0");
@@ -287,12 +298,12 @@ void huaci()
                 {
                     strcpy(token_cifa[zongzishu].content, dqdc);
                     token_cifa[zongzishu].type = fhlx;
-                    if (fhlx<99)
+                    if (fhlx<99)//运算符
                     {
                         strcpy(token_cifa[zongzishu].describe, "OPE_DESC\0");
                         //operMap.push_back(make_pair(token_cifa[zongzishu].content,token_cifa[zongzishu].type));
                     }
-                    else
+                    else//边界符
                     {
                         strcpy(token_cifa[zongzishu].describe, "CLE_OPE_DESC\0");
                         //limitMap.push_back(make_pair(token_cifa[zongzishu].content,token_cifa[zongzishu].type));
@@ -375,7 +386,7 @@ void shuchu()
 
 void keyinit()
 {
-    keywords.resize(32);
+    keywords.resize(38);
     keywords[4] = "main";
     keywords[5] = "while";
     keywords[6] = "if";
@@ -404,6 +415,12 @@ void keyinit()
     keywords[29] = "void";
     keywords[30] = "else";
     keywords[31] = "return";
+    keywords[32] = "&&";
+    keywords[33] ="||";
+    keywords[34] ="cout";
+    keywords[35] ="cin";
+    keywords[36] ="<<";
+    keywords[37] =">>";
 }
 
 void zhuanma()
@@ -442,7 +459,7 @@ void zhuanma()
                    }
                    break;
         }
-        case 56:
+        case 56://字符常量
         {
                    int i;
                    for (i = 0; i < ConstChar.size(); i++)//字符常量表查重
@@ -458,10 +475,10 @@ void zhuanma()
                    token.push_back(tok);
                    break;
         }
-        case 57:
+        case 57://字符串常量
         {
                    int i;
-                   for (i = 0; i < ConstString.size(); i++)//字符常量表查重
+                   for (i = 0; i < ConstString.size(); i++)//字符串常量表查重
                    {
                        if (!ConstString[i].compare(token_cifa[dangqiandanci].content))
                            break;
@@ -476,16 +493,16 @@ void zhuanma()
         }
         case 51:
         case 53:
-        case 54:
+        case 54://常数表
         {
                    int i;
-                   for (i = 0; i < ConstNum.size(); i++)//字符常量表查重
+                   for (i = 0; i < ConstNum.size(); i++)//数字常量表查重
                    {
                        if (!ConstNum[i].compare(token_cifa[dangqiandanci].content))
                            break;
                    }
                    if (i == ConstNum.size())
-                       ConstNum.push_back(token_cifa[dangqiandanci].content); //插入字符串常量表并赋值
+                       ConstNum.push_back(token_cifa[dangqiandanci].content); //插入数字常量表并赋值
 
                    tok.value = i;
                    tok.code = 3;
@@ -683,7 +700,7 @@ void zhuanma()
         }
         case 82:
         {
-                   tok.code = 26;
+                   tok.code = 32;
                    tok.value = 0;
                    token.push_back(tok);
                    token.push_back(tok);
@@ -691,9 +708,37 @@ void zhuanma()
         }
         case 83:
         {
-                   tok.code = 27;
+                   tok.code = 33;
                    tok.value = 0;
                    token.push_back(tok);
+                   token.push_back(tok);
+                   break;
+        }
+        case 39:
+        {
+                   tok.code = 34;
+                   tok.value = 0;
+                   token.push_back(tok);
+                   break;
+        }
+        case 38:
+        {
+                   tok.code = 35;
+                   tok.value = 0;
+                   token.push_back(tok);
+                   break;
+        }
+        case 76:
+        {
+                   tok.code = 36;
+                   tok.value = 0;
+                   token.push_back(tok);
+                   break;
+        }
+        case 77:
+        {
+                   tok.code = 37;
+                   tok.value = 0;
                    token.push_back(tok);
                    break;
         }
