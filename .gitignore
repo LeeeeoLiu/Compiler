@@ -1,2 +1,3 @@
-.DS_Store 
+.DS_Store
 build-C-Compiler-Desktop_Qt_5_7_1_MSVC2013_64bit-Debug/*
+build-C-Compiler-Desktop_Qt_5_7_1_clang_64bit-Debug/*
