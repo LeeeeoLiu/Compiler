@@ -13,18 +13,20 @@ int main()
 	e = 2;
 	f = 1;
 	g = 0;
-    cout<<"hello word";
+        
 	if (g+f)
 	{
 	g = 3*5-e;
         i=3+5;
-        j=5-3;
-        k=5/3;
+        j=i;
+        k=5-3;
 	}
+        cout<<k;
 	while(e-2*f)
 	{
 	g=e+f;
 	}
 	w=3;
+     
 	return 0;
 }

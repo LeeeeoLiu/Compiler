@@ -260,7 +260,7 @@ void creat_quad(int start_pointer, int end_pointer){
     int i;
     int quad_pointer;
     for (quad_pointer = start_pointer; quad_pointer < end_pointer; ){
-        if (inter_pro[quad_pointer].op == Token(5, -1) || inter_pro[quad_pointer].op == Token(6, -1))
+        if (inter_pro[quad_pointer].op == Token(5, -1) || inter_pro[quad_pointer].op == Token(6, -1)||inter_pro[quad_pointer].op == Token(34, -1))
             quad_pointer++;
         else
             break;
@@ -274,6 +274,7 @@ void creat_quad(int start_pointer, int end_pointer){
             temp.label = 0;
             temp.res = DAG[i].labels[0];//主标记作为赋值对象
             new_inter.push_back(temp);
+
             int j;
             for (j = 1; j < DAG[i].labels.size(); j++){
                 if (DAG[i].labels[j].code == 0){
@@ -284,6 +285,7 @@ void creat_quad(int start_pointer, int end_pointer){
                     temp.label = 0;
                     temp.res = DAG[i].labels[j];//标记作为赋值对象
                     new_inter.push_back(temp);
+
                 }
             }
         }
@@ -304,12 +306,15 @@ void creat_quad(int start_pointer, int end_pointer){
     }
     for (int i = 0; i < new_inter.size(); i++){
         int label = 0;
-        if (inter_pro[quad_pointer + i].label != 0){
+        if (inter_pro[quad_pointer + i].label != 0&&inter_pro[quad_pointer + i].label != 3){
             label = inter_pro[quad_pointer + i].label;
         }
+        if(inter_pro[quad_pointer + i].label ==3)//特殊语句，即不跳入也不跳转
+              quad_pointer++;
         inter_pro[quad_pointer + i] = new_inter[i];
         inter_pro[quad_pointer + i].label = label;
     }
+
     quad_pointer = quad_pointer + new_inter.size();
     for (; quad_pointer <= end_pointer; quad_pointer++){
         if (inter_pro[quad_pointer].label != 0)
@@ -356,6 +361,15 @@ void output_inter_pro(int front, int end){
             case 1:{
                        cout << inter_pro[i].pointer;
             }
+            case 3:{
+                                   switch (inter_pro[i].res.code){
+                                   case 0:cout << Id[inter_pro[i].res.value] ; break;//当为变量时
+                                   case 3:cout << ConstNum[inter_pro[i].res.value] ; break;//常数
+                                   case -2:cout << "t" << inter_pro[i].res.value ; break;
+                                   case -1:cout << "_,";
+                                   }
+                                   break;
+                        }
             }
             cout << ")" << endl;
         }
@@ -368,6 +382,8 @@ void optimization(){
     basic_block();
     for (int i = 0; i < flowGraph.size(); i++){
         DAG_optimaize(flowGraph[i].front, flowGraph[i].end);
+       // cout<<i<<"nd"<<endl;
+       //  output_inter_pro(flowGraph[i].front, flowGraph[i].end);
         creat_quad(flowGraph[i].front, flowGraph[i].end);
         DAG.clear();
     }

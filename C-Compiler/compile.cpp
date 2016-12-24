@@ -440,7 +440,7 @@ void compilization(){
     DSEG();
     CSEG();
 
-    ofstream ofile("/Users/liuyuanxing/Code/Compiler/C-Compiler/test.asm",ios::out);
+    ofstream ofile("D:\\QT/Code/Compiler/C-Compiler/test.asm",ios::out);
 
     targe * front,* back;
     ofile << "DSEG\tSEGMENT" << endl;

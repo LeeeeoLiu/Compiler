@@ -51,7 +51,7 @@ public:
 };
 
 struct quadruple{		//四元式定义
-    int label;		//是否跳转,0表示不是跳转，1表示跳到别处，2表示跳到此处
+    int label;		//是否跳转,0表示不是跳转，1表示跳到别处，2表示跳到此处,3表示特殊语句
     Token op;		//op中code == -1 表示叶子结点，运算为空
     Token arg1;		//如果没有内容code内容选-1
     Token arg2;
@@ -80,10 +80,16 @@ struct typel {
     int lenth;	//类型应该分配的长度
 };
 
+struct funtion_list{
+    int return_type;  //函数返回类型，6:char;7:int;8:float
+    Token name;
+    vector<int> type; //6:char;7:int;8:float
+};
+
 class synbl{
 public:
     Token name;
-    int type;		//指向类型表，内容应该不变
+    int type;		//0是char,1是inta,2是float,3是funtion
     int cat;		//种类，1是函数，2是变量，3是赋值形参，4是域名
     int addr;		//指向1函数表,0表示不指
 };

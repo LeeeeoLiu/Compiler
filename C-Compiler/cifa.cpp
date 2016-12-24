@@ -88,7 +88,7 @@ void dcqw()
 int duqu()
 {
     zifushu = 0;
-    FILE *fp = fopen("D:/Code/Compiler/C-Compiler/wenben.txt", "r");
+    FILE *fp = fopen("D:\\QT/Code/Compiler/C-Compiler/wenben.txt", "r");
     if (fp == NULL){ printf("No File\n"); fclose(fp); return 0; }
     else
     {
@@ -105,7 +105,7 @@ int duqu()
 int duAsm()
 {
     zifushu = 0;
-    FILE *fp = fopen("D:/Code/Compiler/C-Compiler/test.asm", "r");
+    FILE *fp = fopen("D:\\QT/Code/Compiler/C-Compiler/test.asm", "r");
     if (fp == NULL){ printf("No File\n"); fclose(fp); return 0; }
     else
     {
