@@ -80,6 +80,12 @@ struct typel {
     int lenth;	//类型应该分配的长度
 };
 
+struct funtion_list{
+    int return_type;  //函数返回类型，7:char;8:int;9:float
+    Token name;
+    vector<int> type; //函数参数类型7:char;8:int;9:float
+};
+
 class synbl{
 public:
     Token name;

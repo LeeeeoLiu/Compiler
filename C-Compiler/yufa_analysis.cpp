@@ -14,7 +14,7 @@ vector<Token> sym_list_stack;
 /**
  类型应该分配的长度
  **/
-vector<typel> TYPEL = { { "char", 2 }, { "int", 2 }, { "float", 2 } };
+vector<typel> TYPEL = { { "char", 2 }, { "inta", 2 }, { "float", 2 },{"funtion",0} };
 /**
  符号表
  */
@@ -34,7 +34,14 @@ bool isArr=false;
  活动记录当前指向
  */
 int VALL_pointer ;
-
+/**
+ 函数表
+ */
+vector<funtion_list>Funtion_list;
+/**
+  函数表元素临时变量,为方便各函数调用，应设为全局变量
+  **/
+funtion_list funtion_temp;
 /**
  四元式序列
  */
@@ -468,7 +475,7 @@ void var_declaration() {
  */
 void senten_list() {
 
-    while (currentToken.code == 0 || currentToken.code == 5 || currentToken.code == 6 || currentToken.code == 21 || currentToken.code == 3) {    //可以识别标识符赋值语句、while及if
+    while (currentToken.code == 0 || currentToken.code == 5 || currentToken.code == 6 || currentToken.code == 21 || currentToken.code == 3||currentToken.code==34) {  //可以识别标识符赋值语句、while及if
 
         if (currentToken.code == 21 || currentToken.code == 3) // ;号，数字
         {
@@ -686,6 +693,40 @@ void senten_list() {
                 in_flag = true;
                 continue;
             }
+        }else if(currentToken.code == 34){ //识别cout
+            next();
+            if(currentToken.code==36)
+            {
+                next();
+                 E();
+                if(currentToken.code==21)//语句逗号
+                    {
+                       quadruple temp;
+                       temp.op = Token(34, -1);//cout
+                       temp.arg2 = Token(-1, -1);
+                       temp.res = Token(-1, -1);
+                       temp.arg1 = sem.back();//res(E)
+                       sem.pop_back();
+
+                       temp.label = 3;//特殊语句
+                       temp.pointer = NULL;//未知
+                       inter_pro.push_back(temp);//四元式生成插入
+                       next();
+                    }
+                else
+                    {
+                       token_pointer -= 2;//kk
+                       errorHappenedWithMessage("cout后面没有逗号\n");
+                       next();
+                       next();
+                    }
+            }
+            else{
+                token_pointer -= 2;//kk
+                errorHappenedWithMessage("cout后面没有<<\n");
+                next();
+                next();
+                }
         }
     }
 }
@@ -722,6 +763,7 @@ void param_list() {		//参数表
 }
 
 void compound_sen() {	//复合语句
+
         var_declaration();	//变量说明
         senten_list();		//语句表
 }
