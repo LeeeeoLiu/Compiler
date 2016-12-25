@@ -14,7 +14,7 @@ vector<Token> sym_list_stack;
 /**
  类型应该分配的长度
  **/
-vector<typel> TYPEL = { { "char", 2 }, { "inta", 2 }, { "float", 2 },{"funtion,0"} };
+vector<typel> TYPEL = { { "char", 2 }, { "inta", 2 }, { "float", 2 },{"funtion",0} };
 /**
  符号表
  */
@@ -23,10 +23,14 @@ vector<synbl> SYNBL;
  活动记录当前指向
  */
 int VALL_pointer ;
-/*函数表
+/**
+ 函数表
  */
 vector<funtion_list>Funtion_list;
-
+/**
+  函数表元素临时变量,为方便各函数调用，应设为全局变量
+  **/
+funtion_list funtion_temp;
 /**
  四元式序列
  */
@@ -313,7 +317,7 @@ void var_declaration() {
  */
 void senten_list() {
 
-    while (currentToken.code == 0 || currentToken.code == 5 || currentToken.code == 6 || currentToken.code == 21 || currentToken.code == 3||currentToken.code==34) {    //可以识别标识符赋值语句、while及if
+    while (currentToken.code == 0 || currentToken.code == 5 || currentToken.code == 6 || currentToken.code == 21 || currentToken.code == 3||currentToken.code==34) {  //可以识别标识符赋值语句、while及if
 
         if (currentToken.code == 21 || currentToken.code == 3) // ;号，数字
         {
@@ -533,14 +537,14 @@ void senten_list() {
                 else
                     {
                        token_pointer -= 2;//kk
-                       errorHappenedWithMessage("cout后面没有大括号逗号\n");
+                       errorHappenedWithMessage("cout后面没有逗号\n");
                        next();
                        next();
                     }
             }
             else{
                 token_pointer -= 2;//kk
-                errorHappenedWithMessage("cout后面没有大括号<<\n");
+                errorHappenedWithMessage("cout后面没有<<\n");
                 next();
                 next();
                 }
@@ -580,6 +584,7 @@ void param_list() {		//参数表
 }
 
 void compound_sen() {	//复合语句
+
         var_declaration();	//变量说明
         senten_list();		//语句表
 }

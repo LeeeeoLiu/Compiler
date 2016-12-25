@@ -81,9 +81,9 @@ struct typel {
 };
 
 struct funtion_list{
-    int return_type;  //函数返回类型，6:char;7:int;8:float
+    int return_type;  //函数返回类型，7:char;8:int;9:float
     Token name;
-    vector<int> type; //6:char;7:int;8:float
+    vector<int> type; //函数参数类型7:char;8:int;9:float
 };
 
 class synbl{
