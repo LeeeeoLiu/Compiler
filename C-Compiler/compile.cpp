@@ -5,11 +5,13 @@ vector<string> check_list;//给出原来四元式的位置即可找到应该跳�
 
 targe data;//汇编语言序列
 targe code;
+targe cout_code;
 targe* data_pointer;
 targe* data_end;//链表最后一个元素的指针
 
 stack<targe*> backfilling;
 int jump_label = 0;
+int cout_label = 0;//打印函数标记
 string the_first_data_label;
 
 void data_new_node(targe* temp){
@@ -79,6 +81,139 @@ void DSEG(){
     last_data->next = data_pointer;
     last_data = data_pointer;
 
+}
+void cout_compile(){
+    targe* code_pointer;
+    targe* code_last;
+    code_last = &cout_code;
+
+    code_pointer = new targe;
+    code_pointer->cw = "MOV";
+    code_pointer->arg1 = "SI";
+    code_pointer->arg2 = "10";
+    code_pointer->flag = 2;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->cw = "MOV";
+    code_pointer->arg1 = "CX";
+    code_pointer->arg2 = "0";
+    code_pointer->flag = 2;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->label="next1";
+    code_pointer->cw = "MOV";
+    code_pointer->arg1 = "DX";
+    code_pointer->arg2 = "0";
+    code_pointer->flag = 2;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->cw = "DIV";
+    code_pointer->arg1 = "SI";
+    code_pointer->arg2 = "";
+    code_pointer->flag = 1;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->cw = "PUSH";
+    code_pointer->arg1 = "DX";
+    code_pointer->arg2 = "";
+    code_pointer->flag = 1;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->cw = "INC";
+    code_pointer->arg1 = "CX";
+    code_pointer->arg2 = "";
+    code_pointer->flag = 1;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->cw = "CMP";
+    code_pointer->arg1 = "AX";
+    code_pointer->arg2 = "0";
+    code_pointer->flag = 2;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->cw = "JNZ";
+    code_pointer->arg1 = "next1";
+    code_pointer->arg2 = "";
+    code_pointer->flag = 1;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->label="next2";
+    code_pointer->cw = "POP";
+    code_pointer->arg1 = "DX";
+    code_pointer->arg2 = "0";
+    code_pointer->flag = 1;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->cw = "ADD";
+    code_pointer->arg1 = "DL";
+    code_pointer->arg2 = "30H";
+    code_pointer->flag = 2;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->cw = "MOV";
+    code_pointer->arg1 = "AH";
+    code_pointer->arg2 = "02H";
+    code_pointer->flag = 2;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->cw = "INT";
+    code_pointer->arg1 = "21H";
+    code_pointer->arg2 = "";
+    code_pointer->flag = 1;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->cw = "LOOP";
+    code_pointer->arg1 = "next2";
+    code_pointer->arg2 = "";
+    code_pointer->flag = 1;
+    code_pointer->next = NULL;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
+
+    code_pointer = new targe;
+    code_pointer->cw = "RET";
+    code_pointer->arg1 = "";
+    code_pointer->arg2 = "";
+    code_pointer->flag = 0;
+    code_pointer->next = &code;
+    code_last->next = code_pointer;
+    code_last = code_pointer;
 }
 
 void CSEG(){
@@ -424,6 +559,49 @@ void CSEG(){
                     code_last = code_pointer;
                 }
             }
+            //四元式cout
+            if (inter_pro[inter_pro_pointer].op.code == 34){
+                  //  cout<<inter_pro[inter_pro_pointer].arg1.code<<endl;
+                    code_pointer = new targe; //取操作数
+                    switch (inter_pro[inter_pro_pointer].arg1.code){
+                    case 0:{
+                               code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = the_first_data_label + "[" +
+                                   itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
+                               cout<< code_pointer->arg2<<endl;
+                               break;
+                    }
+                    case 3:{
+                               code_pointer->cw = "MOV";		//mov ax,const[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                               break;
+                    }
+                    case -2:{
+                                code_pointer->cw = "MOV";		//mov ax,temp[i]
+                                code_pointer->arg1 = "AX";
+                                code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                                break;
+                    }
+                    }
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+                    cout_label=1;
+
+                    code_pointer = new targe;
+                    code_pointer->cw = "CALL";
+                    code_pointer->arg1 = "COUT";
+                    code_pointer->arg2 = "";
+                    code_pointer->flag = 1;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+                   //显示十进制数
+
+            }
         }
     }
 }
@@ -454,9 +632,29 @@ void compilization(){
 
     ofile << "DSEG\tENDS" << endl;
     ofile << "CSEG\tSEGMENT\n\tASSUME\tCS:CSEG,DS:DSEG" << endl;
+    if(cout_label==1){
+    ofile << "COUT\tPROC\tNEAR"<<endl;
+        cout_compile();
+        front=&cout_code;
+        back=&code;
+        while (front->next != back){
+            front = front->next;
+            if (front->label.size() != 0){
+                ofile << front->label << ":";
+            }
+            switch (front->flag){
+            case 0:ofile << "\t" + front->cw << endl; break;
+            case 1:ofile << "\t" + front->cw + "\t" + front->arg1 << endl; break;
+            case 2:ofile << "\t" + front->cw + "\t" + front->arg1 << "," << front->arg2 << endl; break;
+            }
+        }
+    ofile << "COUT\tENDP"<<endl;
+    front=&code;
+    }
+    else
+         front = &code;
     ofile << "start:\tMOV\tAX,DSEG\n\tMOV\tDS,AX" << endl;
 
-    front = &code;
     while (front->next != NULL){
         front = front->next;
         if (front->label.size() != 0){

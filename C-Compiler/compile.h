@@ -35,5 +35,5 @@ string itos(int num);
 void DSEG();
 void CSEG();
 void compilization();
-
+void cout_compile();
 #endif // COMPILE_H

@@ -14,7 +14,7 @@ vector<Token> sym_list_stack;
 /**
  类型应该分配的长度
  **/
-vector<typel> TYPEL = { { "char", 2 }, { "inta", 2 }, { "float", 2 },{"funtion",0} };
+vector<typel> TYPEL = { { "char", 2 }, { "inta", 2 }, { "float", 2 } };
 /**
  符号表
  */
