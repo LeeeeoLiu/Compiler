@@ -33,7 +33,7 @@
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>4</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tab_8">
            <attribute name="title">
@@ -41,7 +41,7 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_8">
             <item row="0" column="0">
-             <widget class="QTableView" name="tableView_4"/>
+             <widget class="QTableView" name="tableViewToken"/>
             </item>
            </layout>
           </widget>
@@ -51,7 +51,17 @@
            </attribute>
            <layout class="QGridLayout" name="gridLayout_7">
             <item row="0" column="0">
-             <widget class="QTableView" name="tableView_3"/>
+             <widget class="QTableView" name="tableViewSYNBL"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_9">
+           <attribute name="title">
+            <string> 四元式</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_9">
+            <item row="0" column="0">
+             <widget class="QTableView" name="tableViewQuat"/>
             </item>
            </layout>
           </widget>
@@ -72,16 +82,6 @@
            <layout class="QGridLayout" name="gridLayout_5">
             <item row="0" column="0">
              <widget class="QTableView" name="tableView"/>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="tab_9">
-           <attribute name="title">
-            <string> 四元式</string>
-           </attribute>
-           <layout class="QGridLayout" name="gridLayout_9">
-            <item row="0" column="0">
-             <widget class="QTableView" name="tableView_5"/>
             </item>
            </layout>
           </widget>
@@ -106,7 +106,7 @@
         </rect>
        </property>
        <property name="autoFillBackground">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
@@ -117,10 +117,14 @@
          </widget>
         </item>
         <item row="1" column="0" colspan="2">
-         <widget class="QTextEdit" name="codeArea"/>
+         <widget class="QTextEdit" name="codeArea">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="btnCompile">
           <property name="text">
            <string>编译</string>
           </property>
@@ -144,28 +148,28 @@
          <height>231</height>
         </rect>
        </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>结果输出区</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" colspan="2">
-         <widget class="QLabel" name="statusArea">
-          <property name="frameShape">
-           <enum>QFrame::Panel</enum>
-          </property>
-          <property name="text">
-           <string>TextLabel</string>
+           <string>结果显示区</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="saveAsm">
           <property name="text">
-           <string>运行汇编代码</string>
+           <string>保存汇编代码</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QTextBrowser" name="statusArea">
+          <property name="toolTip">
+           <string/>
           </property>
          </widget>
         </item>

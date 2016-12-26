@@ -607,7 +607,8 @@ void CSEG(){
 }
 
 
-void compilization(){
+string compilization(){
+    string asmCode;
     check_list.resize(inter_pro.size());
     for (int i = 0; i < inter_pro.size(); i++){
         if (inter_pro[i].label == 2){
@@ -622,18 +623,23 @@ void compilization(){
 
     targe * front,* back;
     ofile << "DSEG\tSEGMENT" << endl;
+    asmCode=asmCode+"DSEG\tSEGMENT\n";
 
     back = &data;
     while (back->next != NULL){
         back = back->next;
         ofile << "\t" + back->cw + "\t" + back->arg1 + "\t" + back->arg2 << endl;
+        asmCode=asmCode+"\t" + back->cw + "\t" + back->arg1 + "\t" + back->arg2 +"\n";
 
     }
 
     ofile << "DSEG\tENDS" << endl;
+    asmCode=asmCode+"DSEG\tENDS\n";
     ofile << "CSEG\tSEGMENT\n\tASSUME\tCS:CSEG,DS:DSEG" << endl;
+    asmCode=asmCode+"CSEG\tSEGMENT\n\tASSUME\tCS:CSEG,DS:DSEG\n";
     if(cout_label==1){
-    ofile << "COUT\tPROC\tNEAR"<<endl;
+        ofile << "COUT\tPROC\tNEAR"<<endl;
+        asmCode=asmCode+"COUT\tPROC\tNEAR\n";
         cout_compile();
         front=&cout_code;
         back=&code;
@@ -641,32 +647,37 @@ void compilization(){
             front = front->next;
             if (front->label.size() != 0){
                 ofile << front->label << ":";
+                asmCode=asmCode+front->label+":";
             }
             switch (front->flag){
-            case 0:ofile << "\t" + front->cw << endl; break;
-            case 1:ofile << "\t" + front->cw + "\t" + front->arg1 << endl; break;
-            case 2:ofile << "\t" + front->cw + "\t" + front->arg1 << "," << front->arg2 << endl; break;
+            case 0:ofile << "\t" + front->cw << endl; asmCode=asmCode+ "\t" + front->cw+"\n";break;
+            case 1:ofile << "\t" + front->cw + "\t" + front->arg1 << endl;asmCode=asmCode+ "\t" + front->cw + "\t" + front->arg1 +"\n"; break;
+            case 2:ofile << "\t" + front->cw + "\t" + front->arg1 << "," << front->arg2 << endl; asmCode=asmCode+ "\t" + front->cw + "\t" + front->arg1 +"," +front->arg2 +"\n";break;
             }
         }
     ofile << "COUT\tENDP"<<endl;
+    asmCode=asmCode+"COUT\tENDP\n";
     front=&code;
     }
     else
          front = &code;
     ofile << "start:\tMOV\tAX,DSEG\n\tMOV\tDS,AX" << endl;
+    asmCode=asmCode+"start:\tMOV\tAX,DSEG\n\tMOV\tDS,AX\n";
 
     while (front->next != NULL){
         front = front->next;
         if (front->label.size() != 0){
             ofile << front->label << ":";
+            asmCode=asmCode+front->label + ":";
         }
         switch (front->flag){
-        case 0:ofile << "\t" + front->cw << endl; break;
-        case 1:ofile << "\t" + front->cw + "\t" + front->arg1 << endl; break;
-        case 2:ofile << "\t" + front->cw + "\t" + front->arg1 << "," << front->arg2 << endl; break;
+        case 0:ofile << "\t" + front->cw << endl; asmCode=asmCode+"\t" + front->cw +"\n" ;break;
+        case 1:ofile << "\t" + front->cw + "\t" + front->arg1 << endl; asmCode=asmCode+"\t" + front->cw + "\t" + front->arg1+"\n"; break;
+        case 2:ofile << "\t" + front->cw + "\t" + front->arg1 << "," << front->arg2 << endl;asmCode=asmCode+"\t" + front->cw + "\t" + front->arg1 +"," +front->arg2+"\n"; break;
         }
     }
     ofile << "CSEG\tENDS\n\tEND\tSTART" << endl;
+    asmCode=asmCode+"CSEG\tENDS\n\tEND\tSTART\n";
 
-
+    return asmCode;
  }

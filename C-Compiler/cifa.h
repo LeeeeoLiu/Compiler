@@ -5,24 +5,26 @@
 #include "yufa_analysis.h"
 #include "compile.h"
 #include "optimize.h"
+#include "mainwindow.h"
 
 extern bool syntax_analysis();//词法分析及四元式生成
 extern void optimization();	//目标代码优化
-extern void compilization();//汇编生成
+extern string compilization();//汇编生成
 extern vector<synbl> SYNBL;
 extern vector<typel> TYPEL;
 
 void Psynbl();
 int InsertConstNum(string strToken);
 
-int readFile();
+int readFile(string path);
 void keyinit();
 void initl();
 void scaner();
 void print_token();
-int cifa_main();
+int cifa_main(string path);
 int _tmain();
 void test();
+int duAsm();
 
 #endif // CIFA_H
 

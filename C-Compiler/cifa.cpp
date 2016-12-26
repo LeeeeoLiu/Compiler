@@ -17,7 +17,7 @@ char filec[10000], word[60];
 int tp, row;//tp是filec的指针，指向当前字符   row记录行数
 int key;//key是种别码，sum用于判断整数溢出
 int cnum = 0; //wnum记录文本单词总数,cnum记录文本字符总数
-static int front = 0;
+int front = 0;
 //保留字  “main”~"struct"4~10,"void"~"return"29~31,"cout"~"cin"34~35,“long”~”Imaginary”38~65
 char* KT[100] = { "main", "while", "if", "char", "int", "float", "struct", "void", "else", "return", "cout", "cin",
                   "long", "short", "bool", "double", "typedef", "unsigned", "static", "enum", "for", "do", "continue",
@@ -56,9 +56,9 @@ int InsertConstNum(string strToken){
     return ConstNum.size() - 1;
 }
 
-int readFile(){
+int readFile(string path){
     int i = 0;
-    FILE *fp=fopen("/Users/liuyuanxing/Code/Compiler/C-Compiler/wenben.txt", "r");
+    FILE *fp=fopen((char*)path.data(), "r");
     if (fp == NULL){
         cout << "No such file exists!" << endl;
         fclose(fp);
@@ -413,10 +413,10 @@ void scaner()
     }
 }
 
-int cifa_main()
+int cifa_main(string path)
 {
     cout<<"Start To Read A File."<<endl;
-    if (readFile()){
+    if (readFile(path)){
         tp = 0;
         row = 1;
         Id.clear();          //符号表的序列项表
@@ -432,15 +432,15 @@ int cifa_main()
         print_token();
         cout<<"Words Analysis Finished."<<endl;
     }
-    system("pause");
+//    system("pause");
     return 0;
 }
 
 int _tmain()
 {
-    cifa_main();
+//    cifa_main();
     cout << "Start Syntax Analysis:\n" << endl;
-    system("pause");
+//    system("pause");
     if (syntax_analysis())
     {
         cout << "Syntax Analysis Succeed\n" << endl;
@@ -449,8 +449,8 @@ int _tmain()
         optimization();
         system("pause");
         cout << "Start Assembly:\n" << endl;
-        system("pause");
-        compilization();
+//        system("pause");
+//        compilization();
 
         duAsm();
         for (int aa=0; aa < tp; aa++)
@@ -464,7 +464,7 @@ int _tmain()
     }
     //simplePriority();
     //LL1();
-    system("pause");
+//    system("pause");
     return 0;
 }
 
