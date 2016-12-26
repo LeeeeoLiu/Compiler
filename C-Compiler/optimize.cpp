@@ -359,7 +359,7 @@ void output_inter_pro(int front, int end){
                        break;
             }
             case 1:{
-                       cout << inter_pro[i].pointer;
+                       cout << inter_pro[i].pointer;break;
             }
             case 3:{
                                    switch (inter_pro[i].res.code){

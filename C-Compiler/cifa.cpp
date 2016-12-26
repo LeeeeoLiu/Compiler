@@ -2,12 +2,12 @@
 
 Token tok;
 vector<Token> token;
-string str[]={"main","while","if","char","int","float","struct","+","-","*","/","{","}","=",",","[","]",";","\"",
+string str[]={"","","","","main","while","if","char","int","float","struct","+","-","*","/","{","}","=",",","[","]",";","\"",
               "'","(",")","&","|","!","void","else","return","&&","||","cout","cin","<<",">>","long","short","bool",
               "double","typedef","unsigned","static","enum","for","do","continue","signed","extern","inline","const",
               "default","case","break","switch","sizeof","union","auto","volatile","register","goto","restrict",
               "Complex","Imaginary","==",">",">=","<","<=","=[]","[]="};
-vector<string> keywords(str, str+69);//保留字表
+vector<string> keywords(str, str+73);//保留字表
 vector<string> ConstNum;	//常数表code=3
 vector<string> ConstString;	//字符串常量表code=2
 vector<string> ConstChar;		//字符常量表code=1
@@ -58,8 +58,8 @@ int InsertConstNum(string strToken){
 
 int readFile(){
     int i = 0;
-    FILE *fp;
-    if ((fopen_s(&fp, "D:/code/cifa2.0/wenben.txt", "r")) != 0){
+    FILE *fp=fopen("/Users/liuyuanxing/Code/Compiler/C-Compiler/wenben.txt", "r");
+    if (fp == NULL){
         cout << "No such file exists!" << endl;
         fclose(fp);
         return 0;
@@ -79,7 +79,7 @@ int readFile(){
 int duAsm()
 {
     tp = 0;
-    FILE *fp = fopen("D:/Code/Compiler/C-Compiler/test.asm", "r");
+    FILE *fp = fopen("/Users/liuyuanxing/Code/Compiler/C-Compiler/test.asm", "r");
     if (fp == NULL){ printf("No File\n"); fclose(fp); return 0; }
     else
     {
@@ -176,7 +176,7 @@ void print_token(){
         case -1:cout << "Input not allowed !Please review your code in row " << row << "." << endl; break;//不允许输入
         case 555:cout << "ERROR CONST CHAR ! Please review your const char in row " << row << "." << endl; break;//字符常量出错
         case 666:cout << "ERROR CONST FLOATING NUMBER ! Please review your floating number in row " << row << "." << endl; break;//浮点数出错
-        default:cout << "<" << keywords[(token[i].code)-4] << "> " << endl; break;
+        default:cout << "<" << keywords[(token[i].code)] << "> " << endl; break;
         }//switch
     }   //for循环
 }
@@ -406,6 +406,7 @@ void scaner()
             break;
 
         case'!':key = 28; word[m] = '\0'; break;
+        case'\r':
         case'\n':key = -2; word[m] = '\0'; break;//计算行数
         default: key = -1; word[m] = '\0'; break;
         }
