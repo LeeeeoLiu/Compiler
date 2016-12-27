@@ -6,8 +6,8 @@ string str[]={"","","","","main","while","if","char","int","float","struct","+",
               "'","(",")","&","|","!","void","else","return","&&","||","cout","cin","<<",">>","long","short","bool",
               "double","typedef","unsigned","static","enum","for","do","continue","signed","extern","inline","const",
               "default","case","break","switch","sizeof","union","auto","volatile","register","goto","restrict",
-              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]="};
-vector<string> keywords(str, str+73);//保留字表
+              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]=","."};
+vector<string> keywords(str, str+74);//保留字表
 vector<string> ConstNum;	//常数表code=3
 vector<string> ConstString;	//字符串常量表code=2
 vector<string> ConstChar;		//字符常量表code=1
@@ -58,7 +58,7 @@ int InsertConstNum(string strToken){
 
 int readFile(){
     int i = 0;
-    FILE *fp=fopen("/Users/liuyuanxing/Code/Compiler/C-Compiler/wenben.txt", "r");
+    FILE *fp=fopen("D:/Code/Compiler/C-Compiler/wenben.txt", "r");
     if (fp == NULL){
         cout << "No such file exists!" << endl;
         fclose(fp);
@@ -79,7 +79,7 @@ int readFile(){
 int duAsm()
 {
     tp = 0;
-    FILE *fp = fopen("/Users/liuyuanxing/Code/Compiler/C-Compiler/test.asm", "r");
+    FILE *fp = fopen("D:/Code/Compiler/C-Compiler/test.asm", "r");
     if (fp == NULL){ printf("No File\n"); fclose(fp); return 0; }
     else
     {
@@ -150,6 +150,7 @@ void initl(){
                break;
     }
     case -2:row++; break;//换行
+    case 111:break;
     default:{   //关键字或者符号了
                 tok.code = key;
                 tok.value = 0;
@@ -176,6 +177,7 @@ void print_token(){
         case -1:cout << "Input not allowed !Please review your code in row " << row << "." << endl; break;//不允许输入
         case 555:cout << "ERROR CONST CHAR ! Please review your const char in row " << row << "." << endl; break;//字符常量出错
         case 666:cout << "ERROR CONST FLOATING NUMBER ! Please review your floating number in row " << row << "." << endl; break;//浮点数出错
+        case 777:cout << "ERROR SYMBOL ! Please review your floating number in row " << row << "." << endl; break;//浮点数出错
         default:cout << "<" << keywords[(token[i].code)] << "> " << endl; break;
         }//switch
     }   //for循环
@@ -348,8 +350,49 @@ void scaner()
             break;
         case'+':key = 11; word[m] = '\0'; break;
         case'-':key = 12; word[m] = '\0'; break;
-        case'*':key = 13; word[m] = '\0'; break;
-        case'/':key = 14; word[m] = '\0'; break;
+        case'*':{
+            ww=filec[tp++];
+            if(ww=='/'){                
+                key=111;
+            }
+            else{
+                key = 13;
+                tp--;
+            }
+            word[m] = '\0';
+            break;
+        }
+        case'/':{
+            ww=filec[tp++];
+            if(ww=='/'){
+                key=111;
+                while(ww!='\n'){
+                    ww=filec[tp++];
+                }
+                tp--;
+            }
+            else if(ww=='*'){
+                key=111;
+                ww=filec[tp++];
+                while(1){
+                    while(ww!='*') {
+                        if(ww=='\n') row++;
+                        ww=filec[tp++];//ww='*'
+                    }
+                    ww=filec[tp++];
+                    if(ww=='/') {
+                        tp-=2;
+                        break;
+                    }
+                }
+            }
+            else {
+                key = 14;
+                tp--;
+            }
+            word[m]='\0';
+            break;
+        }
         case'{':key = 15; word[m] = '\0'; break;
         case'}':key = 16; word[m] = '\0'; break;
         case',':key = 18; word[m] = '\0'; break;
@@ -404,8 +447,8 @@ void scaner()
             else { key = 27; tp--; }//'|'
             word[m] = '\0';
             break;
-
-        case'!':key = 28; word[m] = '\0'; break;
+        case'.': key = 73; word[m] = '\0'; break;
+        case'!': key = 28; word[m] = '\0'; break;
         case'\r':
         case'\n':key = -2; word[m] = '\0'; break;//计算行数
         default: key = -1; word[m] = '\0'; break;

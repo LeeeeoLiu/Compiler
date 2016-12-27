@@ -1,36 +1,39 @@
 struct hh
 {
-	int a;
-	char b,c;
+        int a;
+        char b,c;
 };
-
 
 int main()
 {
-	int e,f,g,i,j,k; 
+        int e,f,g,i,j,k;
         float h;
-	char w,v; 
+        char w,v;
         int bb[10];
-	e = 2;
-	f = 1;
-	g = 0;
+        e = 2;
+        f = 1;
+        g = 0;
         bb[4]=e;
-
-
-	if (g+f)
-	{
-	g = 3*5-e;
+        if (g+f)
+        {
+        g = 3*5-e;
         i=3+5;
         j=i;
         k=5-3;
         k=bb[5]-j;
-	}
+        }
+        while(e-2*f)
+        {
+        g=e+f;
+        }
+        w=3;
+        return 0;
 
-	while(e-2*f)
-	{
-	g=e+f;
-	}
-	w=3;
-     
-	return 0;
 }
+
+//ceshi
+nihao
+/*jiayou
+nihao
+*/h
+"This is end of file."
