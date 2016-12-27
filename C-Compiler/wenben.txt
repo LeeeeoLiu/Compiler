@@ -1,7 +1,7 @@
 struct hh
 {
         int a;
-        char b,c;
+        char c;
 };
 
 int main()
@@ -9,11 +9,15 @@ int main()
         int e,f,g,i,j,k;
         float h;
         char w,v;
+        hh test;
         int bb[10];
         e = 2;
         f = 1;
         g = 0;
+        f=bb[2]+3;
         bb[4]=e;
+        test.a=2;
+        e=test.a+3;
         if (g+f)
         {
         g = 3*5-e;
@@ -27,13 +31,9 @@ int main()
         g=e+f;
         }
         w=3;
+
+        // e=test.a+3;
+
         return 0;
 
 }
-
-//ceshi
-nihao
-/*jiayou
-nihao
-*/h
-"This is end of file."

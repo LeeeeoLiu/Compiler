@@ -103,6 +103,7 @@ void E();
 void type_list();
 void symbolList_init(int type);
 void var_declaration();
+void var_declarationStruct();
 void senten_list();
 void param_list();
 void compound_sen();

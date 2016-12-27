@@ -90,7 +90,7 @@ class synbl{
 public:
     Token name;
     int type;		//指向类型表，内容应该不变
-    int cat;		//种类，1是函数，2是变量，3是赋值形参，4是域名 5是数组
+    int cat;		//种类，1是函数，2是变量，3是赋值形参，4是域名 5是数组 6是结构体声明 7是结构体定义
     int addr;		//指向1函数表,0表示不指
 };
 
@@ -100,6 +100,16 @@ public:
     int up;          //数组的上界
     int ctp;        //成分类型指针 - 指针,指向该维数组成分类型(在类型表中的信息)
     int clen;       //成分类型的长度 - 成分类型的数据所占值单元的个数
+};
+
+class rinfl
+{
+public:
+    int num;        //结构体编号
+    Token name;     //结构体成员名
+    int type;       //结构体成员类型  char 1 int 2 float 3
+    int off;        //偏移量
+    int tp;         //指针
 };
 
 #endif // GLOBAL_H

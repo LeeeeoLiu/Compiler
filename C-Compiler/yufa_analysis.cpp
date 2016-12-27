@@ -29,7 +29,18 @@ vector<ainfl> AINFL;
 int arrIndex=0;
 int tempArrIndex=0;
 
+/**
+ 结构体表
+*/
+vector<rinfl> RINFL;
+/**
+ 结构体标号
+*/
+int structIndex=0;
+int tempStructIndex=0;
+int structOFF=0;
 bool isArr=false;
+bool isStruct=false;
 /**
  活动记录当前指向
  */
@@ -67,6 +78,7 @@ int temp_num = 0;
  操作数栈
  */
 vector<Token> sem;
+vector<Token> tokenStash;
 
 
 Token currentToken;
@@ -174,7 +186,7 @@ void cal_QUAT(int op) {
 void arrGetQuat()
 {
     quadruple temp;
-    temp.op = Token(19,-1);
+    temp.op = Token(71,-1);
     temp.arg2=sem.back();
     sem.pop_back();
     temp.arg1=sem.back();
@@ -199,7 +211,57 @@ void arrGetQuat()
 void arrStoreQuat()
 {
     quadruple temp;
-    temp.op = Token(20,-1);
+    temp.op = Token(72,-1);
+    temp.arg1=sem.back();
+    sem.pop_back();
+    temp.arg2=sem.back();
+    sem.pop_back();
+    temp.res=sem.back();
+    sem.pop_back();
+    if (in_flag) {
+        temp.label = 2;
+        in_flag = 0;
+    }
+    else {
+        temp.label = 0;
+    }
+    temp.pointer=NULL;
+    inter_pro.push_back(temp);
+}
+
+/**
+ 取结构体成员变量的四元式
+ */
+void struGetQuat()
+{
+    quadruple temp;
+    temp.op = Token(75,-1);
+    temp.arg2=sem.back();
+    sem.pop_back();
+    temp.arg1=sem.back();
+    sem.pop_back();
+    if (in_flag) {
+        temp.label = 2;
+        in_flag = 0;
+    }
+    else {
+        temp.label = 0;
+    }
+    temp.pointer=NULL;
+    temp.res = Token(-2, temp_num);//赋值给ti
+    sem.push_back(Token(-2, temp_num));
+    inter_pro.push_back(temp);
+    temp_num++;
+}
+
+/**
+ 存结构体成员变量的四元式
+ */
+
+void struStoreQuat()
+{
+    quadruple temp;
+    temp.op = Token(74,-1);
     temp.arg1=sem.back();
     sem.pop_back();
     temp.arg2=sem.back();
@@ -243,6 +305,11 @@ void equa_QUAT(int op) {
         arrStoreQuat();
         isArr=false;
     }
+    if(isStruct){
+        sem.push_back(temp.res);
+        struStoreQuat();
+        isStruct=false;
+    }
 }
 
 void F() {
@@ -279,6 +346,26 @@ void F() {
                     errorHappenedWithMessage("数组使用错误");
             else
                 errorHappenedWithMessage("数组使用错误");
+
+        }else if(currentToken.code == 73)           //.
+        {
+            if(SYNBL[i].cat==7)
+            {
+                next();
+                int tempStructIndex=SYNBL[i].addr;
+                for(int j=0;j<RINFL.size();j++)
+                {
+                    if(RINFL[j].num==tempStructIndex)
+                    {
+                        if(RINFL[j].name.value==currentToken.value){
+                            sem.push_back(preToken);
+                            sem.push_back(currentToken);
+                            struGetQuat();
+                            next();
+                        }
+                    }
+                }
+            }
 
         }else{
             sem.push_back(preToken);    //入操作数栈
@@ -435,11 +522,164 @@ void symbolList_init(int type) {
     }
 }
 
+/**
+ 识别变量是否为结构体标识符
+ */
+int isStructSys()
+{
+    int i;
+    for (i = 0; i < SYNBL.size(); i++)
+    {
+        if (currentToken.value == SYNBL[i].name.value)
+        {
+            break;
+        }
+    }
+    if (i == SYNBL.size())      //未定义标识符
+    {
+        token_pointer--;
+        //errorHappenedWithMessage("未定义的标识符");
+        next();
+        return 0;
+    }else{
+        if(SYNBL[i].cat==6)     //结构体定义
+            return 1;
+        else
+            return 0;
+    }
+}
+
+/**
+ 识别变量是否为结构体变量
+ */
+int isStructVar()
+{
+    int i;
+    for (i = 0; i < SYNBL.size(); i++)
+    {
+        if (currentToken.value == SYNBL[i].name.value)
+        {
+            break;
+        }
+    }
+    if (i == SYNBL.size())      //未定义标识符
+    {
+        token_pointer--;
+        //errorHappenedWithMessage("未定义的标识符");
+        next();
+        return 0;
+    }else{
+        if(SYNBL[i].cat==7)     //结构体定义
+            return 1;
+        else
+            return 0;
+    }
+}
 
 /**
  识别变量声明文法
  */
 void var_declaration() {
+    while (currentToken.code == 7 || currentToken.code == 8 || currentToken.code == 9 || currentToken.code == 21 || currentToken.code == 3 ||(currentToken.code ==0 && isStructSys() )) {	//char|int|float
+        if(currentToken.code == 0){     //是否是已经声明的结构体
+            int i;
+            for (i = 0; i < SYNBL.size(); i++)
+            {
+                if (currentToken.value == SYNBL[i].name.value)
+                {
+                    break;
+                }
+            }
+            if (i == SYNBL.size())      //未定义标识符
+            {
+                token_pointer--;
+                //errorHappenedWithMessage("未定义的标识符");
+                next();
+            }else{
+                Token preToken=currentToken;
+                next();
+                if(SYNBL[i].cat==6)     //结构体定义
+                {
+                    synbl sysTemp;
+                    sysTemp=SYNBL[i];
+                    sysTemp.cat=7;
+                    sysTemp.name=currentToken;
+                    sysTemp.addr=structIndex;
+                    SYNBL.push_back(sysTemp);
+                    int structIndexTemp=SYNBL[i].addr;
+                    for (int j = 0; j < RINFL.size(); j++)
+                    {
+                        if(RINFL[j].num==structIndexTemp)
+                        {
+                            rinfl structTemp=RINFL[j];
+                            structTemp.num=structIndex;
+                            switch (structTemp.type) {
+                            case 1:
+                                structTemp.tp=ConstChar.size();
+                                ConstChar.push_back("0");
+                                break;
+                            case 2:
+                            case 3:
+                            default:
+                                structTemp.tp=ConstNum.size();
+                                ConstNum.push_back("0");
+                                break;
+                            }
+                            RINFL.push_back(structTemp);
+                        }
+                    }
+                    next();
+                    if (currentToken.code == 21) {	//;
+                        next();
+                    } else {
+                        token_pointer-=2;
+                        errorHappenedWithMessage("变量声明后缺少分号(;)");
+                        next();
+                        next();
+                    }
+                }
+                else
+                {
+                    token_pointer--;
+                    next();
+                }
+            }
+        }else{
+            if (currentToken.code == 21 || currentToken.code == 3) // ;号，数字
+            {
+                if (currentToken.code == 21)
+                {
+                    errorHappenedWithMessage("前多(;)");
+                    next();
+                    continue;
+                }
+                else{
+                    errorHappenedWithMessage("前多数字");
+                    next();
+                    continue;
+                }
+            }
+            int type;
+            type = currentToken.code - 7;//类型表中是哪个
+            next();
+            symbolList_init(type);    //识别接下来的标识符
+
+            if (currentToken.code == 21) {	//;
+                next();
+            } else {
+                token_pointer-=2;
+                errorHappenedWithMessage("变量声明后缺少分号(;)");
+                next();
+                next();
+            }
+        }
+    }
+}
+
+/**
+ 结构体声明
+ */
+void var_declarationStruct() {
     while (currentToken.code == 7 || currentToken.code == 8 || currentToken.code == 9 || currentToken.code == 21 || currentToken.code == 3) {	//char|int|float
         if (currentToken.code == 21 || currentToken.code == 3) // ;号，数字
         {
@@ -455,10 +695,26 @@ void var_declaration() {
                 continue;
             }
         }
-        int type;
-        type = currentToken.code - 7;//类型表中是哪个
+        int tempType;
+        if (currentToken.code == 7)
+        {
+            tempType =1;    //char
+        }else if(currentToken.code == 8)
+        {
+            tempType =2;    //int
+        }else if(currentToken.code == 9)
+        {
+            tempType= 3;    //float
+        }
         next();
-        symbolList_init(type);    //识别接下来的标识符
+        rinfl temp;
+        temp.num=structIndex;
+        temp.name=currentToken;
+        temp.type=tempType;
+        temp.off=structOFF+(tempType==1)?1:4;
+        temp.tp=0;               //声明不开辟空间
+        RINFL.push_back(temp);
+        next();
 
         if (currentToken.code == 21) {	//;
             next();
@@ -469,31 +725,16 @@ void var_declaration() {
             next();
         }
     }
+    structOFF=0;
+    structIndex++;
 }
+
 /**
  识别语句表
  */
 void senten_list() {
-
     while (currentToken.code == 0 || currentToken.code == 5 || currentToken.code == 6 || currentToken.code == 21 || currentToken.code == 3||currentToken.code==34) {  //可以识别标识符赋值语句、while及if
-
-        if (currentToken.code == 21 || currentToken.code == 3) // ;号，数字
-        {
-            if (currentToken.code == 21)
-            {
-                errorHappenedWithMessage("前多(;)");
-                next();
-                continue;
-            }
-            else{
-                errorHappenedWithMessage("前多数字");
-                next();
-                continue;
-            }
-        }
-
-        if (currentToken.code == 0) {	//标识符赋值语句
-            //先查一下符号表
+        if(currentToken.code == 0 && isStructVar()){     //是否是已经声明的结构体
             int i;
             for (i = 0; i < SYNBL.size(); i++)
             {
@@ -502,231 +743,312 @@ void senten_list() {
                     break;
                 }
             }
-            if (i == SYNBL.size())
+            if (i == SYNBL.size())      //未定义标识符
             {
                 token_pointer--;
                 //errorHappenedWithMessage("未定义的标识符");
                 next();
-            }
-            Token preToken=currentToken;
-            next();
-            if(currentToken.code == 19){       // [
-                isArr=true;
-                next();
-                tempArrIndex=stoi(ConstNum[currentToken.value]);
-                if (SYNBL[i].cat==5)
-                    if(AINFL[SYNBL[i].addr].up>tempArrIndex)
-                    {
-                        sem.push_back(preToken);
-                        sem.push_back(currentToken);
-                        sem.push_back(preToken);
-                        sem.push_back(currentToken);
-                        arrGetQuat();
-                        next();
-                        next();
-                    }else
-                        errorHappenedWithMessage("数组使用错误");
-                else
-                    errorHappenedWithMessage("数组使用错误");
-
             }else{
-                sem.push_back(preToken);    //入操作数栈
-            }
-            if (currentToken.code == 17)    //  =
-                next();
-            else {
-                token_pointer -= 2;//kk
-                //errorHappenedWithMessage("标识符赋值语句缺少等号");
-                next();
-                next();
-            }
-            E();    //然后，识别算术表达式
-            if (currentToken.code == 21) {    //;    赋值语句最后必须有分号
-                equa_QUAT(17);
-                next();
-            }
-            else {
-                token_pointer -= 2;//kk
-                //errorHappenedWithMessage("标识符赋值语句缺少分号");
-                next();
-                next();
-            }
-        } else if (currentToken.code == 5) {		//while
-            int mark1,mark2;
-            mark1 = inter_pro.size();    //记录while开始位置
-            next();
-            if (currentToken.code == 24)	//(
-                next();
-            else {
-                token_pointer -= 2;//kk
-                errorHappenedWithMessage("while语句后面没有括号(");
-                next();
-                next();
-            }
-
-            //识别一下算术表达式
-            E();
-            if (currentToken.code == 25) {	//)
-                quadruple temp;
-                temp.op = Token(5, -1);//while
-                temp.arg2 = Token(-1, -1);
-                temp.res = Token(-1, -1);
-                temp.arg1 = sem.back();//res(E)
-                sem.pop_back();
-
-                temp.label = 1;//跳出
-                temp.pointer = NULL;//未知
-                inter_pro.push_back(temp);//四元式生成插入
-                mark2 = inter_pro.size() - 1;//记录跳出的四元式位置
-                next();
-            }
-            else {
-                token_pointer -= 2;//kk
-                errorHappenedWithMessage("while语句后面没有右括号)");
-                next();
-                next();
-            }
-
-            if (currentToken.code == 15)	// {
-                next();
-            else {
-                token_pointer -= 2;//kk
-                errorHappenedWithMessage("while语句后面没有大括号{");
-                next();
-                next();
-            }
-
-            senten_list();
-            if (currentToken.code == 16) {	//}
-                quadruple temp;
-                temp.op = Token(5, -1);//while
-                temp.arg2 = Token(-1, -1);
-                temp.res = Token(-1, -1);
-                temp.arg1 = Token(-1, -1);
-
-                temp.label = 1;//跳出
-                temp.pointer = mark1;//跳到while开始
-                inter_pro[mark1].label = 2;		//被跳入位置重新标记
-                inter_pro.push_back(temp);//四元式生成插入
-                inter_pro[mark2].pointer = inter_pro.size();//地址回填，指向while结尾的下一个四元式
-                in_flag = true;
-
-                next();
-            }
-            else {
-                errorHappenedWithMessage("while语句没有右大括号}结束");
-            }
-        } else if (currentToken.code == 6) {		//if
-            int mark;
-            next();
-            if (currentToken.code == 24)		//(
-                next();
-            else {
-                token_pointer -= 2;//kk
-                errorHappenedWithMessage("if后面没有括号(");
-                next();
-                next();
-            }
-
-            //识别一下算术表达式
-            E();
-            if (currentToken.code == 25) {		//)
-                quadruple temp;
-                temp.op = Token(6, -1);//if
-                temp.arg2 = Token(-1, -1);
-                temp.res = Token(-1, -1);
-                temp.arg1 = sem.back();//res(E)
-                sem.pop_back();
-
-                temp.label = 1;//跳出
-                temp.pointer = NULL;//未知
-                inter_pro.push_back(temp);//四元式生成插入
-                mark = inter_pro.size() - 1;//记录跳出的四元式位置
-                next();
-            }
-            else {
-                token_pointer -= 2;//kk
-                errorHappenedWithMessage("if后面没有右括号)");
-                next();
-                next();
-            }
-            if (currentToken.code == 15)	//{
-                next();
-            else {
-                token_pointer -= 2;//kk
-                errorHappenedWithMessage("if后面没有大括号{");
-                next();
-                next();
-            }
-            //识别一下if后面的block
-            senten_list();
-            if (currentToken.code == 16) {	//}
-                next();
-            }
-            else {
-                errorHappenedWithMessage("if后面没有右大括号}");
-            }
-
-            //下面识别else，有可能没有
-            if (currentToken.code == 30) {    //else
-                next();
-                if (currentToken.code == 15) {    //{
+                Token preToken=currentToken;
+                if(SYNBL[i].cat==7)     //结构体定义
+                {
+                    next();
+                    if (currentToken.code == 73){   //.
+                        isStruct=true;
+                        next();
+                        int tempStructIndex = SYNBL[i].addr;
+                        for(int j=0;j<RINFL.size();j++)
+                        {
+                            if(RINFL[j].num==tempStructIndex)
+                            {
+                                if(RINFL[j].name.value==currentToken.value){
+                                    sem.push_back(preToken);
+                                    sem.push_back(currentToken);
+                                    sem.push_back(preToken);
+                                    sem.push_back(currentToken);
+                                    struGetQuat();
+                                    next();
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    sem.push_back(preToken);
+                }
+                if (currentToken.code == 17)    //  =
+                    next();
+                else {
+                    token_pointer -= 2;//kk
+                    //errorHappenedWithMessage("标识符赋值语句缺少等号");
+                    next();
+                    next();
+                }
+                E();    //然后，识别算术表达式
+                if (currentToken.code == 21) {    //;    赋值语句最后必须有分号
+                    equa_QUAT(17);
                     next();
                 }
                 else {
                     token_pointer -= 2;//kk
-                    errorHappenedWithMessage("else后面没有大括号{");
+                    //errorHappenedWithMessage("标识符赋值语句缺少分号");
                     next();
                     next();
                 }
-                //识别else接的block
+            }
+        }else
+        {
+            if (currentToken.code == 21 || currentToken.code == 3) // ;号，数字
+            {
+                if (currentToken.code == 21)
+                {
+                    errorHappenedWithMessage("前多(;)");
+                    next();
+                    continue;
+                }
+                else{
+                    errorHappenedWithMessage("前多数字");
+                    next();
+                    continue;
+                }
+            }
+
+            if (currentToken.code == 0) {	//标识符赋值语句
+                //先查一下符号表
+                int i;
+                for (i = 0; i < SYNBL.size(); i++)
+                {
+                    if (currentToken.value == SYNBL[i].name.value)
+                    {
+                        break;
+                    }
+                }
+                if (i == SYNBL.size())
+                {
+                    token_pointer--;
+                    //errorHappenedWithMessage("未定义的标识符");
+                    next();
+                }
+                Token preToken=currentToken;
+                next();
+                if(currentToken.code == 19){       // [
+                    isArr=true;
+                    next();
+                    tempArrIndex=stoi(ConstNum[currentToken.value]);
+                    if (SYNBL[i].cat==5)
+                        if(AINFL[SYNBL[i].addr].up>tempArrIndex)
+                        {
+                            sem.push_back(preToken);
+                            sem.push_back(currentToken);
+                            sem.push_back(preToken);
+                            sem.push_back(currentToken);
+                            arrGetQuat();
+                            next();
+                            next();
+                        }else
+                            errorHappenedWithMessage("数组使用错误");
+                    else
+                        errorHappenedWithMessage("数组使用错误");
+
+                }else{
+                    sem.push_back(preToken);    //入操作数栈
+                }
+                if (currentToken.code == 17)    //  =
+                    next();
+                else {
+                    token_pointer -= 2;//kk
+                    //errorHappenedWithMessage("标识符赋值语句缺少等号");
+                    next();
+                    next();
+                }
+                E();    //然后，识别算术表达式
+                if (currentToken.code == 21) {    //;    赋值语句最后必须有分号
+                    equa_QUAT(17);
+                    next();
+                }
+                else {
+                    token_pointer -= 2;//kk
+                    //errorHappenedWithMessage("标识符赋值语句缺少分号");
+                    next();
+                    next();
+                }
+            } else if (currentToken.code == 5) {		//while
+                int mark1,mark2;
+                mark1 = inter_pro.size();    //记录while开始位置
+                next();
+                if (currentToken.code == 24)	//(
+                    next();
+                else {
+                    token_pointer -= 2;//kk
+                    errorHappenedWithMessage("while语句后面没有括号(");
+                    next();
+                    next();
+                }
+
+                //识别一下算术表达式
+                E();
+                if (currentToken.code == 25) {	//)
+                    quadruple temp;
+                    temp.op = Token(5, -1);//while
+                    temp.arg2 = Token(-1, -1);
+                    temp.res = Token(-1, -1);
+                    temp.arg1 = sem.back();//res(E)
+                    sem.pop_back();
+
+                    temp.label = 1;//跳出
+                    temp.pointer = NULL;//未知
+                    inter_pro.push_back(temp);//四元式生成插入
+                    mark2 = inter_pro.size() - 1;//记录跳出的四元式位置
+                    next();
+                }
+                else {
+                    token_pointer -= 2;//kk
+                    errorHappenedWithMessage("while语句后面没有右括号)");
+                    next();
+                    next();
+                }
+
+                if (currentToken.code == 15)	// {
+                    next();
+                else {
+                    token_pointer -= 2;//kk
+                    errorHappenedWithMessage("while语句后面没有大括号{");
+                    next();
+                    next();
+                }
+
                 senten_list();
-                if (currentToken.code == 16) {    //}
+                if (currentToken.code == 16) {	//}
+                    quadruple temp;
+                    temp.op = Token(5, -1);//while
+                    temp.arg2 = Token(-1, -1);
+                    temp.res = Token(-1, -1);
+                    temp.arg1 = Token(-1, -1);
+
+                    temp.label = 1;//跳出
+                    temp.pointer = mark1;//跳到while开始
+                    inter_pro[mark1].label = 2;		//被跳入位置重新标记
+                    inter_pro.push_back(temp);//四元式生成插入
+                    inter_pro[mark2].pointer = inter_pro.size();//地址回填，指向while结尾的下一个四元式
+                    in_flag = true;
+
+                    next();
+                }
+                else {
+                    errorHappenedWithMessage("while语句没有右大括号}结束");
+                }
+            } else if (currentToken.code == 6) {		//if
+                int mark;
+                next();
+                if (currentToken.code == 24)		//(
+                    next();
+                else {
+                    token_pointer -= 2;//kk
+                    errorHappenedWithMessage("if后面没有括号(");
+                    next();
+                    next();
+                }
+
+                //识别一下算术表达式
+                E();
+                if (currentToken.code == 25) {		//)
+                    quadruple temp;
+                    temp.op = Token(6, -1);//if
+                    temp.arg2 = Token(-1, -1);
+                    temp.res = Token(-1, -1);
+                    temp.arg1 = sem.back();//res(E)
+                    sem.pop_back();
+
+                    temp.label = 1;//跳出
+                    temp.pointer = NULL;//未知
+                    inter_pro.push_back(temp);//四元式生成插入
+                    mark = inter_pro.size() - 1;//记录跳出的四元式位置
+                    next();
+                }
+                else {
+                    token_pointer -= 2;//kk
+                    errorHappenedWithMessage("if后面没有右括号)");
+                    next();
+                    next();
+                }
+                if (currentToken.code == 15)	//{
+                    next();
+                else {
+                    token_pointer -= 2;//kk
+                    errorHappenedWithMessage("if后面没有大括号{");
+                    next();
+                    next();
+                }
+                //识别一下if后面的block
+                senten_list();
+                if (currentToken.code == 16) {	//}
+                    next();
+                }
+                else {
+                    errorHappenedWithMessage("if后面没有右大括号}");
+                }
+
+                //下面识别else，有可能没有
+                if (currentToken.code == 30) {    //else
+                    next();
+                    if (currentToken.code == 15) {    //{
+                        next();
+                    }
+                    else {
+                        token_pointer -= 2;//kk
+                        errorHappenedWithMessage("else后面没有大括号{");
+                        next();
+                        next();
+                    }
+                    //识别else接的block
+                    senten_list();
+                    if (currentToken.code == 16) {    //}
+                        inter_pro[mark].pointer = inter_pro.size();//指向下一条
+                        in_flag = true;
+                        next();
+                    } else {
+                        errorHappenedWithMessage("else后面没有右大括号}");
+                    }
+                } else {    //没有else
                     inter_pro[mark].pointer = inter_pro.size();//指向下一条
                     in_flag = true;
+                    continue;
+                }
+            }else if(currentToken.code == 34){ //识别cout
+                next();
+                if(currentToken.code==36)
+                {
                     next();
-                } else {
-                    errorHappenedWithMessage("else后面没有右大括号}");
-                }
-            } else {    //没有else
-                inter_pro[mark].pointer = inter_pro.size();//指向下一条
-                in_flag = true;
-                continue;
-            }
-        }else if(currentToken.code == 34){ //识别cout
-            next();
-            if(currentToken.code==36)
-            {
-                next();
-                 E();
-                if(currentToken.code==21)//语句逗号
-                    {
-                       quadruple temp;
-                       temp.op = Token(34, -1);//cout
-                       temp.arg2 = Token(-1, -1);
-                       temp.res = Token(-1, -1);
-                       temp.arg1 = sem.back();//res(E)
-                       sem.pop_back();
+                     E();
+                    if(currentToken.code==21)//语句逗号
+                        {
+                           quadruple temp;
+                           temp.op = Token(34, -1);//cout
+                           temp.arg2 = Token(-1, -1);
+                           temp.res = Token(-1, -1);
+                           temp.arg1 = sem.back();//res(E)
+                           sem.pop_back();
 
-                       temp.label = 3;//特殊语句
-                       temp.pointer = NULL;//未知
-                       inter_pro.push_back(temp);//四元式生成插入
-                       next();
-                    }
-                else
-                    {
-                       token_pointer -= 2;//kk
-                       errorHappenedWithMessage("cout后面没有逗号\n");
-                       next();
-                       next();
+                           temp.label = 3;//特殊语句
+                           temp.pointer = NULL;//未知
+                           inter_pro.push_back(temp);//四元式生成插入
+                           next();
+                        }
+                    else
+                        {
+                           token_pointer -= 2;//kk
+                           errorHappenedWithMessage("cout后面没有逗号\n");
+                           next();
+                           next();
+                        }
+                }
+                else{
+                    token_pointer -= 2;//kk
+                    errorHappenedWithMessage("cout后面没有<<\n");
+                    next();
+                    next();
                     }
             }
-            else{
-                token_pointer -= 2;//kk
-                errorHappenedWithMessage("cout后面没有<<\n");
-                next();
-                next();
-                }
+
         }
     }
 }
@@ -763,7 +1085,6 @@ void param_list() {		//参数表
 }
 
 void compound_sen() {	//复合语句
-
         var_declaration();	//变量说明
         senten_list();		//语句表
 }
@@ -775,8 +1096,10 @@ void structure() {
     while (currentToken.code == 10) {	//struct
         next();
         if (currentToken.code == 0)	//标识符
+        {
+            tokenStash.push_back(currentToken);
             next();
-        else {
+        }else {
             token_pointer -= 2;//kk
             //errorHappenedWithMessage("结构体struct标记后没有接标识符");
             next();
@@ -784,8 +1107,16 @@ void structure() {
         }
 
         if (currentToken.code == 15)	//{
+        {
+            synbl temp;
+            temp.name = tokenStash.back();
+            tokenStash.pop_back();
+            temp.type = 0;
+            temp.cat = 6;
+            temp.addr = structIndex;
+            SYNBL.push_back(temp);    //压入符号表
             next();
-        else {
+        }else {
             token_pointer -= 2;//kk
             errorHappenedWithMessage("结构体没有大括号");
             next();
@@ -793,7 +1124,7 @@ void structure() {
         }
 
         //识别变量声明，注意结构体里面只能声明，不可以赋值什么的！
-        var_declaration();
+        var_declarationStruct();
 
         if (currentToken.code == 16)	//}
             next();
