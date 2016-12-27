@@ -77,14 +77,20 @@ void MainWindow::File_actionSave_Slot()
 
 void MainWindow::initAll()
 {
+    outputRecord("Init the program......");
+    ui->tableViewSYNBL->clearSpans();
     Id.clear();          //符号表的序列项表
     ConstNum.clear();    //常数表的表
     ConstString.clear(); //字符串常量表
     ConstChar.clear();   //字符常量表
+    SYNBL.clear();
+    keywords.clear();
+    inter_pro.clear();
+    token.clear();
     ww=' ';
     tp=cnum=front=0; //cnum记录文本字符总数;
     row=1;
-    outputRecord("初始化!归零~归零~");
+
 }
 
 void MainWindow::outputRecord(QString tempMess)
@@ -96,31 +102,28 @@ void MainWindow::outputRecord(QString tempMess)
 void MainWindow::on_btnCompile_clicked()
 {
     initAll();
+    ui->btnCompile->setEnabled(false);
     File_actionSave_Slot();
-    outputRecord("开始分析文件......");
+    outputRecord("Start Cifa Analysising......");
     cifa_main(path.toStdString());
-    outputRecord("词法分析完毕!已将 Token 序列填入左侧表格中!");
+    outputRecord("Cifa Analysis Succeed!We've put the token list into the left table.");
     displayToken();
-    outputRecord("开始语法分析......");
+    outputRecord("Start Yufa Analysising......");
     if (syntax_analysis())
     {
-        outputRecord("语法分析完毕!");
-        outputRecord("已将符号表信息填入左侧表格中!");
+        outputRecord("Yufa Analysis Succeed!We've put the SYNBL information into the left table.");
         displaySYNBL();
-        outputRecord("开始生成四元式......");
+        outputRecord("Ready to make Quats......");
         displayQuat(0, inter_pro.size() - 1);
-        outputRecord("开始生成汇编代码......");
+        outputRecord("Try to get asm code......");
         asmCode=QString::fromStdString(compilization());
         outputRecord(asmCode);
-        duAsm();
-        for (int aa=0; aa < tp; aa++)
-        {
-            printf("%c", filec[aa]);
-        }
     }
     else
     {
-        outputRecord("语法分析出错!");
+        outputRecord("Yufa Analysis Failed!");
+        outputRecord("Yufa Analysis Failed!");
+        outputRecord("Yufa Analysis Failed!");
     }
 
 }
@@ -128,11 +131,12 @@ void MainWindow::on_btnCompile_clicked()
 
 void MainWindow::displayQuat(int front, int end)
 {
+
     int vers=0;
     QStandardItemModel  *model = new QStandardItemModel();
     model->setColumnCount(2);
-    model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("优化前的四元式"));
-    model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("优化后的四元式"));
+    model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("Quats"));
+    model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Quats after optimization"));
     ui->tableViewQuat->setModel(model);
     while (1) {
         for (int i = front; i < end; i++){
@@ -181,23 +185,23 @@ void MainWindow::displayQuat(int front, int end)
         }
         if(vers)
             break;
-        outputRecord("四元式生成完毕!");
+        outputRecord("Quats all ready!");
         optimization();
         front=0;
         end=inter_pro.size() - 1;
-        outputRecord("开始优化四元式......");
+        outputRecord("Try to optimize the Quats......");
         vers=1;
     }
     ui->tableViewQuat->horizontalHeader()->setStretchLastSection(true);
-    outputRecord("四元式优化完毕!");
+    outputRecord("Quats optimization successed!");
 }
 
 void MainWindow::displayToken()
 {
     QStandardItemModel  *model = new QStandardItemModel();
     model->setColumnCount(2);
-    model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("Token 序列"));
-    model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("划词"));
+    model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("Token"));
+    model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Word"));
     ui->tableViewToken->setModel(model);
     for (int i = 0; i < token.size(); i++)
     {

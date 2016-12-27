@@ -62,7 +62,7 @@ void View::DrawTest()
     glRotatef(zRot, 0.0, 0.0, 1.0);
 
     glColor3f(0.3, 0.3, 0.3);
-    glutSolidTeapot(1.0);
+//    glutSolidTeapot(1.0);
 
 
 
@@ -184,14 +184,14 @@ void View::DrawCoords()
     glTranslatef(length, 0.0, 0.0);
     glRotatef(90.0, 0.0, 1.0, 0.0);
     glColor3f(1.0, 0.0, 0.0);
-    glutWireCone(0.027,0.09,10,10);
+//    glutWireCone(0.027,0.09,10,10);
     glPopMatrix();
 
     glPushMatrix();
     glTranslatef(0.0, length, 0.0);
     glRotatef(-90.0, 1.0, 0.0, 0.0);
     glColor3f(0.0, 1.0, 0.0);
-    glutWireCone(0.027,0.09,10,10);
+//    glutWireCone(0.027,0.09,10,10);
     glPopMatrix();
 }
 

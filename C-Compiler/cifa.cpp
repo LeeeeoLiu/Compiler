@@ -432,7 +432,7 @@ int cifa_main(string path)
         print_token();
         cout<<"Words Analysis Finished."<<endl;
     }
-//    system("pause");
+//    // system("pause");
     return 0;
 }
 
@@ -440,23 +440,23 @@ int _tmain()
 {
 //    cifa_main();
     cout << "Start Syntax Analysis:\n" << endl;
-//    system("pause");
+//    // system("pause");
     if (syntax_analysis())
     {
         cout << "Syntax Analysis Succeed\n" << endl;
-        Psynbl();
-        system("pause");
+//        Psynbl();
+        // system("pause");
         optimization();
-        system("pause");
+        // system("pause");
         cout << "Start Assembly:\n" << endl;
-//        system("pause");
+//        // system("pause");
 //        compilization();
 
-        duAsm();
-        for (int aa=0; aa < tp; aa++)
-        {
-            printf("%c", filec[aa]);
-        }
+//        duAsm();
+//        for (int aa=0; aa < tp; aa++)
+//        {
+//            printf("%c", filec[aa]);
+//        }
     }
     else
     {
@@ -464,7 +464,7 @@ int _tmain()
     }
     //simplePriority();
     //LL1();
-//    system("pause");
+//    // system("pause");
     return 0;
 }
 
