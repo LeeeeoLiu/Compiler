@@ -6,8 +6,8 @@ string str[]={"","","","","main","while","if","char","int","float","struct","+",
               "'","(",")","&","|","!","void","else","return","&&","||","cout","cin","<<",">>","long","short","bool",
               "double","typedef","unsigned","static","enum","for","do","continue","signed","extern","inline","const",
               "default","case","break","switch","sizeof","union","auto","volatile","register","goto","restrict",
-              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]=","."};
-vector<string> keywords(str, str+74);//保留字表
+              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]=",".",".=","=."};
+vector<string> keywords(str, str+76);//保留字表
 vector<string> ConstNum;	//常数表code=3
 vector<string> ConstString;	//字符串常量表code=2
 vector<string> ConstChar;		//字符常量表code=1
@@ -326,7 +326,8 @@ void scaner()
             }
             word[m] = '\0';
             break;
-        case'=': ww = filec[tp++];
+        case'=': {
+            ww = filec[tp++];
             if (ww == '='){
                 key = 66;
                 word[m++] = ww;
@@ -343,11 +344,16 @@ void scaner()
                     tp--;
                 }
             }
+            else if(ww=='.'){
+                key=75;
+                word[m++]=ww;
+            }
             else {
                 key = 17; tp--;
             }
             word[m] = '\0';
             break;
+        }
         case'+':key = 11; word[m] = '\0'; break;
         case'-':key = 12; word[m] = '\0'; break;
         case'*':{
@@ -447,7 +453,18 @@ void scaner()
             else { key = 27; tp--; }//'|'
             word[m] = '\0';
             break;
-        case'.': key = 73; word[m] = '\0'; break;
+        case'.': {
+            ww = filec[tp++];
+            if (ww == '='){
+                key = 74;
+                word[m++] = ww;
+            }
+            else {
+                key = 73; tp--;
+            }
+            word[m] = '\0';
+            break;
+        }
         case'!': key = 28; word[m] = '\0'; break;
         case'\r':
         case'\n':key = -2; word[m] = '\0'; break;//计算行数
