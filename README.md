@@ -3,39 +3,52 @@
 | Task |Performer|
 |--------|--------|
 | 词法分析生成 Token 序列、符号表子表|     Sakura  |
-| 语法分析,符号表总表|Leeeeo|
+| 语法分析,符号表总表,测试并合并代码|Leeeeo|
 | 中间代码生成及优化|Loke|
 | 目标代码生成|Koala|
 
+## 版本记录
 
 ### 下一阶段任务
+
 - [ ] 修复已经出现的bugs [0] (详细见 [issue](https://github.com/LeeeeoLiu/Compiler/issues))
-	- [ ] #12 变量重定义		[Leeeeo]
-	- [ ] #14 目标代码 JZ 没有标号 
+	- [x] #12 变量重定义		[Leeeeo]
+	- [ ] #14 目标代码 JZ 没有标号 [Loke]
 	- [ ] #11 初始化所有变量		[Leeeeo] [delay]
 	- [ ] #6  数组中间代码优化问题	[Loke]
 	- [ ] #5  中间定义新变量问题		[Loke]
-- [ ] 数组支持char float struct [1] [Sakura]
-- [ ] 语义分析报错信息,明确到行并显示到屏幕上  [1]
-- [ ] 编译器编辑文本后自动预编译  [2]
-- [ ] 代码高亮  [3]
+- [ ] 数组支持char float struct [Sakura]
+- [ ] 语义分析报错信息,明确到行并显示到屏幕上 [Leeeeo]
+- [ ] 编译器编辑文本后自动预编译
+- [ ] 代码高亮
 
-### Todo List
+### Version 2.0 Todo List
 - [x] cout 四元式     [Loke]
-- [ ] cout 目标代码    [Koala]
+- [x] cout 目标代码    [Koala]
 - [x] 添加数组四元式      [Leeeeo]
 - [ ] 数组目标代码生成 		[Koala]
 - [x] 添加结构体四元式  [Leeeeo]
 - [ ] 结构体目标代码生成  	[Loke]
 - [ ] 添加函数  [Leeeeeo]
+	- [x] void 函数 call ret四元式生成 	[Leeeeo]
+	- [ ] 带返回值函数call ret四元式生成 	[Leeeeo]
 - [x] 图形界面实现  [Leeeeo]
 - [x] 行注释,块注释 [Sakura]
 - [x] > < 四元式 [Sakura]
-- [ ] > < 目标代码生成 	[Koala]
+- [x] > < 目标代码生成 	[Koala]
+- [x] DAG中间代码优化	[Loke]
 - [x] 词法扫描器升级2.0 [Sakura]
+- [x] 补充文法		[Leeeeo]
 
-### version 0.0 (Done)
-- [x] 黑框框走一遍整体流程
+### Version 1.0 (黑框框,使用简单文法走一遍整体流程)
+- [x] 添加 赋值语句		[Sakura]
+- [x] 添加 if 语句			[Leeeeo]
+- [x] 添加 while 语句		[Loke]
+- [x] 简单文法词法分析		[Sakura]
+- [x] 简单文法语法分析		[Leeeeo]
+- [x] 简单文法中间代码生成	[Loke]
+- [x] 简单文法目标代码生成	[Koala]
+- [x] 文法定义				[Leeeeo]
 
 
 ## Index
@@ -134,6 +147,16 @@
 >  cout语句->cout
 
 >  cout  -><< 变量;|算术表达式;
+
+## 函数调用四元式 [Leeeeo]
+调用函数 test();
+```
+(call,_,_,0)
+```
+返回 return;
+```
+(ret,_,_,7)
+```
 
 ## 结构体四元式 [Leeeeo]
 ```

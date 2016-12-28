@@ -83,7 +83,9 @@ vector<Token> tokenStash;
 
 Token currentToken;
 int token_pointer;
+vector<Token> funcToken;
 
+bool funcstart=false;
 
 /**
  语法分析是否成功。成功为true，失败为false。
@@ -134,23 +136,75 @@ int isSynblExist(){
         return 1;
 }
 
-int getSynblIndex(){
+int getSynblIndex(Token tempName){
     //先查一下符号表
     int i;
     for (i = 0; i < SYNBL.size(); i++)
     {
-        if (currentToken.value == SYNBL[i].name.value)
+        if (tempName.value == SYNBL[i].name.value && tempName.code == SYNBL[i].name.code)
         {
             break;
         }
     }
     if (i == SYNBL.size())
     {
-        token_pointer--;
-        //errorHappenedWithMessage("未定义的标识符");
-        next();
+        return -1;
     }
     return i;
+}
+
+/**
+ 生成函数返回的四元式
+ */
+
+void retQuat(){
+    quadruple temp;
+    temp.op = Token(77,-1);
+    temp.arg2 = Token(-1,-1);
+    temp.arg1 = Token(-1,-1);
+    if (in_flag) {
+        temp.label = 2;
+        in_flag = 0;
+    }
+    else {
+        temp.label = 0;
+    }
+    temp.label=1;
+    temp.pointer = -1;
+    temp.res= Token(-1,-1);
+    inter_pro.push_back(temp);
+}
+
+/**
+ 生成函数调用的四元式
+ */
+
+void callQuat(){
+    quadruple temp;
+    temp.op = Token(76,-1);
+    temp.arg2 = Token(-1,-1);
+    temp.arg1 = Token(-1,-1);
+    if (in_flag) {
+        temp.label = 2;
+        in_flag = 0;
+    }
+    else {
+        temp.label = 0;
+    }
+    temp.label=1;
+    temp.pointer = SYNBL[getSynblIndex(funcToken.back())].addr;
+    temp.res= Token(-1,-1);
+    for(int i=temp.pointer;i<inter_pro.size();i++)
+    {
+        if(inter_pro[i].op==Token(77,-1))
+        {
+            inter_pro[i].pointer=inter_pro.size()+1;
+            break;
+        }
+    }
+    inter_pro.push_back(temp);
+
+    funcToken.pop_back();
 }
 
 /**
@@ -560,6 +614,34 @@ int isStructSys()
 }
 
 /**
+ 识别变量是否为函数标识符变量
+ */
+int isFuncVar()
+{
+    int i;
+    for (i = 0; i < SYNBL.size(); i++)
+    {
+        if (currentToken.value == SYNBL[i].name.value)
+        {
+            break;
+        }
+    }
+    if (i == SYNBL.size())      //未定义标识符
+    {
+        token_pointer--;
+        //errorHappenedWithMessage("未定义的标识符");
+        next();
+        return 0;
+    }else{
+        if(SYNBL[i].cat==1)     //结构体定义
+            return 1;
+        else
+            return 0;
+    }
+}
+
+
+/**
  识别变量是否为结构体变量
  */
 int isStructVar()
@@ -809,8 +891,12 @@ void senten_list() {
                 }
                 E();    //然后，识别算术表达式
                 if (currentToken.code == 21) {    //;    赋值语句最后必须有分号
+                    if(!funcstart)
+                        SYNBL[getSynblIndex(funcToken.back())].addr =inter_pro.size()-1;
                     equa_QUAT(17);
                     next();
+                    if(currentToken.code==16 &&funcToken.size()>0)   //}
+                        retQuat();
                 }
                 else {
                     token_pointer -= 2;//kk
@@ -819,7 +905,49 @@ void senten_list() {
                     next();
                 }
             }
-        }else
+        }
+        else if(currentToken.code == 0 && isFuncVar())  //是否是已经声明的函数标识符
+        {
+            int i;
+            for (i = 0; i < SYNBL.size(); i++)
+            {
+                if (currentToken.value == SYNBL[i].name.value)
+                {
+                    break;
+                }
+            }
+            if (i == SYNBL.size())      //未定义标识符
+            {
+                token_pointer--;
+                //errorHappenedWithMessage("未定义的标识符");
+                next();
+            }else{
+                Token preToken=currentToken;
+                if(SYNBL[i].cat==1)     //结构体定义
+                {
+                    next();
+                    if (currentToken.code == 24){   // (
+                        next();
+                        if(currentToken.code == 25){   //)
+                            callQuat();
+                            next();
+                        }
+                    }
+                }
+                if (currentToken.code == 21) {    //;    赋值语句最后必须有分号
+                    next();
+                    if(currentToken.code==16 &&funcToken.size()>0)   //}
+                        retQuat();
+                }
+                else {
+                    token_pointer -= 2;//kk
+                    //errorHappenedWithMessage("标识符赋值语句缺少分号");
+                    next();
+                    next();
+                }
+            }
+        }
+        else
         {
             if (currentToken.code == 21 || currentToken.code == 3) // ;号，数字
             {
@@ -888,6 +1016,8 @@ void senten_list() {
                 if (currentToken.code == 21) {    //;    赋值语句最后必须有分号
                     equa_QUAT(17);
                     next();
+                    if(currentToken.code==16 &&funcToken.size()>0)   //}
+                        retQuat();
                 }
                 else {
                     token_pointer -= 2;//kk
@@ -1056,6 +1186,8 @@ void senten_list() {
                            temp.pointer = NULL;//未知
                            inter_pro.push_back(temp);//四元式生成插入
                            next();
+                           if(currentToken.code==16 &&funcToken.size()>0)   //}
+                               retQuat();
                         }
                     else
                         {
@@ -1185,6 +1317,7 @@ void programStartSymbol() {
                     temp.cat = 1;
                     temp.addr = 0;
                     SYNBL.push_back(temp);    //压入符号表
+                    funcToken.push_back(currentToken);
                 }
                 next();
             }
