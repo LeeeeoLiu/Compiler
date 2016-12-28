@@ -6,8 +6,8 @@ string str[]={"","","","","main","while","if","char","int","float","struct","+",
               "'","(",")","&","|","!","void","else","return","&&","||","cout","cin","<<",">>","long","short","bool",
               "double","typedef","unsigned","static","enum","for","do","continue","signed","extern","inline","const",
               "default","case","break","switch","sizeof","union","auto","volatile","register","goto","restrict",
-              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]=",".",".=","=."};
-vector<string> keywords(str, str+76);//保留字表
+              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]=",".",".=","=.","call","ret"};
+vector<string> keywords(str, str+78);//保留字表
 vector<string> ConstNum;	//常数表code=3
 vector<string> ConstString;	//字符串常量表code=2
 vector<string> ConstChar;		//字符常量表code=1
@@ -18,11 +18,11 @@ int tp, row;//tp是filec的指针，指向当前字符   row记录行数
 int key;//key是种别码，sum用于判断整数溢出
 int cnum = 0; //wnum记录文本单词总数,cnum记录文本字符总数
 static int front = 0;
-//保留字  “main”~"struct"4~10,"void"~"return"29~31,"cout"~"cin"34~35,“long”~”Imaginary”38~65
+//保留字  “main”~"struct"4~10,"void"~"return"29~31,"cout"~"cin"34~35,“long”~”Imaginary”38~65,"call","ret"76 77
 char* KT[100] = { "main", "while", "if", "char", "int", "float", "struct", "void", "else", "return", "cout", "cin",
                   "long", "short", "bool", "double", "typedef", "unsigned", "static", "enum", "for", "do", "continue",
                   "signed","extern", "inline", "const", "default", "case", "break", "switch", "sizeof", "union", "auto",
-                  "volatile","register", "goto", "restrict", "Complex", "Imaginary"};
+                  "volatile","register", "goto", "restrict", "Complex", "Imaginary","call","ret"};
 
 void Psynbl()
 {
@@ -259,6 +259,14 @@ void scaner()
                 }
             }
         }
+        if(n==39){
+            for(;n<42;n++){
+                if (strcmp(word, KT[n]) == 0)	{
+                    key = n + 36;//"call","ret"76 77
+                    break;
+                }
+            }
+        }
         return;
     }
     else if ((ww >= '0'&&ww <= '9')){
@@ -317,7 +325,7 @@ void scaner()
                 key = 70;
                 word[m++] = ww;
             }
-            if (ww == '<'){
+            else if (ww == '<'){
                 key = 36;
                 word[m++] = ww;
             }
@@ -500,7 +508,7 @@ int _tmain()
 {
     cifa_main();
     cout << "Start Syntax Analysis:\n" << endl;
-    system("pause");
+    //system("pause");
     if (syntax_analysis())
     {
         cout << "Syntax Analysis Succeed\n" << endl;

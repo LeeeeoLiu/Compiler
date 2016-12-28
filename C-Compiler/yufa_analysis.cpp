@@ -423,6 +423,18 @@ void E() {
         cal_QUAT(flag);
     }
 }
+/*
+ * 算数表达式扩展，增加> < >= <=
+*/
+void A() {
+    E();
+    while (currentToken.code == 67 || currentToken.code == 69|| currentToken.code == 68|| currentToken.code == 70) {//> < >= <=
+        int flag = currentToken.code;//表示是后者
+        next();
+        E();
+        cal_QUAT(flag);
+    }
+}
 
 void type_list() {	//类型
     if (currentToken.code == 7 || currentToken.code == 8 || currentToken.code == 9)
@@ -885,7 +897,7 @@ void senten_list() {
                 }
 
                 //识别一下算术表达式
-                E();
+                A();
                 if (currentToken.code == 25) {	//)
                     quadruple temp;
                     temp.op = Token(5, -1);//while
@@ -949,7 +961,7 @@ void senten_list() {
                 }
 
                 //识别一下算术表达式
-                E();
+                A();
                 if (currentToken.code == 25) {		//)
                     quadruple temp;
                     temp.op = Token(6, -1);//if
