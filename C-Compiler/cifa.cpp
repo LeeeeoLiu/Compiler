@@ -18,11 +18,11 @@ int tp, row;//tp是filec的指针，指向当前字符   row记录行数
 int key;//key是种别码，sum用于判断整数溢出
 int cnum = 0; //wnum记录文本单词总数,cnum记录文本字符总数
 static int front = 0;
-//保留字  “main”~"struct"4~10,"void"~"return"29~31,"cout"~"cin"34~35,“long”~”Imaginary”38~65
+//保留字  “main”~"struct"4~10,"void"~"return"29~31,"cout"~"cin"34~35,“long”~”Imaginary”38~65,"call","ret"76 77
 char* KT[100] = { "main", "while", "if", "char", "int", "float", "struct", "void", "else", "return", "cout", "cin",
                   "long", "short", "bool", "double", "typedef", "unsigned", "static", "enum", "for", "do", "continue",
                   "signed","extern", "inline", "const", "default", "case", "break", "switch", "sizeof", "union", "auto",
-                  "volatile","register", "goto", "restrict", "Complex", "Imaginary"};
+                  "volatile","register", "goto", "restrict", "Complex", "Imaginary","call","ret"};
 
 void Psynbl()
 {
@@ -255,6 +255,14 @@ void scaner()
             for (; n < 39; n++){
                 if (strcmp(word, KT[n]) == 0)	{
                     key = n + 26;//"long"~"Imaginary"38~65
+                    break;
+                }
+            }
+        }
+        if(n==39){
+            for(;n<42;n++){
+                if (strcmp(word, KT[n]) == 0)	{
+                    key = n + 36;//"call","ret"76 77
                     break;
                 }
             }
