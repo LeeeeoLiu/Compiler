@@ -18,7 +18,7 @@ int main()
         bb[4]=e;
         test.a=2;
         e=test.a+3;
-        if (g+f)
+        if (g+f>0)
         {
         g = 3*5-e;
         i=3+5;
@@ -26,7 +26,7 @@ int main()
         k=5-3;
         k=bb[5]-j;
         }
-        while(e-2*f)
+        while(e-2*f<=1)
         {
         g=e+f;
         }

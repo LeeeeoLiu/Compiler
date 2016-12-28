@@ -6,8 +6,8 @@ string str[]={"","","","","main","while","if","char","int","float","struct","+",
               "'","(",")","&","|","!","void","else","return","&&","||","cout","cin","<<",">>","long","short","bool",
               "double","typedef","unsigned","static","enum","for","do","continue","signed","extern","inline","const",
               "default","case","break","switch","sizeof","union","auto","volatile","register","goto","restrict",
-              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]=",".",".=","=."};
-vector<string> keywords(str, str+76);//保留字表
+              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]=",".",".=","=.","call","ret"};
+vector<string> keywords(str, str+78);//保留字表
 vector<string> ConstNum;	//常数表code=3
 vector<string> ConstString;	//字符串常量表code=2
 vector<string> ConstChar;		//字符常量表code=1
@@ -317,7 +317,7 @@ void scaner()
                 key = 70;
                 word[m++] = ww;
             }
-            if (ww == '<'){
+            else if (ww == '<'){
                 key = 36;
                 word[m++] = ww;
             }
@@ -500,7 +500,7 @@ int _tmain()
 {
     cifa_main();
     cout << "Start Syntax Analysis:\n" << endl;
-    system("pause");
+    //system("pause");
     if (syntax_analysis())
     {
         cout << "Syntax Analysis Succeed\n" << endl;

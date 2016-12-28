@@ -100,6 +100,7 @@ void equa_QUAT(int op);
 void F();
 void T();
 void E();
+void A();
 void type_list();
 void symbolList_init(int type);
 void var_declaration();
