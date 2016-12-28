@@ -118,7 +118,7 @@ bool next() {
     }
 }
 
-void isSynblExist(){
+int isSynblExist(){
     //先查一下符号表
     int i;
     for (i = 0; i < SYNBL.size(); i++)
@@ -129,11 +129,9 @@ void isSynblExist(){
         }
     }
     if (i == SYNBL.size())
-    {
-        token_pointer--;
-        //errorHappenedWithMessage("未定义的标识符");
-        next();
-    }
+        return 0;
+    else
+        return 1;
 }
 
 int getSynblIndex(){
@@ -674,7 +672,21 @@ void var_declaration() {
             int type;
             type = currentToken.code - 7;//类型表中是哪个
             next();
-            symbolList_init(type);    //识别接下来的标识符
+            int i;
+            for (i = 0; i < SYNBL.size(); i++)
+            {
+                if (currentToken.value == SYNBL[i].name.value)
+                {
+                    break;
+                }
+            }
+            if (i == SYNBL.size())      //未定义标识符
+            {
+                symbolList_init(type);    //识别接下来的标识符
+            }else{
+                cout<<"标识符已定义"<<endl;
+                next();
+            }
 
             if (currentToken.code == 21) {	//;
                 next();
@@ -1157,14 +1169,25 @@ void structure() {
 
 void programStartSymbol() {
     //下面先识别结构体
-
     structure();
 
     //识别函数，这里可以识别多个函数
         while (currentToken.code == 7 || currentToken.code == 8 || currentToken.code == 9 || currentToken.code == 29) {	//int|float|char|void，他们都是函数的返回值
+            Token returnToken=currentToken;
             next();
             if (currentToken.code == 0 || currentToken.code == 4)	//标识符|main
+            {
+                if(currentToken.code == 0 && isSynblExist()==0)
+                {
+                    synbl temp;
+                    temp.name = currentToken;
+                    temp.type = 0;
+                    temp.cat = 1;
+                    temp.addr = 0;
+                    SYNBL.push_back(temp);    //压入符号表
+                }
                 next();
+            }
             else {
                 token_pointer -= 2;//kk
                 errorHappenedWithMessage("函数返回值类型后面缺少标识符");
@@ -1203,34 +1226,36 @@ void programStartSymbol() {
 
             compound_sen();			//复合语句
 
-            if (currentToken.code == 31) {    //return
+            if (returnToken.code!=29){
+                if (currentToken.code == 31) {    //return
 
-                next();
-                if (currentToken.code == 21) {    //;
-                    //直接一个return语句，没有返回值
-                    next();
-                }
-                else if (currentToken.code == 0 || currentToken.code == 1 || currentToken.code == 2 || currentToken.code == 3) {
                     next();
                     if (currentToken.code == 21) {    //;
+                        //直接一个return语句，没有返回值
                         next();
                     }
+                    else if (currentToken.code == 0 || currentToken.code == 1 || currentToken.code == 2 || currentToken.code == 3) {
+                        next();
+                        if (currentToken.code == 21) {    //;
+                            next();
+                        }
+                        else {
+                            token_pointer -= 2;//kk
+                            errorHappenedWithMessage("函数返回语句缺少分号");
+                            next();
+                            next();
+                        }
+                    }
                     else {
-                        token_pointer -= 2;//kk
-                        errorHappenedWithMessage("函数返回语句缺少分号");
-                        next();
-                        next();
+                        errorHappenedWithMessage("函数返回return语句非法");
                     }
                 }
                 else {
-                    errorHappenedWithMessage("函数返回return语句非法");
+                    token_pointer -= 2;//kk
+                    errorHappenedWithMessage("函数末尾没有return语句");
+                    next();
+                    next();
                 }
-            }
-            else {
-                token_pointer -= 2;//kk
-                errorHappenedWithMessage("函数末尾没有return语句");
-                next();
-                next();
             }
             if (currentToken.code == 16) {		//}
                 if (!next()) {
