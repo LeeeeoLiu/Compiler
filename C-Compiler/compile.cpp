@@ -228,7 +228,10 @@ void CSEG(){
             if (inter_pro[inter_pro_pointer].op.code == 11 ||		//是算术运算
                 inter_pro[inter_pro_pointer].op.code == 12 ||
                 inter_pro[inter_pro_pointer].op.code == 13 ||
-                inter_pro[inter_pro_pointer].op.code == 14){
+                inter_pro[inter_pro_pointer].op.code == 14 ||
+                inter_pro[inter_pro_pointer].op.code == 67 ||
+                inter_pro[inter_pro_pointer].op.code == 69
+                    ){
 
 
                 //读入第一个操作数
@@ -346,6 +349,27 @@ void CSEG(){
                             code_last = code_pointer;
                             break;
                 }
+               case 67:{
+                            code_pointer->cw = "CMP";
+                            code_pointer->arg1 = "AX";
+                            code_pointer->arg2 = "BX";
+                            code_pointer->flag = 2;
+                            code_pointer->next = NULL;
+                            code_last->next = code_pointer;
+                            code_last = code_pointer;
+                            break;
+                }
+               case 69:{
+                           code_pointer->cw = "CMP";
+                           code_pointer->arg1 = "AX";
+                           code_pointer->arg2 = "BX";
+                           code_pointer->flag = 2;
+                           code_pointer->next = NULL;
+                           code_last->next = code_pointer;
+                           code_last = code_pointer;
+                           break;
+        }
+
                 }
 
                 //结果存到res
@@ -561,7 +585,7 @@ void CSEG(){
             }
             //四元式cout
             if (inter_pro[inter_pro_pointer].op.code == 34){
-                  //  cout<<inter_pro[inter_pro_pointer].arg1.code<<endl;
+
                     code_pointer = new targe; //取操作数
                     switch (inter_pro[inter_pro_pointer].arg1.code){
                     case 0:{
@@ -569,7 +593,7 @@ void CSEG(){
                                code_pointer->arg1 = "AX";
                                code_pointer->arg2 = the_first_data_label + "[" +
                                    itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
-                               cout<< code_pointer->arg2<<endl;
+
                                break;
                     }
                     case 3:{
@@ -618,7 +642,7 @@ void compilization(){
     DSEG();
     CSEG();
 
-    ofstream ofile("/Users/liuyuanxing/Code/Compiler/C-Compiler/test.asm",ios::out);
+    ofstream ofile("D:\\QT/code/Compiler/C-Compiler/test.asm",ios::out);
 
     targe * front,* back;
     ofile << "DSEG\tSEGMENT" << endl;
