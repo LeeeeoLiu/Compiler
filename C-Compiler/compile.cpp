@@ -2,7 +2,8 @@
 
 
 vector<string> check_list;//给出原来四元式的位置即可找到应该跳转的标记
-
+vector<arr_list>Arr_list;
+extern vector<ainfl> AINFL;
 targe data;//汇编语言序列
 targe code;
 targe cout_code;
@@ -27,19 +28,39 @@ string itos(int num){
 }
 
 void DSEG(){
-    int int_num, float_num, char_num;
+    int int_num, float_num, char_num,arr_num;
+    arr_num=0;
     int_num = 0;
     float_num = 0;
     char_num = 0;
+    arr_list temp;
     for (int i = 0; i < SYNBL.size(); i++){
         switch (SYNBL[i].type){
         case 0:{char_num++; break; }
         case 1:{int_num++; break; }
         case 2:{float_num++; break; }
         }
+        switch (SYNBL[i].cat){
+        case 5:{
+               temp.name=Id[SYNBL[i].name.value];
+               temp.size=AINFL[arr_num].up-AINFL[arr_num].low+1;
+               arr_num++;
+               Arr_list.push_back(temp);break; }
+
+        }
     }
     targe* last_data;
     last_data = &data;
+    for(int i=0;i<Arr_list.size();i++){
+        data_pointer = new targe;
+        data_pointer->cw = Arr_list[i].name;
+        data_pointer->arg1 = "DW";
+        data_pointer->arg2 =itos (Arr_list[i].size) + " DUP(0)";
+        data_pointer->flag = 2;
+        data_pointer->next = NULL;
+        last_data->next = data_pointer;
+        last_data = data_pointer;
+    }
     for (int i = 0;i < TYPEL.size(); i++){
         data_pointer = new targe;
         data_pointer->cw = TYPEL[i].name;
@@ -625,6 +646,91 @@ void CSEG(){
                     code_last = code_pointer;
                    //显示十进制数
 
+            }
+            if(inter_pro[inter_pro_pointer].op.code == 71){     //数组取数
+                     code_pointer = new targe;
+                if (inter_pro[inter_pro_pointer].label == 2){
+                    code_pointer->label = check_list[inter_pro_pointer];
+                }
+
+                           code_pointer->cw = "MOV";		//mov ax,**[]
+                           code_pointer->arg1 = "AX";
+                           code_pointer->arg2 = Id[inter_pro[inter_pro_pointer].arg1.value] + "[" +
+                               itos(inter_pro[inter_pro_pointer].arg2.value*2) + "]";
+                           code_pointer->flag = 2;
+                           code_pointer->next = NULL;
+                           code_last->next = code_pointer;
+                           code_last = code_pointer;
+
+                //结果存到res
+                code_pointer = new targe;
+                switch (inter_pro[inter_pro_pointer].res.code){
+                case 0:{
+                           code_pointer->cw = "MOV";		//mov int|char|float[i],ax
+                           code_pointer->arg2 = "AX";
+                           code_pointer->arg1 = the_first_data_label + "[" +
+                               itos(inter_pro[inter_pro_pointer].res.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].res.value].type].lenth) + "]";
+                           break;
+                }
+                case 3:{
+                           code_pointer->cw = "MOV";		//mov const[i],ax
+                           code_pointer->arg2 = "AX";
+                           code_pointer->arg1 = "CONST[" + itos(inter_pro[inter_pro_pointer].res.value * 2) + "]";
+                           break;
+                }
+                case -2:{	//反正也不应该有
+                            code_pointer->cw = "MOV";		//mov temp[i],ax
+                            code_pointer->arg2 = "AX";
+                            code_pointer->arg1 = "TEMP[" + itos(inter_pro[inter_pro_pointer].res.value * 2) + "]";
+                            break;
+                }
+                }
+                code_pointer->flag = 2;
+                code_pointer->next = NULL;
+                code_last->next = code_pointer;
+                code_last = code_pointer;
+            }
+            if(inter_pro[inter_pro_pointer].op.code == 72){     //数组存数
+                     code_pointer = new targe;
+                if (inter_pro[inter_pro_pointer].label == 2){
+                    code_pointer->label = check_list[inter_pro_pointer];
+                }
+                switch (inter_pro[inter_pro_pointer].arg1.code){
+                case 0:{
+                           code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
+                           code_pointer->arg1 = "AX";
+                           code_pointer->arg2 = the_first_data_label + "[" +
+                               itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
+                           break;
+                }
+                case 3:{
+                           code_pointer->cw = "MOV";		//mov ax,const[i]
+                           code_pointer->arg1 = "AX";
+                           code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                           break;
+                }
+                case -2:{
+                            code_pointer->cw = "MOV";		//mov ax,temp[i]
+                            code_pointer->arg1 = "AX";
+                            code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                            break;
+                }
+                }
+                code_pointer->flag = 2;
+                code_pointer->next = NULL;
+                code_last->next = code_pointer;
+                code_last = code_pointer;
+                //结果存到res
+                code_pointer = new targe;
+                code_pointer->cw = "MOV";		//mov int|char|float[i],ax
+                code_pointer->arg2 = "AX";
+                code_pointer->arg1 = Id[inter_pro[inter_pro_pointer].res.value] + "[" +
+                        itos(inter_pro[inter_pro_pointer].arg2.value*2) + "]";
+
+                code_pointer->flag = 2;
+                code_pointer->next = NULL;
+                code_last->next = code_pointer;
+                code_last = code_pointer;
             }
         }
     }

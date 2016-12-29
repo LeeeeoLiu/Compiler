@@ -6,20 +6,18 @@ struct hh
 
 int main()
 {
-        int e,f,g,i,j,k,bb[10];
-        int a[5];
+        int e,f,g,i,j,k;
         float h;
         char w,v;
-        bb[3]=e;
-        g=bb[3];
-        if(e>f)
-        {
-          e=1;
-        }
-        while(f<g)
-        {
-         g=3;
-        }
+       // hh test;
+        int bb[10];
+        int a[5];
+        e = 2;
+        f = 1;
+        g = 0;
+        bb[2]=6;
+        f=bb[2];
+
 
         return 0;
 

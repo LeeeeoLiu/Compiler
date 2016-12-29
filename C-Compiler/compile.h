@@ -27,7 +27,10 @@ struct targe{
     string label = "";
     targe* next;
 };
-
+struct arr_list{
+   string name;          //数组名
+   int    size;          //数组大小
+};
 
 
 void data_new_node(targe* temp);
