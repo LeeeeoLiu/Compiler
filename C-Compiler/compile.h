@@ -27,10 +27,7 @@ struct targe{
     string label = "";
     targe* next;
 };
-struct arr_list{
-    string name;
-    int size;
-};
+
 
 
 void data_new_node(targe* temp);

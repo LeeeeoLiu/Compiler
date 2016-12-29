@@ -1,8 +1,8 @@
 #include "compile.h"
 
-extern vector<ainfl> AINFL;
+
 vector<string> check_list;//给出原来四元式的位置即可找到应该跳转的标记
-vector<arr_list>Arr_list;//数组表
+
 targe data;//汇编语言序列
 targe code;
 targe cout_code;
@@ -27,10 +27,7 @@ string itos(int num){
 }
 
 void DSEG(){
-    int int_num, float_num, char_num,arr_number;
-
-    arr_list temp;
-    arr_number=0;
+    int int_num, float_num, char_num;
     int_num = 0;
     float_num = 0;
     char_num = 0;
@@ -40,29 +37,9 @@ void DSEG(){
         case 1:{int_num++; break; }
         case 2:{float_num++; break; }
         }
-        switch (SYNBL[i].cat) {
-        case 5:{
-                 temp.name=Id[SYNBL[i].name.value];
-                 temp.size=AINFL[arr_number].up-AINFL[arr_number].low+1;
-                 arr_number++;
-                 Arr_list.push_back(temp);
-            break;}
-        default:
-            break;
-        }
     }
     targe* last_data;
     last_data = &data;
-    for(int i=0;i<Arr_list.size();i++){
-        data_pointer = new targe;
-        data_pointer->cw = Arr_list[i].name;
-        data_pointer->arg1 = "DW";
-        data_pointer->arg2 = itos(Arr_list[i].size) + " DUP(0)";
-        data_pointer->flag = 2;
-        data_pointer->next = NULL;
-        last_data->next = data_pointer;
-        last_data = data_pointer;
-    }
     for (int i = 0;i < TYPEL.size(); i++){
         data_pointer = new targe;
         data_pointer->cw = TYPEL[i].name;
@@ -608,49 +585,6 @@ void CSEG(){
             }
             //四元式cout
             if (inter_pro[inter_pro_pointer].op.code == 34){
-
-                    code_pointer = new targe; //取操作数
-                    switch (inter_pro[inter_pro_pointer].arg1.code){
-                    case 0:{
-                               code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
-                               code_pointer->arg1 = "AX";
-                               code_pointer->arg2 = the_first_data_label + "[" +
-                                   itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
-
-                               break;
-                    }
-                    case 3:{
-                               code_pointer->cw = "MOV";		//mov ax,const[i]
-                               code_pointer->arg1 = "AX";
-                               code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
-                               break;
-                    }
-                    case -2:{
-                                code_pointer->cw = "MOV";		//mov ax,temp[i]
-                                code_pointer->arg1 = "AX";
-                                code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
-                                break;
-                    }
-                    }
-                    code_pointer->flag = 2;
-                    code_pointer->next = NULL;
-                    code_last->next = code_pointer;
-                    code_last = code_pointer;
-                    cout_label=1;
-
-                    code_pointer = new targe;
-                    code_pointer->cw = "CALL";
-                    code_pointer->arg1 = "COUT";
-                    code_pointer->arg2 = "";
-                    code_pointer->flag = 1;
-                    code_pointer->next = NULL;
-                    code_last->next = code_pointer;
-                    code_last = code_pointer;
-                   //显示十进制数
-
-            }
-            //数组取数
-            if (inter_pro[inter_pro_pointer].op.code == 71){
 
                     code_pointer = new targe; //取操作数
                     switch (inter_pro[inter_pro_pointer].arg1.code){
