@@ -18,6 +18,7 @@ extern vector<typel> TYPEL;
 extern vector<synbl> SYNBL;//符号表
 extern int VALL_pointer;  //表示活动记录当前指向
 extern int temp_num;//临时变量ti指针，从零开始，code = -2
+extern int mainStartId; //记录 main 开始的位置
 
 struct targe{
     int flag;//有几个操作数

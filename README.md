@@ -12,9 +12,11 @@
 ### 下一阶段任务
 
 - [ ] 修复已经出现的bugs [0] (详细见 [issue](https://github.com/LeeeeoLiu/Compiler/issues))
-	- [x] #12 变量重定义		[Leeeeo]
+	
+	- [x] #16 函数跳转问题 没有函数的时候不应该启用funcstart变量 [Leeeeo]
 	- [ ] #14 目标代码 JZ 没有标号 [Loke]
-	- [ ] #11 初始化所有变量		[Leeeeo] [delay]
+	- [x] #12 变量重定义		[Leeeeo]
+	- [ ] #11 初始化所有变量		[Leeeeo]
 	- [ ] #6  数组中间代码优化问题	[Loke]
 	- [ ] #5  中间定义新变量问题		[Loke]
 - [ ] 数组支持char float struct [Sakura]
@@ -22,23 +24,28 @@
 - [ ] 语义分析报错信息,明确到行并显示到屏幕上 [Leeeeo]
 - [ ] 宏定义
 - [ ] 强制类型转换
-- [ ] 编译器编辑文本后自动预编译
-- [ ] 代码高亮
+- [ ] 编译器编辑文本后自动预编译 [delay]
+- [ ] 代码高亮 [delay]
 
 ### Version 2.0 Todo List
-- [x] cout 四元式     [Loke]
-- [x] cout 目标代码    [Koala]
-- [x] 添加数组四元式      [Leeeeo]
-- [x] 数组目标代码生成 		[Koala]
-- [x] 添加结构体四元式  [Leeeeo]
-- [ ] 结构体目标代码生成  	[Loke]
-- [x] 添加函数  [Leeeeeo]
+- [x] 添加 cout
+	- [x] cout 四元式     [Loke]
+	- [x] cout 目标代码    [Koala]
+- [x] 添加数组
+	- [x] 添加数组四元式      [Leeeeo]
+	- [x] 数组目标代码生成 		[Koala]
+- [ ] 添加结构体
+	- [x] 添加结构体四元式  [Leeeeo]
+	- [ ] 结构体目标代码生成  	[Loke]
+- [x] 添加函数
 	- [x] void 函数 call ret四元式生成 	[Leeeeo]
 	- [x] 带返回值函数call ret四元式生成 	[Leeeeo]
+	- [x] 函数目标代码生成	[Leeeeo]
 - [x] 图形界面实现  [Leeeeo]
 - [x] 行注释,块注释 [Sakura]
-- [x] > < 四元式 [Sakura]
-- [x] > < 目标代码生成 	[Koala]
+- [x] 添加> < >= <=
+	- [x] > < >= <= 四元式 [Sakura]
+	- [x] > < >= <= 目标代码生成 	[Koala]
 - [x] DAG中间代码优化	[Loke]
 - [x] 词法扫描器升级2.0 [Sakura]
 - [x] 补充文法		[Leeeeo]
@@ -285,8 +292,8 @@ struct hh
 |.|73	||
 |.= |74	| |
 |=.|75	| |
-| |76	| |
-| |77	| |
+|call|76	| |
+|ret|77	| |
 | |78	| |
 | |79	| |
 | |80	| |
@@ -298,9 +305,9 @@ struct hh
 | |86	| |
 | |87	| | |
 
-## 语义分析器的设计 [Leeeeo]
-输入:Token及语义分析的返回值
-输出:一个自定义四元式集合
+## 语法分析器的设计 [Leeeeo]
+输入:
+输出:
 ## 中间代码生成及优化 [Loke]
 
 ##### 功能

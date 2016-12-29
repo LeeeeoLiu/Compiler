@@ -102,7 +102,7 @@ bool elseArea=false;
 //标识 while 块
 bool whileArea=false;
 
-int mainStartId=0;
+int mainStartId;
 
 /**
  语法分析是否成功。成功为true，失败为false。
@@ -210,7 +210,7 @@ void callQuat(Token fun){
     }
     temp.label=1;
     temp.pointer = SYNBL[getSynblIndex(fun)].addr;
-    temp.res= Token(-1,-1);
+    temp.res= fun;
     for(int i=temp.pointer;i<inter_pro.size();i++)
     {
         if(inter_pro[i].op==Token(77,-1))

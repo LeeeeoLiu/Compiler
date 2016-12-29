@@ -13,7 +13,12 @@ targe* data_end;//链表最后一个元素的指针
 stack<targe*> backfilling;
 int jump_label = 0;
 int cout_label = 0;//打印函数标记
+int func_label = 0;//子程序标记
+int inter_pro_pointer;//中间代码
 string the_first_data_label;
+
+//保存子程序名称
+vector<string>functionName;
 
 void data_new_node(targe* temp){
     data_end->next = temp;
@@ -237,11 +242,543 @@ void cout_compile(){
     code_last = code_pointer;
 }
 
+void getFunctionName(){
+    for(int i=0;i<SYNBL.size();i++)
+    {
+        if(SYNBL[i].cat==1)
+        {
+            string funcStr=Id[SYNBL[i].name.value];
+            transform(funcStr.begin(),funcStr.end(),funcStr.begin(),::toupper);
+            functionName.push_back(funcStr);
+        }
+    }
+}
+
+targe* creatFunction(targe* code_last){
+    targe* code_pointer;
+    int funcArea=1;
+    for (;inter_pro_pointer < mainStartId; inter_pro_pointer++){
+        if(funcArea==1)
+        {
+            if (inter_pro[inter_pro_pointer].label != -1){
+                if (inter_pro[inter_pro_pointer].op.code == 11 ||		//是算术运算
+                    inter_pro[inter_pro_pointer].op.code == 12 ||
+                    inter_pro[inter_pro_pointer].op.code == 13 ||
+                    inter_pro[inter_pro_pointer].op.code == 14 ||
+                    inter_pro[inter_pro_pointer].op.code == 67 ||
+                    inter_pro[inter_pro_pointer].op.code == 69
+                        ){
+
+
+                    //读入第一个操作数
+                    code_pointer = new targe;
+
+                    if (inter_pro[inter_pro_pointer].label == 2){
+                        code_pointer->label = check_list[inter_pro_pointer];
+                    }
+
+                    switch (inter_pro[inter_pro_pointer].arg1.code){
+                    case 0:{
+                               code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = the_first_data_label + "[" +
+                                   itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
+                               break;
+                    }
+                    case 3:{
+                               code_pointer->cw = "MOV";		//mov ax,const[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                               break;
+                    }
+                    case -2:{
+                                code_pointer->cw = "MOV";		//mov ax,temp[i]
+                                code_pointer->arg1 = "AX";
+                                code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                                break;
+                    }
+                    }
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+
+
+                    //读入第二个操作数
+                    code_pointer = new targe;
+                    switch (inter_pro[inter_pro_pointer].arg2.code){
+                    case 0:{
+                               code_pointer->cw = "MOV";		//mov Bx,int|char|float[i]
+                               code_pointer->arg1 = "BX";
+                               //TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg2.value].type].name
+                               code_pointer->arg2 = the_first_data_label + "[" +
+                                   itos(inter_pro[inter_pro_pointer].arg2.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg2.value].type].lenth) + "]";
+                               break;
+                    }
+                    case 3:{
+                               code_pointer->cw = "MOV";		//mov bx,const[i]
+                               code_pointer->arg1 = "BX";
+                               code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg2.value * 2) + "]";
+                               break;
+                    }
+                    case -2:{
+                                code_pointer->cw = "MOV";		//mov bx,temp[i]
+                                code_pointer->arg1 = "BX";
+                                code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg2.value * 2) + "]";
+                                break;
+                    }
+                    }
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+
+                    //进行计算
+                    code_pointer = new targe;
+                    switch (inter_pro[inter_pro_pointer].op.code){
+                    case 11:{
+                                code_pointer->cw = "ADD";
+                                code_pointer->arg1 = "AX";
+                                code_pointer->arg2 = "BX";
+                                code_pointer->flag = 2;
+                                code_pointer->next = NULL;
+                                code_last->next = code_pointer;
+                                code_last = code_pointer;
+                                break;
+                    }
+                    case 12:{
+                                code_pointer->cw = "SUB";
+                                code_pointer->arg1 = "AX";
+                                code_pointer->arg2 = "BX";
+                                code_pointer->flag = 2;
+                                code_pointer->next = NULL;
+                                code_last->next = code_pointer;
+                                code_last = code_pointer;
+                                break;
+                    }
+                    case 13:{
+                                code_pointer->cw = "MUL";
+                                code_pointer->arg1 = "BX";
+                                code_pointer->arg2 = "";
+                                code_pointer->flag = 1;
+                                code_pointer->next = NULL;
+                                code_last->next = code_pointer;
+                                code_last = code_pointer;
+                                break;
+                    }
+                    case 14:{
+                                code_pointer->cw = "XOR";
+                                code_pointer->arg1 = "DX";
+                                code_pointer->arg2 = "DX";
+                                code_pointer->flag = 2;
+                                code_pointer->next = NULL;
+                                code_last->next = code_pointer;
+                                code_last = code_pointer;
+
+                                code_pointer = new targe;
+                                code_pointer->cw = "DIV";
+                                code_pointer->arg1 = "BX";
+                                code_pointer->arg2 = "";
+                                code_pointer->flag = 1;
+                                code_pointer->next = NULL;
+                                code_last->next = code_pointer;
+                                code_last = code_pointer;
+                                break;
+                    }
+                   case 67:{
+                                code_pointer->cw = "CMP";
+                                code_pointer->arg1 = "AX";
+                                code_pointer->arg2 = "BX";
+                                code_pointer->flag = 2;
+                                code_pointer->next = NULL;
+                                code_last->next = code_pointer;
+                                code_last = code_pointer;
+                                break;
+                    }
+                   case 69:{
+                               code_pointer->cw = "CMP";
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = "BX";
+                               code_pointer->flag = 2;
+                               code_pointer->next = NULL;
+                               code_last->next = code_pointer;
+                               code_last = code_pointer;
+                               break;
+            }
+
+                    }
+
+                    //结果存到res
+                    code_pointer = new targe;
+                    switch (inter_pro[inter_pro_pointer].res.code){
+                    case 0:{
+                               code_pointer->cw = "MOV";		//mov int|char|float[i],ax
+                               code_pointer->arg2 = "AX";
+                               code_pointer->arg1 = the_first_data_label + "[" +
+                                   itos(inter_pro[inter_pro_pointer].res.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].res.value].type].lenth) + "]";
+                               break;
+                    }
+                    case 3:{
+                               code_pointer->cw = "MOV";		//mov const[i],ax
+                               code_pointer->arg2 = "AX";
+                               code_pointer->arg1 = "CONST[" + itos(inter_pro[inter_pro_pointer].res.value * 2) + "]";
+                               break;
+                    }
+                    case -2:{	//反正也不应该有
+                                code_pointer->cw = "MOV";		//mov temp[i],ax
+                                code_pointer->arg2 = "AX";
+                                code_pointer->arg1 = "TEMP[" + itos(inter_pro[inter_pro_pointer].res.value * 2) + "]";
+                                break;
+                    }
+                    }
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+                }
+
+                //赋值表达式
+                if (inter_pro[inter_pro_pointer].op.code == 17){
+                    //读出到AX
+                    code_pointer = new targe;
+
+                    if (inter_pro[inter_pro_pointer].label == 2){
+                        code_pointer->label = check_list[inter_pro_pointer];
+                    }
+
+                    switch (inter_pro[inter_pro_pointer].arg1.code){
+                    case 0:{
+                               code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = the_first_data_label + "[" +
+                                   itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
+                               break;
+                    }
+                    case 3:{
+                               code_pointer->cw = "MOV";		//mov ax,const[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                               break;
+                    }
+                    case -2:{
+                                code_pointer->cw = "MOV";		//mov ax,temp[i]
+                                code_pointer->arg1 = "AX";
+                                code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                                break;
+                    }
+                    }
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+
+                    //结果存到res
+                    code_pointer = new targe;
+                    switch (inter_pro[inter_pro_pointer].res.code){
+                    case 0:{
+                               code_pointer->cw = "MOV";		//mov int|char|float[i],ax
+                               code_pointer->arg2 = "AX";
+                               code_pointer->arg1 = the_first_data_label + "[" +
+                                   itos(inter_pro[inter_pro_pointer].res.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].res.value].type].lenth) + "]";
+                               break;
+                    }
+                    case 3:{
+                               code_pointer->cw = "MOV";		//mov const[i],ax
+                               code_pointer->arg2 = "AX";
+                               code_pointer->arg1 = "CONST[" + itos(inter_pro[inter_pro_pointer].res.value * 2) + "]";
+                               break;
+                    }
+                    case -2:{	//反正也不应该有
+                                code_pointer->cw = "MOV";		//mov temp[i],ax
+                                code_pointer->arg2 = "AX";
+                                code_pointer->arg1 = "TEMP[" + itos(inter_pro[inter_pro_pointer].res.value * 2) + "]";
+                                break;
+                    }
+                    }
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+
+                }
+
+                //四元式是if
+                if (inter_pro[inter_pro_pointer].op.code == 6){
+                    //读出到AX
+                    code_pointer = new targe;
+                    switch (inter_pro[inter_pro_pointer].arg1.code){
+                    case 0:{
+                               code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = the_first_data_label + "[" +
+                                   itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
+                               break;
+                    }
+                    case 3:{
+                               code_pointer->cw = "MOV";		//mov ax,const[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                               break;
+                    }
+                    case -2:{
+                                code_pointer->cw = "MOV";		//mov ax,temp[i]
+                                code_pointer->arg1 = "AX";
+                                code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                                break;
+                    }
+                    }
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+
+                    code_pointer = new targe;
+                    code_pointer->cw = "AND";
+                    code_pointer->arg1 = "AX";
+                    code_pointer->arg2 = "AX";
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+
+                    code_pointer = new targe;
+                    code_pointer->cw = "JZ";
+                    code_pointer->arg1 = check_list[inter_pro[inter_pro_pointer].pointer];
+                    code_pointer->arg2 = "";
+                    code_pointer->flag = 1;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+
+                }
+
+                //四元式是while
+                if (inter_pro[inter_pro_pointer].op.code == 5){
+                    if (inter_pro[inter_pro_pointer].arg1.code != -1){//条件跳出部分
+                        code_pointer = new targe;
+                        switch (inter_pro[inter_pro_pointer].arg1.code){
+                        case 0:{
+                                   code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
+                                   code_pointer->arg1 = "AX";
+                                   code_pointer->arg2 = the_first_data_label + "[" +
+                                       itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
+                                   break;
+                        }
+                        case 3:{
+                                   code_pointer->cw = "MOV";		//mov ax,const[i]
+                                   code_pointer->arg1 = "AX";
+                                   code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                                   break;
+                        }
+                        case -2:{
+                                    code_pointer->cw = "MOV";		//mov ax,temp[i]
+                                    code_pointer->arg1 = "AX";
+                                    code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                                    break;
+                        }
+                        }
+                        code_pointer->flag = 2;
+                        code_pointer->next = NULL;
+                        code_last->next = code_pointer;
+                        code_last = code_pointer;
+
+                        code_pointer = new targe;
+                        code_pointer->cw = "AND";
+                        code_pointer->arg1 = "AX";
+                        code_pointer->arg2 = "AX";
+                        code_pointer->flag = 2;
+                        code_pointer->next = NULL;
+                        code_last->next = code_pointer;
+                        code_last = code_pointer;
+
+                        code_pointer = new targe;
+                        code_pointer->cw = "JZ";
+                        code_pointer->arg1 = check_list[inter_pro[inter_pro_pointer].pointer];
+                        code_pointer->arg2 = "";
+                        code_pointer->flag = 1;
+                        code_pointer->next = NULL;
+                        code_last->next = code_pointer;
+                        code_last = code_pointer;
+                    }
+                    else {
+                        code_pointer = new targe;
+                        code_pointer->cw = "JMP";
+                        code_pointer->arg1 = check_list[inter_pro[inter_pro_pointer].pointer];
+                        code_pointer->arg2 = "";
+                        code_pointer->flag = 1;
+                        code_pointer->next = NULL;
+                        code_last->next = code_pointer;
+                        code_last = code_pointer;
+                    }
+                }
+                //四元式cout
+                if (inter_pro[inter_pro_pointer].op.code == 34){
+
+                        code_pointer = new targe; //取操作数
+                        switch (inter_pro[inter_pro_pointer].arg1.code){
+                        case 0:{
+                                   code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
+                                   code_pointer->arg1 = "AX";
+                                   code_pointer->arg2 = the_first_data_label + "[" +
+                                       itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
+
+                                   break;
+                        }
+                        case 3:{
+                                   code_pointer->cw = "MOV";		//mov ax,const[i]
+                                   code_pointer->arg1 = "AX";
+                                   code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                                   break;
+                        }
+                        case -2:{
+                                    code_pointer->cw = "MOV";		//mov ax,temp[i]
+                                    code_pointer->arg1 = "AX";
+                                    code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                                    break;
+                        }
+                        }
+                        code_pointer->flag = 2;
+                        code_pointer->next = NULL;
+                        code_last->next = code_pointer;
+                        code_last = code_pointer;
+                        cout_label=1;
+
+                        code_pointer = new targe;
+                        code_pointer->cw = "CALL";
+                        code_pointer->arg1 = "COUT";
+                        code_pointer->arg2 = "";
+                        code_pointer->flag = 1;
+                        code_pointer->next = NULL;
+                        code_last->next = code_pointer;
+                        code_last = code_pointer;
+                       //显示十进制数
+
+                }
+                if(inter_pro[inter_pro_pointer].op.code == 71){     //数组取数
+                         code_pointer = new targe;
+                    if (inter_pro[inter_pro_pointer].label == 2){
+                        code_pointer->label = check_list[inter_pro_pointer];
+                    }
+
+                               code_pointer->cw = "MOV";		//mov ax,**[]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = Id[inter_pro[inter_pro_pointer].arg1.value] + "[" +
+                                   itos(inter_pro[inter_pro_pointer].arg2.value*2) + "]";
+                               code_pointer->flag = 2;
+                               code_pointer->next = NULL;
+                               code_last->next = code_pointer;
+                               code_last = code_pointer;
+
+                    //结果存到res
+                    code_pointer = new targe;
+                    switch (inter_pro[inter_pro_pointer].res.code){
+                    case 0:{
+                               code_pointer->cw = "MOV";		//mov int|char|float[i],ax
+                               code_pointer->arg2 = "AX";
+                               code_pointer->arg1 = the_first_data_label + "[" +
+                                   itos(inter_pro[inter_pro_pointer].res.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].res.value].type].lenth) + "]";
+                               break;
+                    }
+                    case 3:{
+                               code_pointer->cw = "MOV";		//mov const[i],ax
+                               code_pointer->arg2 = "AX";
+                               code_pointer->arg1 = "CONST[" + itos(inter_pro[inter_pro_pointer].res.value * 2) + "]";
+                               break;
+                    }
+                    case -2:{	//反正也不应该有
+                                code_pointer->cw = "MOV";		//mov temp[i],ax
+                                code_pointer->arg2 = "AX";
+                                code_pointer->arg1 = "TEMP[" + itos(inter_pro[inter_pro_pointer].res.value * 2) + "]";
+                                break;
+                    }
+                    }
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+                }
+                if(inter_pro[inter_pro_pointer].op.code == 72){     //数组存数
+                         code_pointer = new targe;
+                    if (inter_pro[inter_pro_pointer].label == 2){
+                        code_pointer->label = check_list[inter_pro_pointer];
+                    }
+                    switch (inter_pro[inter_pro_pointer].arg1.code){
+                    case 0:{
+                               code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = the_first_data_label + "[" +
+                                   itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
+                               break;
+                    }
+                    case 3:{
+                               code_pointer->cw = "MOV";		//mov ax,const[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                               break;
+                    }
+                    case -2:{
+                                code_pointer->cw = "MOV";		//mov ax,temp[i]
+                                code_pointer->arg1 = "AX";
+                                code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                                break;
+                    }
+                    }
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+                    //结果存到res
+                    code_pointer = new targe;
+                    code_pointer->cw = "MOV";		//mov int|char|float[i],ax
+                    code_pointer->arg2 = "AX";
+                    code_pointer->arg1 = Id[inter_pro[inter_pro_pointer].res.value] + "[" +
+                            itos(inter_pro[inter_pro_pointer].arg2.value*2) + "]";
+
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+                }
+
+                if(inter_pro[inter_pro_pointer].op.code == 76 ){       //函数 call
+                    code_pointer = new targe;
+                    code_pointer->cw = "CALL";
+                    string funcStr=Id[inter_pro[inter_pro_pointer].res.value];
+                    transform(funcStr.begin(),funcStr.end(),funcStr.begin(),::toupper);
+                    code_pointer->arg1 = funcStr;
+                    code_pointer->arg2 = "";
+                    code_pointer->flag = 1;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+                }
+
+                if(inter_pro[inter_pro_pointer].op.code == 77){       //函数 ret
+                    code_pointer = new targe;
+                    code_pointer->cw = "RET";
+                    code_pointer->arg1 = "";
+                    code_pointer->arg2 = "";
+                    code_pointer->flag = 0;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+                    funcArea=0;
+                    inter_pro_pointer++;
+                    break;
+                }
+            }
+        }
+
+    }
+
+    return code_last;
+}
+
 void CSEG(){
     targe* code_pointer;
     targe* code_last;
     int inter_pro_pointer;//中间代码
-    inter_pro_pointer = 0;
+    inter_pro_pointer = mainStartId;
     code_last = &code;
     for (;inter_pro_pointer < inter_pro.size(); inter_pro_pointer++){
 
@@ -422,9 +959,6 @@ void CSEG(){
                 code_last = code_pointer;
             }
 
-
-
-
             //赋值表达式
             if (inter_pro[inter_pro_pointer].op.code == 17){
                 //读出到AX
@@ -490,10 +1024,6 @@ void CSEG(){
 
             }
 
-
-
-
-
             //四元式是if
             if (inter_pro[inter_pro_pointer].op.code == 6){
                 //读出到AX
@@ -536,6 +1066,7 @@ void CSEG(){
                 code_pointer = new targe;
                 code_pointer->cw = "JZ";
                 code_pointer->arg1 = check_list[inter_pro[inter_pro_pointer].pointer];
+                cout<<"test:"<<check_list[inter_pro[inter_pro_pointer].pointer]<<endl;
                 code_pointer->arg2 = "";
                 code_pointer->flag = 1;
                 code_pointer->next = NULL;
@@ -543,7 +1074,6 @@ void CSEG(){
                 code_last = code_pointer;
 
             }
-
 
             //四元式是while
             if (inter_pro[inter_pro_pointer].op.code == 5){
@@ -732,6 +1262,30 @@ void CSEG(){
                 code_last->next = code_pointer;
                 code_last = code_pointer;
             }
+
+            if(inter_pro[inter_pro_pointer].op.code == 76 ){       //函数 call
+                code_pointer = new targe;
+                code_pointer->cw = "CALL";
+                string funcStr=Id[inter_pro[inter_pro_pointer].res.value];
+                transform(funcStr.begin(),funcStr.end(),funcStr.begin(),::toupper);
+                code_pointer->arg1 = funcStr;
+                code_pointer->arg2 = "";
+                code_pointer->flag = 1;
+                code_pointer->next = NULL;
+                code_last->next = code_pointer;
+                code_last = code_pointer;
+            }
+
+            if(inter_pro[inter_pro_pointer].op.code == 77&& inter_pro[inter_pro_pointer].res.code!=(-1) ){       //函数 ret
+                code_pointer = new targe;
+                code_pointer->cw = "RET";
+                code_pointer->arg1 = "";
+                code_pointer->arg2 = "";
+                code_pointer->flag = 0;
+                code_pointer->next = NULL;
+                code_last->next = code_pointer;
+                code_last = code_pointer;
+            }
         }
     }
 }
@@ -746,7 +1300,9 @@ void compilization(){
         }
     }
     DSEG();
-    CSEG();
+    if(mainStartId!=0){
+        func_label=1;
+    }CSEG();
 
     ofstream ofile("D:\\QT/code/Compiler/C-Compiler/test.asm",ios::out);
 
@@ -762,6 +1318,29 @@ void compilization(){
 
     ofile << "DSEG\tENDS" << endl;
     ofile << "CSEG\tSEGMENT\n\tASSUME\tCS:CSEG,DS:DSEG" << endl;
+    if(func_label==1){
+        inter_pro_pointer = 0;
+        getFunctionName();
+        for(int i=0;i<functionName.size();i++)
+        {
+            ofile<<functionName[i]<<"\tPROC\tNEAR"<<endl;
+            targe func_code;
+            front=&func_code;
+            back=creatFunction(&func_code);
+            while (front->next != NULL){
+                front = front->next;
+                if (front->label.size() != 0){
+                    ofile << front->label << ":";
+                }
+                switch (front->flag){
+                case 0:ofile << "\t" + front->cw << endl; break;
+                case 1:ofile << "\t" + front->cw + "\t" + front->arg1 << endl; break;
+                case 2:ofile << "\t" + front->cw + "\t" + front->arg1 << "," << front->arg2 << endl; break;
+                }
+            }
+            ofile<<functionName[i]<<"\tENDP"<<endl;
+        }
+    }
     if(cout_label==1){
     ofile << "COUT\tPROC\tNEAR"<<endl;
         cout_compile();
@@ -784,7 +1363,6 @@ void compilization(){
     else
          front = &code;
     ofile << "start:\tMOV\tAX,DSEG\n\tMOV\tDS,AX" << endl;
-
     while (front->next != NULL){
         front = front->next;
         if (front->label.size() != 0){

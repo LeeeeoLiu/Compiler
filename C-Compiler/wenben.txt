@@ -23,6 +23,7 @@ int max(int maxVar1,int maxVar2)
     }else{
         maxVar=maxVar2;
     }
+    maxVar=maxVar+3;
     return maxVar;
 }
 
