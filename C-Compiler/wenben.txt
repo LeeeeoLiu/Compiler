@@ -3,7 +3,6 @@
     int a;
     char c;
 };
-
 void func(){
     cout <<4+12;
 }
@@ -30,10 +29,10 @@ int main()
 {
    /*int e,f,g,i,j,k;
     float h;
+
     char w,v;
     hh test;
     int bb[10];
-    int a[5];
     test.a=e;
     w=test.c;
     f = 10;
