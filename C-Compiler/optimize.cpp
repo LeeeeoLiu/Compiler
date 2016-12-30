@@ -65,7 +65,8 @@ void DAG_optimaize(int front, int end){
     pointer = front;
     while (pointer <= end){
         if (inter_pro[pointer].op.code == 17 || inter_pro[pointer].op.code == 11 || inter_pro[pointer].op.code == 12 || inter_pro[pointer].op.code == 13 || inter_pro[pointer].op.code == 14
-            ||inter_pro[pointer].op.code == 72 || inter_pro[pointer].op.code == 71||inter_pro[pointer].op.code == 67||inter_pro[pointer].op.code==69){	//除赋值表达式,[,],>,<,+ - * /外不参加优化
+            ||inter_pro[pointer].op.code == 72 || inter_pro[pointer].op.code == 71||inter_pro[pointer].op.code == 67||inter_pro[pointer].op.code==69
+              ||inter_pro[pointer].op.code == 74 || inter_pro[pointer].op.code == 75   ){	//除赋值表达式,[,],>,<,+ - * /外不参加优化
             //(1)
             if ((inter_pro[pointer].arg1.code == 0 || inter_pro[pointer].arg1.code == -2) && inter_pro[pointer].arg2.code == -1)	//(=,B,_,A)
             {
