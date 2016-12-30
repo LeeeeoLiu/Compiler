@@ -14,7 +14,7 @@ vector<Token> sym_list_stack;
 /**
  类型应该分配的长度
  **/
-vector<typel> TYPEL = { { "char", 2 }, { "inta", 2 }, { "float", 2 } };
+vector<typel> TYPEL = { { "char", 2 }, { "inta", 2 }, { "float", 2 } ,{"struct",}};
 /**
  符号表
  */
@@ -367,15 +367,22 @@ void equa_QUAT(int op) {
     temp.res = sem.back();//赋值给=左边的符号
     sem.pop_back();
     inter_pro.push_back(temp);//四元式生成插入
-    if(isArr){
+    if(isArr==true&&isStruct==true){
         sem.push_back(temp.res);
+        struStoreQuat();
         arrStoreQuat();
         isArr=false;
+        isStruct=false;
     }
-    if(isStruct){
+    if(isStruct==true){
         sem.push_back(temp.res);
         struStoreQuat();
         isStruct=false;
+    }
+    if(isArr==true){
+        sem.push_back(temp.res);
+        arrStoreQuat();
+        isArr=false;
     }
 }
 
@@ -414,7 +421,8 @@ void F() {
             else
                 errorHappenedWithMessage("数组使用错误");
 
-        }else if(currentToken.code == 73)           //.
+        }
+        else if(currentToken.code == 73)           //.
         {
             if(SYNBL[i].cat==7)
             {
@@ -433,7 +441,8 @@ void F() {
                     }
                 }
             }
-        }else if(currentToken.code == 24)       // (
+        }
+        else if(currentToken.code == 24)       // (
         {
             int i=getSynblIndex(preToken);
             int parmNum=SYNBL[i].type;
@@ -460,11 +469,16 @@ void F() {
         }
         return;
     }
+    else if(currentToken.code==1||currentToken.code==2)// 字符常量或字符串常量
+    {
+        sem.push_back(currentToken);
+        next();
+    }
     else  {
-        if (currentToken.code == 24) {
+        if (currentToken.code == 24) {//(
             next();
             E();
-            if (currentToken.code == 25) {
+            if (currentToken.code == 25) {//)
                 next();
                 return;
             }
@@ -572,7 +586,7 @@ void symbol_list(int type) {		//标识符表
 /**
  初始化赋值表
  */
-void symbolList_init(int type) {
+void symbolList_init(int type) { //preToken=currentToken,type=currentToken.code-7,next(),char 0,int 1,float 2
     if (currentToken.code == 0) {    //标识符
         synbl temp;
         temp.name = currentToken;
@@ -589,9 +603,21 @@ void symbolList_init(int type) {
                     ainfl tempArr;
                     tempArr.low=0;
                     tempArr.up=stoi(ConstNum[currentToken.value])-1;
-                    tempArr.ctp=ConstNum.size();
-                    for(int i=0;i<stoi(ConstNum[currentToken.value]);i++)
-                        ConstNum.push_back("0");
+                    switch(type){
+                    case 0:
+                        tempArr.ctp=ConstChar.size();
+                        for(int i=0;i<stoi(ConstNum[currentToken.value]);i++){
+                            ConstChar.push_back("0");
+                        }
+                        break;
+                    case 1:
+                    case 2:
+                        tempArr.ctp=ConstNum.size();
+                        for(int i=0;i<stoi(ConstNum[currentToken.value]);i++)
+                            ConstNum.push_back("0");
+                        break;
+                    default:cout<<"WRONG ARRY TYPE"<<endl;break;
+                    }
                     tempArr.clen=TYPEL[type].lenth;
                     AINFL.push_back(tempArr);
                     temp.cat=5;
@@ -697,7 +723,7 @@ int isStructVar()
         next();
         return 0;
     }else{
-        if(SYNBL[i].cat==7)     //结构体定义
+        if(SYNBL[i].cat==7||SYNBL[i].cat==8)     //结构体定义
             return 1;
         else
             return 0;
@@ -731,10 +757,12 @@ void var_declaration() {
                     synbl sysTemp;
                     sysTemp=SYNBL[i];
                     sysTemp.cat=7;
+                    sysTemp.type=3;
                     sysTemp.name=currentToken;
                     sysTemp.addr=structIndex;
                     SYNBL.push_back(sysTemp);
                     int structIndexTemp=SYNBL[i].addr;
+                    int clength=0;
                     for (int j = 0; j < RINFL.size(); j++)
                     {
                         if(RINFL[j].num==structIndexTemp)
@@ -742,21 +770,65 @@ void var_declaration() {
                             rinfl structTemp=RINFL[j];
                             structTemp.num=structIndex;
                             switch (structTemp.type) {
-                            case 1:
+                            case 0:
                                 structTemp.tp=ConstChar.size();
                                 ConstChar.push_back("0");
                                 break;
+                            case 1:
                             case 2:
-                            case 3:
-                            default:
                                 structTemp.tp=ConstNum.size();
                                 ConstNum.push_back("0");
                                 break;
+                            default:break;
                             }
                             RINFL.push_back(structTemp);
+                            clength+=structTemp.off;
                         }
                     }
                     next();
+                    if(currentToken.code==19){ //[  结构体数组
+                        next();
+                        ainfl tempArr;
+                        tempArr.low=0;
+                        tempArr.up=(stoi(ConstNum[currentToken.value])-1);
+                        tempArr.ctp=structIndex;
+                        tempArr.clen=clength;
+                        AINFL.push_back(tempArr);
+                        sysTemp.cat=8;
+                        sysTemp.type=3;
+                        sysTemp.addr=arrIndex;
+                        SYNBL.pop_back();
+                        SYNBL.push_back(sysTemp);
+                        arrIndex++;
+                        for(int i=0;i<tempArr.up;i++){
+                            for (int j = 0; j < RINFL.size(); j++)
+                            {
+                                if(RINFL[j].num==structIndexTemp)
+                                {
+                                    rinfl structTemp=RINFL[j];
+                                    structTemp.num=structIndex;
+                                    switch (structTemp.type) {
+                                    case 0:
+                                        structTemp.tp=ConstChar.size();
+                                        ConstChar.push_back("0");
+                                        break;
+                                    case 1:
+                                    case 2:
+                                    default:
+                                        structTemp.tp=ConstNum.size();
+                                        ConstNum.push_back("0");
+                                        break;
+                                    }
+                                    RINFL.push_back(structTemp);
+                                }
+                            }
+                        }
+                        next();
+                        if (currentToken.code==20){         //]
+                            next();
+                        }
+                    }
+                    structIndex++;
                     if (currentToken.code == 21) {	//;
                         next();
                     } else {
@@ -837,17 +909,7 @@ void var_declarationStruct() {
                 continue;
             }
         }
-        int tempType;
-        if (currentToken.code == 7)
-        {
-            tempType =1;    //char
-        }else if(currentToken.code == 8)
-        {
-            tempType =2;    //int
-        }else if(currentToken.code == 9)
-        {
-            tempType= 3;    //float
-        }
+        int tempType=currentToken.code-7;
         next();
         rinfl temp;
         temp.num=structIndex;
@@ -890,7 +952,8 @@ void senten_list() {
                 token_pointer--;
                 //errorHappenedWithMessage("未定义的标识符");
                 next();
-            }else{
+            }
+            else{
                 Token preToken=currentToken;
                 if(SYNBL[i].cat==7)     //结构体定义
                 {
@@ -914,7 +977,55 @@ void senten_list() {
                             }
                         }
                     }
-                }else{
+                }
+                else if(SYNBL[i].cat==8)  //结构体数组定义
+                {
+                    next();
+                    if(currentToken.code==19)//[
+                    {
+                        isArr=true;
+                        next();
+                        int tempArrIndex2=stoi(ConstNum[currentToken.value]);
+                        if(AINFL[SYNBL[i].addr].up>=tempArrIndex2)
+                        {
+                            sem.push_back(preToken);
+                            sem.push_back(currentToken);
+                            sem.push_back(preToken);
+                            sem.push_back(currentToken);
+                            arrGetQuat();
+                        }
+                        else
+                            errorHappenedWithMessage("数组使用错误");
+                        next();
+                        if(currentToken.code==20)//]
+                        {
+                            next();
+                            if(currentToken.code==73)//.
+                            {
+                                isStruct=true;
+                                next();
+                                int tempStructIndex = AINFL[SYNBL[i].addr].ctp;
+                                Token tempToken=sem.back();
+                                for(int j=0;j<RINFL.size();j++)
+                                {
+                                    if(RINFL[j].num==tempStructIndex)
+                                    {
+                                        if(RINFL[j].name.value==currentToken.value){
+                                            sem.push_back(tempToken);
+                                            sem.push_back(currentToken);
+                                            sem.push_back(tempToken);
+                                            sem.push_back(currentToken);
+                                            struGetQuat();
+                                            next();
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+                else{
                     sem.push_back(preToken);
                 }
                 if (currentToken.code == 17)    //  =
@@ -1059,7 +1170,12 @@ void senten_list() {
                     sem.push_back(preToken);    //入操作数栈
                 }
                 if (currentToken.code == 17)    //  =
+                {
                     next();
+                    if(currentToken.code == 23||currentToken.code==22){
+                        next();
+                    }
+                }
                 else {
                     token_pointer -= 2;//kk
                     //errorHappenedWithMessage("标识符赋值语句缺少等号");
@@ -1067,6 +1183,7 @@ void senten_list() {
                     next();
                 }
                 E();    //然后，识别算术表达式
+                if(currentToken.code==22||currentToken.code==23) next();
                 if (currentToken.code == 21) {    //;    赋值语句最后必须有分号
                     equa_QUAT(17);
                     next();
@@ -1364,7 +1481,7 @@ void structure() {
             synbl temp;
             temp.name = tokenStash.back();
             tokenStash.pop_back();
-            temp.type = 0;
+            temp.type = 3;
             temp.cat = 6;
             temp.addr = structIndex;
             SYNBL.push_back(temp);    //压入符号表

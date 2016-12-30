@@ -1,4 +1,4 @@
-struct hh{
+/*struct hh{
     int a;
     char c;
 };
@@ -6,14 +6,12 @@ struct hh{
 void func(){
     cout <<4+12;
 }
-
 void functt(){
     int lalal;
     lalal=22;
     func();
     cout <<3+5;
 }
-
 int max(int maxVar1,int maxVar2)
 {
     int maxVar;
@@ -25,11 +23,11 @@ int max(int maxVar1,int maxVar2)
     }
     maxVar=maxVar+3;
     return maxVar;
-}
+}*/
 
 int main()
 {
-    int e,f,g,i,j,k;
+   /*int e,f,g,i,j,k;
     float h;
     char w,v;
     hh test;
@@ -43,8 +41,13 @@ int main()
     f = 1;
     g = 0;
     bb[2]=6;
-    f=bb[2];
+    f=bb[2];*/
 
+
+
+char a[3];
+
+a[1]='t';
     return 0;
 
 }

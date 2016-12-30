@@ -2,12 +2,13 @@
 
 Token tok;
 vector<Token> token;
-string str[]={"","","","","main","while","if","char","int","float","struct","+","-","*","/","{","}","=",",","[","]",";","\"",
-              "'","(",")","&","|","!","void","else","return","&&","||","cout","cin","<<",">>","long","short","bool",
-              "double","typedef","unsigned","static","enum","for","do","continue","signed","extern","inline","const",
-              "default","case","break","switch","sizeof","union","auto","volatile","register","goto","restrict",
-              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]=",".",".=","=.","call","ret"};
-vector<string> keywords(str, str+78);//保留字表
+string str[]={"","","","","main","while","if","char","int","float","struct","+","-","*","/","{","}","=",",","[","]",
+              ";","\"","'","(",")","&","|","!","void","else","return","&&","||","cout","cin","<<",">>","long","short",
+              "bool","double","typedef","unsigned","static","enum","for","do","continue","signed","extern","inline",
+              "const","default","case","break","switch","sizeof","union","auto","volatile","register","goto","restrict",
+              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]=",".",".=","=.","call","ret","++","--","+=","-=","*=","/="};
+
+vector<string> keywords(str, str+84);//保留字表
 vector<string> ConstNum;	//常数表code=3
 vector<string> ConstString;	//字符串常量表code=2
 vector<string> ConstChar;		//字符常量表code=1
@@ -45,6 +46,10 @@ void Psynbl()
         case 2:cout << "VARI\n"; break;
         case 3:cout << "PARA\n"; break;
         case 4:cout << "DOMA\n"; break;
+        case 5:cout << "ARRY\n"; break;
+        case 6:cout << "STRUCT DEFINE\n"; break;
+        case 7:cout << "STRUCT VARI\n"; break;
+        case 8:cout << "STRUCT ARRY\n"; break;
         default:cout << "ERRO\n"; break;
         }
 
@@ -58,7 +63,7 @@ int InsertConstNum(string strToken){
 
 int readFile(){
     int i = 0;
-    FILE *fp=fopen("D:\\QT/code/Compiler/C-Compiler/wenben.txt", "r");
+    FILE *fp=fopen("D:/code/Compiler/C-Compiler/wenben.txt", "r");
     if (fp == NULL){
         cout << "No such file exists!" << endl;
         fclose(fp);
@@ -79,7 +84,7 @@ int readFile(){
 int duAsm()
 {
     tp = 0;
-    FILE *fp = fopen("D:\\QT/code/Compiler/C-Compiler/test.asm", "r");
+    FILE *fp = fopen("D:/code/Compiler/C-Compiler/test.asm", "r");
     if (fp == NULL){ printf("No File\n"); fclose(fp); return 0; }
     else
     {
@@ -306,7 +311,8 @@ void scaner()
         m = 0;
         word[m++] = ww;
         switch (ww){   //其他字符
-        case'>': ww = filec[tp++];
+        case'>':{
+            ww = filec[tp++];
             if (ww == '='){
                 key = 68;
                 word[m++] = ww;
@@ -320,7 +326,8 @@ void scaner()
             }
             word[m] = '\0';
             break;
-        case'<': ww = filec[tp++];
+        }
+        case'<':{ ww = filec[tp++];
             if (ww == '='){
                 key = 70;
                 word[m++] = ww;
@@ -334,6 +341,7 @@ void scaner()
             }
             word[m] = '\0';
             break;
+        }
         case'=': {
             ww = filec[tp++];
             if (ww == '='){
@@ -362,12 +370,46 @@ void scaner()
             word[m] = '\0';
             break;
         }
-        case'+':key = 11; word[m] = '\0'; break;
-        case'-':key = 12; word[m] = '\0'; break;
+        case'+':{
+            ww=filec[tp++];
+            if(ww=='+'){
+                key=78;
+                word[m++]=ww;
+            }
+            else if(ww=='='){
+                key=80;
+                word[m++]=ww;
+            }
+            else {
+                key = 11;
+                tp--;
+            }
+            word[m] = '\0'; break;
+        }
+        case'-':{
+            ww=filec[tp++];
+            if(ww=='-'){
+                key=79;
+                word[m++]=ww;
+            }
+            else if(ww=='='){
+                key=81;
+                word[m++]=ww;
+            }
+            else {
+                key = 12;
+                tp--;
+            }
+            word[m] = '\0'; break;
+        }
         case'*':{
             ww=filec[tp++];
             if(ww=='/'){                
-                key=111;
+                key=111;//块注释
+            }
+            else if(ww=='='){
+                key=82;
+                word[m++]=ww;
             }
             else{
                 key = 13;
@@ -385,7 +427,11 @@ void scaner()
                 }
                 tp--;
             }
-            else if(ww=='*'){
+            else if(ww=='='){
+                key=83;
+                word[m++]=ww;
+            }
+            else if(ww=='*'){//块注释
                 key=111;
                 ww=filec[tp++];
                 while(1){
