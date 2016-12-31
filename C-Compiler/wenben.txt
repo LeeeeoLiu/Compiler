@@ -1,3 +1,4 @@
+#define q 100
 /*struct hh{
     int a;
     char c;
@@ -42,10 +43,14 @@ int main()
     g = 0;
     bb[2]=6;
     f=bb[2];*/
+    int b=0;
+    char a[3];
 
+b++;
+b+=7;
+b*=6;
+--b;
 
-
-char a[3];
 
 a[1]='t';
     return 0;

@@ -1,3 +1,4 @@
+
 #include "yufa_analysis.h"
 
 
@@ -247,6 +248,54 @@ void cal_QUAT(int op) {
     temp_num++;
 }
 
+/*
+ * 前++和前--的四元式 （++，1，a,a)
+*/
+void self_Quat1(int code)//78和79，以++a为例
+{
+    quadruple temp;
+    temp.op=Token(code,-1);//++
+    temp.arg1=sem.back();//这里实际是++符号的token
+    sem.pop_back();
+    temp.arg2=sem.back();//a
+    sem.pop_back();
+    if (in_flag) {
+        temp.label = 2;
+        in_flag = 0;
+    }
+    else {
+        temp.label = 0;
+    }
+    temp.res=sem.back();
+    sem.pop_back();
+    temp.pointer=NULL;
+    inter_pro.push_back(temp);
+}
+
+/*
+ * 生成++ -- += -= *= /=的四元式，约定是后++  (++,a,1,a)
+*/
+void self_Quat(int code){//78~83
+    quadruple temp;
+    temp.op=Token(code,-1);//++
+    temp.arg2=sem.back();//这里是++符号的
+    sem.pop_back();
+    temp.arg1=sem.back();//a
+    sem.pop_back();
+    if (in_flag) {
+        temp.label = 2;
+        in_flag = 0;
+    }
+    else {
+        temp.label = 0;
+    }
+    temp.res=sem.back();
+    sem.pop_back();
+    temp.pointer=NULL;
+    inter_pro.push_back(temp);
+}
+
+
 /**
  取数组值的四元式
  */
@@ -469,8 +518,14 @@ void F() {
         }
         return;
     }
-    else if(currentToken.code==1||currentToken.code==2)// 字符常量或字符串常量
+    else if(currentToken.code==1||currentToken.code==2||currentToken.code==78||currentToken.code==79)// 字符常量或字符串常量 ++ --
     {
+        sem.push_back(currentToken);//++和--压进去的是符号！！
+        next();
+    }
+    else if(currentToken.code==80||currentToken.code==81||currentToken.code==82||currentToken.code==83)// += -= *= /=
+    {
+        next();
         sem.push_back(currentToken);
         next();
     }
@@ -515,7 +570,8 @@ void T() {
  算数表达式的递归下降子程序识别。做过无数次了。
  */
 void E() {
-    T();
+
+    T();   
     while (currentToken.code == 11 || currentToken.code == 12) {
         int flag = 11;
         if (currentToken.code == 12)
@@ -937,7 +993,7 @@ void var_declarationStruct() {
  识别语句表
  */
 void senten_list() {
-    while (currentToken.code == 0 || currentToken.code == 5 || currentToken.code == 6 || currentToken.code == 21 || currentToken.code == 3||currentToken.code==34||currentToken.code==31) {  //可以识别标识符赋值语句、while及if
+    while (currentToken.code == 0 || currentToken.code == 5 || currentToken.code == 6 || currentToken.code == 21 || currentToken.code == 3||currentToken.code==34||currentToken.code==31||(currentToken.code>=78)&&(currentToken.code<=83)) {  //可以识别标识符赋值语句、while及if
         if(currentToken.code == 0 && isStructVar()){     //是否是已经声明的结构体
             int i;
             for (i = 0; i < SYNBL.size(); i++)
@@ -1175,6 +1231,11 @@ void senten_list() {
                     if(currentToken.code == 23||currentToken.code==22){
                         next();
                     }
+                }                
+                else if(currentToken.code==78||currentToken.code==79||currentToken.code==80||currentToken.code==81||currentToken.code==82||currentToken.code==83)//++ -- += -= *= /=
+                {
+                    sem.push_back(preToken);
+                    preToken=currentToken;//!!注意这里preToken已经变了
                 }
                 else {
                     token_pointer -= 2;//kk
@@ -1185,7 +1246,11 @@ void senten_list() {
                 E();    //然后，识别算术表达式
                 if(currentToken.code==22||currentToken.code==23) next();
                 if (currentToken.code == 21) {    //;    赋值语句最后必须有分号
-                    equa_QUAT(17);
+                    if(preToken.code==78||preToken.code==79||preToken.code==80||preToken.code==81||preToken.code==82||preToken.code==83){
+                        self_Quat(preToken.code);
+                    }
+                    else
+                        equa_QUAT(17);
                     next();
                     if(currentToken.code==16 &&funcArea==true &&whileArea==false&&ifArea==false&&elseArea==false)   //}
                     {
@@ -1388,7 +1453,24 @@ void senten_list() {
                     next();
                     }
             }
-
+            else if(currentToken.code==78||currentToken.code==79)//识别++a --a
+            {
+                Token preToken=currentToken;
+                next();
+                sem.push_back(currentToken);
+                sem.push_back(currentToken);
+                sem.push_back(preToken);
+                next();
+                if(currentToken.code==21){
+                    self_Quat1(preToken.code);
+                    next();
+                    if(currentToken.code==16 &&funcArea==true &&whileArea==false&&ifArea==false&&elseArea==false)   //}
+                    {
+                        retQuat();
+                        currentFunctionToken=Token(-1,-1);
+                    }
+                }
+            }
         }
     }
 }
@@ -1516,7 +1598,17 @@ void structure() {
 void programStartSymbol() {
     //下面先识别结构体
     structure();
-
+    if(currentToken.code==84){//宏定义 #
+        next();
+        if(currentToken.code==85){//define
+            next();
+            sem.push_back(currentToken);
+            next();
+            sem.push_back(currentToken);
+            equa_QUAT(85);
+            next();
+        }
+    }
     //识别函数，这里可以识别多个函数
         while (currentToken.code == 7 || currentToken.code == 8 || currentToken.code == 9 || currentToken.code == 29) {	//int|float|char|void，他们都是函数的返回值
             Token returnToken=currentToken;

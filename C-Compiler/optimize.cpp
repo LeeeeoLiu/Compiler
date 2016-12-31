@@ -349,6 +349,8 @@ void output_inter_pro(int front, int end){
             case 0:cout << Id[inter_pro[i].arg1.value] << ","; break;//当为变量时
             case 1:cout << ConstChar[inter_pro[i].arg1.value] << ","; break;
             case 3:cout << ConstNum[inter_pro[i].arg1.value] << ","; break;//常数
+            case 78:
+            case 79:cout << ConstNum[0] << ","; break;
             case -2:cout << "t" << inter_pro[i].arg1.value << ","; break;
             case -1:cout << "_,";
             }
@@ -356,6 +358,8 @@ void output_inter_pro(int front, int end){
             case 0:cout << Id[inter_pro[i].arg2.value] << ","; break;//当为变量时
             case 1:cout << ConstChar[inter_pro[i].arg1.value] << ","; break;
             case 3:cout << ConstNum[inter_pro[i].arg2.value] << ","; break;//常数
+            case 78:
+            case 79:cout << ConstNum[0] << ","; break;
             case -2:cout << "t" << inter_pro[i].arg2.value << ","; break;
             case -1:cout << "_,";
             }
