@@ -77,6 +77,7 @@ void MainWindow::File_actionSave_Slot()
 
 void MainWindow::initAll()
 {
+    codeRecord="";
     outputRecord("Init the program......");
     ui->tableViewSYNBL->clearSpans();
     Id.clear();          //符号表的序列项表
@@ -87,7 +88,17 @@ void MainWindow::initAll()
     keywords.clear();
     inter_pro.clear();
     token.clear();
+    sem.clear();
     ww=' ';
+    temp_num=0;
+    check_list.clear();
+    inter_pro_pointer=0;
+    TYPEL.clear();
+    sym_list_stack.clear();
+    VALL_pointer=0;  //表示活动记录当前指向
+    temp_num=0;//临时变量ti指针，从零开始，code = -2
+    row=0;
+    mainStartId=0; //记录 main 开始的位置
     tp=cnum=front=0; //cnum记录文本字符总数;
     row=1;
 
@@ -102,7 +113,7 @@ void MainWindow::outputRecord(QString tempMess)
 void MainWindow::on_btnCompile_clicked()
 {
     initAll();
-    ui->btnCompile->setEnabled(false);
+//    ui->btnCompile->setEnabled(false);
     File_actionSave_Slot();
     outputRecord("Start Cifa Analysising......");
     cifa_main(path.toStdString());
@@ -118,6 +129,9 @@ void MainWindow::on_btnCompile_clicked()
         outputRecord("Try to get asm code......");
         asmCode=QString::fromStdString(compilization());
         outputRecord(asmCode);
+        displayRINFL();
+        displayAINFL();
+        displayConstNum();
     }
     else
     {
@@ -260,6 +274,8 @@ void MainWindow::displaySYNBL()
         case 3:model->setItem(i,2,new QStandardItem("PARA")); break;
         case 4:model->setItem(i,2,new QStandardItem("DOMA")); break;
         case 5:model->setItem(i,2,new QStandardItem("ARRAY")); break;
+        case 6:model->setItem(i,2,new QStandardItem("STRUCTDEC")); break;
+        case 7:model->setItem(i,2,new QStandardItem("STRUCTDEF")); break;
         default:model->setItem(i,2,new QStandardItem("ERROR")); break;
         }
         model->item(i,2)->setTextAlignment(Qt::AlignCenter);
@@ -268,6 +284,22 @@ void MainWindow::displaySYNBL()
     }
     ui->tableViewSYNBL->horizontalHeader()->setStretchLastSection(true);
 }
+
+void MainWindow::displayRINFL()
+{
+
+}
+
+void MainWindow::displayAINFL()
+{
+
+}
+
+void MainWindow::displayConstNum()
+{
+
+}
+
 
 
 void MainWindow::on_saveAsm_clicked()

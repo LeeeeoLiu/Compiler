@@ -12,6 +12,9 @@ extern void optimization();	//目标代码优化
 extern string compilization();//汇编生成
 extern vector<synbl> SYNBL;
 extern vector<typel> TYPEL;
+extern vector<Token> sem;
+extern vector<string> check_list;
+extern int inter_pro_pointer;//中间代码
 
 void Psynbl();
 int InsertConstNum(string strToken);

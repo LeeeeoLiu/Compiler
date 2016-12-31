@@ -33,7 +33,7 @@
         <item row="0" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>2</number>
+           <number>4</number>
           </property>
           <widget class="QWidget" name="tab_8">
            <attribute name="title">
@@ -67,7 +67,7 @@
           </widget>
           <widget class="QWidget" name="tab_6">
            <attribute name="title">
-            <string>变量表</string>
+            <string>结构体表</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_6">
             <item row="0" column="0">
@@ -77,11 +77,21 @@
           </widget>
           <widget class="QWidget" name="tab_7">
            <attribute name="title">
-            <string>常量表</string>
+            <string>数组表</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_5">
             <item row="0" column="0">
-             <widget class="QTableView" name="tableView"/>
+             <widget class="QTableView" name="tableViewAINFL"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab">
+           <attribute name="title">
+            <string>常数表</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_19">
+            <item row="0" column="0">
+             <widget class="QTableView" name="tableViewConstNum"/>
             </item>
            </layout>
           </widget>
@@ -116,17 +126,17 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="2">
-         <widget class="QTextEdit" name="codeArea">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1">
          <widget class="QPushButton" name="btnCompile">
           <property name="text">
            <string>编译</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QTextEdit" name="codeArea">
+          <property name="enabled">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -159,17 +169,17 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QPushButton" name="saveAsm">
-          <property name="text">
-           <string>保存汇编代码</string>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="0" colspan="2">
          <widget class="QTextBrowser" name="statusArea">
           <property name="toolTip">
            <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="saveAsm">
+          <property name="text">
+           <string>保存汇编代码</string>
           </property>
          </widget>
         </item>
@@ -178,6 +188,10 @@
      </widget>
     </item>
    </layout>
+   <zorder>scrollArea_2</zorder>
+   <zorder>scrollArea</zorder>
+   <zorder>scrollArea_3</zorder>
+   <zorder>saveAsm</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

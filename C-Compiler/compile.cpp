@@ -12,7 +12,7 @@ targe* data_pointer;
 targe* data_end;//链表最后一个元素的指针
 
 stack<targe*> backfilling;
-int jump_label = 0;
+int jump_label;
 int cout_label = 0;//打印函数标记
 int func_label = 0;//子程序标记
 int inter_pro_pointer;//中间代码
@@ -1559,6 +1559,7 @@ void CSEG(){
 
 
 string compilization(){
+    jump_label=0;
     string asmCode;
     check_list.resize(inter_pro.size());
     for (int i = 0; i < inter_pro.size(); i++){

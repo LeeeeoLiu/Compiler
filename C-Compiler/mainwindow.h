@@ -38,6 +38,9 @@ public:
     void initAll();
     void displaySYNBL();
     void displayQuat(int front, int end);
+    void displayRINFL();
+    void displayConstNum();
+    void displayAINFL();
 
 private slots:
     void Help_actionHelp_Slot();
