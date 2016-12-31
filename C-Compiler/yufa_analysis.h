@@ -100,15 +100,18 @@ void equa_QUAT(int op);
 void F();
 void T();
 void E();
+void A();
 void type_list();
 void symbolList_init(int type);
 void var_declaration();
+void var_declarationStruct();
 void senten_list();
 void param_list();
 void compound_sen();
 void structure();
 void programStartSymbol();
 bool syntax_analysis();
+
 
 
 #endif // YUFA_ANALYSIS_H

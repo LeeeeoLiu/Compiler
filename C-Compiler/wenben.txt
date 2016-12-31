@@ -1,36 +1,61 @@
-struct hh
-{
-	int a;
-	char b,c;
+#define q 100
+/*
+struct hh{
+    int a;
+    char c;
 };
-
-
+void func(){
+    hh funxtest;
+    funxtest.c=2;
+    cout <<4+12;
+}
+void functt(){
+    int lalal;
+    lalal=22;
+    func();
+    cout <<3+5;
+}
+int max(int maxVar1,int maxVar2)
+{
+    int maxVar;
+    if(maxVar1>maxVar2)
+    {
+        maxVar=maxVar1;
+    }else{
+        maxVar=maxVar2;
+    }
+    maxVar=maxVar+3;
+    return maxVar;
+}
+*/
 int main()
 {
-	int e,f,g,i,j,k; 
-        float h;
-	char w,v; 
-        int bb[10];
-	e = 2;
-	f = 1;
-	g = 0;
-        bb[4]=e;
+    /*
+    int b=0;
+    int e,f,g,i,j,k;
+    float h;
+    int aadd[3];
+    char w,v;
+    hh test;
+    hh testarr[10];
+    int bb[10];
+    test.a=e;
+    w=test.c;
+    f = 10;
+    e = max(3,4);
+    functt();
+    f = 1;
+    g = 0;
+    bb[2]=6;
+    f=bb[2];
+    aadd[2]=q;
+    b++;
+    b+=7;
+    b*=6;
+    --b;
+    */
+    int aaaaa;
+    aaaaa=q;
+    return 0;
 
-
-	if (g+f)
-	{
-	g = 3*5-e;
-        i=3+5;
-        j=i;
-        k=5-3;
-        k=bb[5]-j;
-	}
-
-	while(e-2*f)
-	{
-	g=e+f;
-	}
-	w=3;
-     
-	return 0;
 }

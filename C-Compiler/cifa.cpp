@@ -2,12 +2,14 @@
 
 Token tok;
 vector<Token> token;
-string str[]={"","","","","main","while","if","char","int","float","struct","+","-","*","/","{","}","=",",","[","]",";","\"",
-              "'","(",")","&","|","!","void","else","return","&&","||","cout","cin","<<",">>","long","short","bool",
-              "double","typedef","unsigned","static","enum","for","do","continue","signed","extern","inline","const",
-              "default","case","break","switch","sizeof","union","auto","volatile","register","goto","restrict",
-              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]="};
-vector<string> keywords(str, str+73);//保留字表
+string str[]={"","","","","main","while","if","char","int","float","struct","+","-","*","/","{","}","=",",","[","]",
+              ";","\"","'","(",")","&","|","!","void","else","return","&&","||","cout","cin","<<",">>","long","short",
+              "bool","double","typedef","unsigned","static","enum","for","do","continue","signed","extern","inline",
+              "const","default","case","break","switch","sizeof","union","auto","volatile","register","goto","restrict",
+              "Complex","Imaginary","==",">",">=","<","<=","=[]","[]=",".",".=","=.","call","ret","++","--","+=","-=",
+              "*=","/=","#","define"};
+
+vector<string> keywords(str, str+86);//保留字表
 vector<string> ConstNum;	//常数表code=3
 vector<string> ConstString;	//字符串常量表code=2
 vector<string> ConstChar;		//字符常量表code=1
@@ -18,11 +20,11 @@ int tp, row;//tp是filec的指针，指向当前字符   row记录行数
 int key;//key是种别码，sum用于判断整数溢出
 int cnum = 0; //wnum记录文本单词总数,cnum记录文本字符总数
 int front = 0;
-//保留字  “main”~"struct"4~10,"void"~"return"29~31,"cout"~"cin"34~35,“long”~”Imaginary”38~65
-char* KT[100] = { "main", "while", "if", "char", "int", "float", "struct", "void", "else", "return", "cout", "cin",
-                  "long", "short", "bool", "double", "typedef", "unsigned", "static", "enum", "for", "do", "continue",
-                  "signed","extern", "inline", "const", "default", "case", "break", "switch", "sizeof", "union", "auto",
-                  "volatile","register", "goto", "restrict", "Complex", "Imaginary"};
+//保留字  “main”~"struct"4~10,"void"~"return"29~31,"cout"~"cin"34~35,“long”~”Imaginary”38~65,"call","ret"76 77，"define"85
+char* KT[] = { "main", "while", "if", "char", "int", "float", "struct", "void", "else", "return", "cout", "cin",
+               "long", "short", "bool", "double", "typedef", "unsigned", "static", "enum", "for", "do", "continue",
+               "signed","extern", "inline", "const", "default", "case", "break", "switch", "sizeof", "union", "auto",
+               "volatile","register", "goto", "restrict", "Complex", "Imaginary","call","ret","define"};//43个
 
 void Psynbl()
 {
@@ -45,6 +47,10 @@ void Psynbl()
         case 2:cout << "VARI\n"; break;
         case 3:cout << "PARA\n"; break;
         case 4:cout << "DOMA\n"; break;
+        case 5:cout << "ARRY\n"; break;
+        case 6:cout << "STRUCT DEFINE\n"; break;
+        case 7:cout << "STRUCT VARI\n"; break;
+        case 8:cout << "STRUCT ARRY\n"; break;
         default:cout << "ERRO\n"; break;
         }
 
@@ -79,7 +85,7 @@ int readFile(string path){
 int duAsm()
 {
     tp = 0;
-    FILE *fp = fopen("/Users/liuyuanxing/Code/Compiler/C-Compiler/test.asm", "r");
+    FILE *fp = fopen("D:/code/Compiler/C-Compiler/test.asm", "r");
     if (fp == NULL){ printf("No File\n"); fclose(fp); return 0; }
     else
     {
@@ -150,6 +156,7 @@ void initl(){
                break;
     }
     case -2:row++; break;//换行
+    case 111:break;
     default:{   //关键字或者符号了
                 tok.code = key;
                 tok.value = 0;
@@ -176,6 +183,8 @@ void print_token(){
         case -1:cout << "Input not allowed !Please review your code in row " << row << "." << endl; break;//不允许输入
         case 555:cout << "ERROR CONST CHAR ! Please review your const char in row " << row << "." << endl; break;//字符常量出错
         case 666:cout << "ERROR CONST FLOATING NUMBER ! Please review your floating number in row " << row << "." << endl; break;//浮点数出错
+        case 777:cout << "ERROR SYMBOL ! Please review your symbol in row " << row << "." << endl; break;//符号出错
+        case 999:cout << "STRING IS TOO BIG ! Please review your string var in row " << row << "." << endl; break;//字符串常量出错，太大了
         default:cout << "<" << keywords[(token[i].code)] << "> " << endl; break;
         }//switch
     }   //for循环
@@ -196,14 +205,19 @@ void scaner()
     }
     if (front == 2){
         m = 0;
+        key = 02;
+        front = 1;
         while (ww != '"'){
             word[m++] = ww;
             ww = filec[tp++];
+            if(m==60){
+                key=999;
+                break;
+            }
         }
         word[m] = '\0';
         tp--;
-        key = 02;
-        front = 1;
+
         return;
     }
     if (front == 4){
@@ -250,9 +264,25 @@ void scaner()
             }
         }
         if (n ==12){
-            for (; n < 39; n++){
+            for (; n < 40; n++){
                 if (strcmp(word, KT[n]) == 0)	{
                     key = n + 26;//"long"~"Imaginary"38~65
+                    break;
+                }
+            }
+        }
+        if(n==40){
+            for(;n<42;n++){
+                if (strcmp(word, KT[n]) == 0)	{
+                    key = n + 36;//"call","ret"76 77
+                    break;
+                }
+            }
+        }
+        if(n==42){
+            for(;n<43;n++){
+                if(strcmp(word,KT[n])==0){
+                    key=n+43;//define 85
                     break;
                 }
             }
@@ -296,7 +326,8 @@ void scaner()
         m = 0;
         word[m++] = ww;
         switch (ww){   //其他字符
-        case'>': ww = filec[tp++];
+        case'>':{
+            ww = filec[tp++];
             if (ww == '='){
                 key = 68;
                 word[m++] = ww;
@@ -310,12 +341,13 @@ void scaner()
             }
             word[m] = '\0';
             break;
-        case'<': ww = filec[tp++];
+        }
+        case'<':{ ww = filec[tp++];
             if (ww == '='){
                 key = 70;
                 word[m++] = ww;
             }
-            if (ww == '<'){
+            else if (ww == '<'){
                 key = 36;
                 word[m++] = ww;
             }
@@ -324,7 +356,9 @@ void scaner()
             }
             word[m] = '\0';
             break;
-        case'=': ww = filec[tp++];
+        }
+        case'=': {
+            ww = filec[tp++];
             if (ww == '='){
                 key = 66;
                 word[m++] = ww;
@@ -341,15 +375,99 @@ void scaner()
                     tp--;
                 }
             }
+            else if(ww=='.'){
+                key=75;
+                word[m++]=ww;
+            }
             else {
                 key = 17; tp--;
             }
             word[m] = '\0';
             break;
-        case'+':key = 11; word[m] = '\0'; break;
-        case'-':key = 12; word[m] = '\0'; break;
-        case'*':key = 13; word[m] = '\0'; break;
-        case'/':key = 14; word[m] = '\0'; break;
+        }
+        case'+':{
+            ww=filec[tp++];
+            if(ww=='+'){
+                key=78;
+                word[m++]=ww;
+            }
+            else if(ww=='='){
+                key=80;
+                word[m++]=ww;
+            }
+            else {
+                key = 11;
+                tp--;
+            }
+            word[m] = '\0'; break;
+        }
+        case'-':{
+            ww=filec[tp++];
+            if(ww=='-'){
+                key=79;
+                word[m++]=ww;
+            }
+            else if(ww=='='){
+                key=81;
+                word[m++]=ww;
+            }
+            else {
+                key = 12;
+                tp--;
+            }
+            word[m] = '\0'; break;
+        }
+        case'*':{
+            ww=filec[tp++];
+            if(ww=='/'){                
+                key=111;//块注释
+            }
+            else if(ww=='='){
+                key=82;
+                word[m++]=ww;
+            }
+            else{
+                key = 13;
+                tp--;
+            }
+            word[m] = '\0';
+            break;
+        }
+        case'/':{
+            ww=filec[tp++];
+            if(ww=='/'){
+                key=111;
+                while(ww!='\n'){
+                    ww=filec[tp++];
+                }
+                tp--;
+            }
+            else if(ww=='='){
+                key=83;
+                word[m++]=ww;
+            }
+            else if(ww=='*'){//块注释
+                key=111;
+                ww=filec[tp++];
+                while(1){
+                    while(ww!='*') {
+                        if(ww=='\n') row++;
+                        ww=filec[tp++];//ww='*'
+                    }
+                    ww=filec[tp++];
+                    if(ww=='/') {
+                        tp-=2;
+                        break;
+                    }
+                }
+            }
+            else {
+                key = 14;
+                tp--;
+            }
+            word[m]='\0';
+            break;
+        }
         case'{':key = 15; word[m] = '\0'; break;
         case'}':key = 16; word[m] = '\0'; break;
         case',':key = 18; word[m] = '\0'; break;
@@ -404,8 +522,20 @@ void scaner()
             else { key = 27; tp--; }//'|'
             word[m] = '\0';
             break;
-
-        case'!':key = 28; word[m] = '\0'; break;
+        case'.': {
+            ww = filec[tp++];
+            if (ww == '='){
+                key = 74;
+                word[m++] = ww;
+            }
+            else {
+                key = 73; tp--;
+            }
+            word[m] = '\0';
+            break;
+        }
+        case'!': key = 28; word[m] = '\0'; break;
+        case'#': key = 84; word[m] = '\0'; break;
         case'\r':
         case'\n':key = -2; word[m] = '\0'; break;//计算行数
         default: key = -1; word[m] = '\0'; break;
@@ -423,6 +553,9 @@ int cifa_main(string path)
         ConstNum.clear();    //常数表的表
         ConstString.clear(); //字符串常量表
         ConstChar.clear();   //字符常量表
+        word[0]='1';
+        word[1] = '\0';
+        ConstNum.push_back(word);
         cout<<"Start To Analysis Words"<<endl;
         while (tp<(cnum-1)){
             scaner();//调用扫描函数scaner返回token的key
@@ -440,7 +573,10 @@ int _tmain()
 {
 //    cifa_main();
     cout << "Start Syntax Analysis:\n" << endl;
+
 //    // system("pause");
+
+    //system("pause");
     if (syntax_analysis())
     {
         cout << "Syntax Analysis Succeed\n" << endl;

@@ -41,6 +41,12 @@ void basic_block(){			//基本块划分，结果储存在flow_graph
             flowGraph.push_back(node);
             inter_pointer++;
         }
+        else //只有一块
+       {
+            node.end = inter_pointer-1;
+            flowGraph.push_back(node);
+
+        }
     } while (inter_pointer < inter_pro.size());
 
     if (flowGraph.size() != 0)
@@ -58,7 +64,9 @@ void DAG_optimaize(int front, int end){
     int pointer;
     pointer = front;
     while (pointer <= end){
-        if (inter_pro[pointer].op.code == 17 || inter_pro[pointer].op.code == 11 || inter_pro[pointer].op.code == 12 || inter_pro[pointer].op.code == 13 || inter_pro[pointer].op.code == 14){	//除赋值表达式,+ - * /外不参加优化
+        if (inter_pro[pointer].op.code == 17 || inter_pro[pointer].op.code == 11 || inter_pro[pointer].op.code == 12 || inter_pro[pointer].op.code == 13 || inter_pro[pointer].op.code == 14
+            ||inter_pro[pointer].op.code == 72 || inter_pro[pointer].op.code == 71||inter_pro[pointer].op.code == 67||inter_pro[pointer].op.code==69
+              ||inter_pro[pointer].op.code == 74 || inter_pro[pointer].op.code == 75   ){	//除赋值表达式,[,],>,<,+ - * /外不参加优化
             //(1)
             if ((inter_pro[pointer].arg1.code == 0 || inter_pro[pointer].arg1.code == -2) && inter_pro[pointer].arg2.code == -1)	//(=,B,_,A)
             {
@@ -121,7 +129,7 @@ void DAG_optimaize(int front, int end){
                     constnum = atof(ConstNum[inter_pro[pointer].arg1.value].c_str())*atof(ConstNum[inter_pro[pointer].arg2.value].c_str());
                     if(inter_pro[pointer].op.code == 14)
                     constnum = atof(ConstNum[inter_pro[pointer].arg1.value].c_str())/atof(ConstNum[inter_pro[pointer].arg2.value].c_str());
-                 //   cout<<constnum<<endl;
+
                     char temp[10];
                     str = ftos(constnum);
 
@@ -274,7 +282,8 @@ void creat_quad(int start_pointer, int end_pointer){
             temp.label = 0;
             temp.res = DAG[i].labels[0];//主标记作为赋值对象
             new_inter.push_back(temp);
-
+           // cout<<"i="<<i<<endl;
+           // cout<<DAG[i].op.code<<endl;
             int j;
             for (j = 1; j < DAG[i].labels.size(); j++){
                 if (DAG[i].labels[j].code == 0){
@@ -304,6 +313,7 @@ void creat_quad(int start_pointer, int end_pointer){
             }
         }
     }
+  //  cout<<new_inter.size()<<endl;
     for (int i = 0; i < new_inter.size(); i++){
         int label = 0;
         if (inter_pro[quad_pointer + i].label != 0&&inter_pro[quad_pointer + i].label != 3){
@@ -338,13 +348,19 @@ void output_inter_pro(int front, int end){
             cout << "(" << keywords[inter_pro[i].op.code] << ",";
             switch (inter_pro[i].arg1.code){
             case 0:cout << Id[inter_pro[i].arg1.value] << ","; break;//当为变量时
+            case 1:cout << ConstChar[inter_pro[i].arg1.value] << ","; break;
             case 3:cout << ConstNum[inter_pro[i].arg1.value] << ","; break;//常数
+            case 78:
+            case 79:cout << ConstNum[0] << ","; break;
             case -2:cout << "t" << inter_pro[i].arg1.value << ","; break;
             case -1:cout << "_,";
             }
             switch (inter_pro[i].arg2.code){
             case 0:cout << Id[inter_pro[i].arg2.value] << ","; break;//当为变量时
+            case 1:cout << ConstChar[inter_pro[i].arg1.value] << ","; break;
             case 3:cout << ConstNum[inter_pro[i].arg2.value] << ","; break;//常数
+            case 78:
+            case 79:cout << ConstNum[0] << ","; break;
             case -2:cout << "t" << inter_pro[i].arg2.value << ","; break;
             case -1:cout << "_,";
             }
