@@ -754,6 +754,132 @@ targe* creatFunction(targe* code_last){
                     code_last = code_pointer;
                 }
 
+                if(inter_pro[inter_pro_pointer].op.code == 75){     //数组取数
+                         code_pointer = new targe;
+                    if (inter_pro[inter_pro_pointer].label == 2){
+                        code_pointer->label = check_list[inter_pro_pointer];
+                    }
+                               int tp;
+                               tp=0;
+                               for(int i=0;i<i < SYNBL.size(); i++){
+                                  if(SYNBL[i].cat==7&&Id[SYNBL[i].name.value]==Id[inter_pro[inter_pro_pointer].arg1.value]){
+                                  for(int j=0;j<RINFL.size();j++)
+                                    {
+                                        if(RINFL[j].num==SYNBL[i].addr)
+                                           {
+
+                                              if(Id[RINFL[j].name.value]==Id[inter_pro[inter_pro_pointer].arg2.value])
+                                                   break;
+                                              else
+                                                   tp++;
+                                           }
+                                        if(RINFL[j].num>SYNBL[i].addr)
+                                            break;
+                                    }
+                                      break;
+                                  }
+                               }
+                               code_pointer->cw = "MOV";		//mov ax,**[]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = Id[inter_pro[inter_pro_pointer].arg1.value] + "[" +
+                                    itos(tp*2) + "]";
+
+                               code_pointer->flag = 2;
+                               code_pointer->next = NULL;
+                               code_last->next = code_pointer;
+                               code_last = code_pointer;
+
+                    //结果存到res
+                    code_pointer = new targe;
+                    switch (inter_pro[inter_pro_pointer].res.code){
+                    case 0:{
+                               code_pointer->cw = "MOV";		//mov int|char|float[i],ax
+                               code_pointer->arg2 = "AX";
+                               code_pointer->arg1 = the_first_data_label + "[" +
+                                   itos(inter_pro[inter_pro_pointer].res.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].res.value].type].lenth) + "]";
+                               break;
+                    }
+                    case 3:{
+                               code_pointer->cw = "MOV";		//mov const[i],ax
+                               code_pointer->arg2 = "AX";
+                               code_pointer->arg1 = "CONST[" + itos(inter_pro[inter_pro_pointer].res.value * 2) + "]";
+                               break;
+                    }
+                    case -2:{	//反正也不应该有
+                                code_pointer->cw = "MOV";		//mov temp[i],ax
+                                code_pointer->arg2 = "AX";
+                                code_pointer->arg1 = "TEMP[" + itos(inter_pro[inter_pro_pointer].res.value * 2) + "]";
+                                break;
+                    }
+                    }
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+                }
+                if(inter_pro[inter_pro_pointer].op.code == 74){     //数组存数
+                         code_pointer = new targe;
+                    if (inter_pro[inter_pro_pointer].label == 2){
+                        code_pointer->label = check_list[inter_pro_pointer];
+                    }
+                    switch (inter_pro[inter_pro_pointer].arg1.code){
+                    case 0:{
+                               code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = the_first_data_label + "[" +
+                                   itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
+                               break;
+                    }
+                    case 3:{
+                               code_pointer->cw = "MOV";		//mov ax,const[i]
+                               code_pointer->arg1 = "AX";
+                               code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                               break;
+                    }
+                    case -2:{
+                                code_pointer->cw = "MOV";		//mov ax,temp[i]
+                                code_pointer->arg1 = "AX";
+                                code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
+                                break;
+                    }
+                    }
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+                    //结果存到res
+                    int rtp;
+                    rtp=0;
+                    for(int i=0;i<i < SYNBL.size(); i++){
+                       if(SYNBL[i].cat==7&&Id[SYNBL[i].name.value]==Id[inter_pro[inter_pro_pointer].res.value]){
+                       for(int j=0;j<RINFL.size();j++)
+                         {
+                             if(RINFL[j].num==SYNBL[i].addr)
+                                {
+
+                                   if(Id[RINFL[j].name.value]==Id[inter_pro[inter_pro_pointer].arg2.value])
+                                        break;
+                                   else
+                                        rtp++;
+                                }
+                             if(RINFL[j].num>SYNBL[i].addr)
+                                 break;
+                         }
+                           break;
+                       }
+                    }
+                    code_pointer = new targe;
+                    code_pointer->cw = "MOV";		//mov int|char|float[i],ax
+                    code_pointer->arg2 = "AX";
+                    code_pointer->arg1 = Id[inter_pro[inter_pro_pointer].res.value] + "[" +
+                            itos(rtp*2) + "]";
+
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
+                }
+
                 if(inter_pro[inter_pro_pointer].op.code == 76 ){       //函数 call
                     code_pointer = new targe;
                     code_pointer->cw = "CALL";
