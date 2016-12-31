@@ -62,6 +62,7 @@ OBJECTS       = main.o \
 		optimize.o \
 		moc_mainwindow.o
 DIST          = ../C-Compiler/wenben.txt \
+		../C-Compiler/test.asm \
 		../../Qt/5.7/clang_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.7/clang_64/mkspecs/qdevice.pri \
 		../../Qt/5.7/clang_64/mkspecs/features/device_config.prf \

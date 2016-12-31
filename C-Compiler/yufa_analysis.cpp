@@ -1208,7 +1208,7 @@ void senten_list() {
                     next();
                     tempArrIndex=stoi(ConstNum[currentToken.value]);
                     if (SYNBL[i].cat==5)
-                        if(AINFL[SYNBL[i].addr].up>tempArrIndex)
+                        if(AINFL[SYNBL[i].addr].up>=tempArrIndex)
                         {
                             sem.push_back(preToken);
                             sem.push_back(currentToken);
@@ -1595,10 +1595,8 @@ void structure() {
     }
 }
 
-void programStartSymbol() {
-    //下面先识别结构体
-    structure();
-    if(currentToken.code==84){//宏定义 #
+void programStartSymbol() {  
+    while(currentToken.code==84){//宏定义 #
         next();
         if(currentToken.code==85){//define
             next();
@@ -1609,6 +1607,8 @@ void programStartSymbol() {
             next();
         }
     }
+    //下面先识别结构体
+    structure();
     //识别函数，这里可以识别多个函数
         while (currentToken.code == 7 || currentToken.code == 8 || currentToken.code == 9 || currentToken.code == 29) {	//int|float|char|void，他们都是函数的返回值
             Token returnToken=currentToken;

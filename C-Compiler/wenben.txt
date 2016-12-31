@@ -1,9 +1,12 @@
 #define q 100
-/*struct hh{
+/*
+struct hh{
     int a;
     char c;
 };
 void func(){
+    hh funxtest;
+    funxtest.c=2;
     cout <<4+12;
 }
 void functt(){
@@ -23,15 +26,18 @@ int max(int maxVar1,int maxVar2)
     }
     maxVar=maxVar+3;
     return maxVar;
-}*/
-
+}
+*/
 int main()
 {
-   /*int e,f,g,i,j,k;
+    /*
+    int b=0;
+    int e,f,g,i,j,k;
     float h;
-
+    int aadd[3];
     char w,v;
     hh test;
+    hh testarr[10];
     int bb[10];
     test.a=e;
     w=test.c;
@@ -41,17 +47,15 @@ int main()
     f = 1;
     g = 0;
     bb[2]=6;
-    f=bb[2];*/
-    int b=0;
-    char a[3];
-
-b++;
-b+=7;
-b*=6;
---b;
-
-
-a[1]='t';
+    f=bb[2];
+    aadd[2]=q;
+    b++;
+    b+=7;
+    b*=6;
+    --b;
+    */
+    int aaaaa;
+    aaaaa=q;
     return 0;
 
 }

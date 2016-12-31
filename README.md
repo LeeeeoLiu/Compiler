@@ -9,34 +9,39 @@
 
 ## 版本记录
 
-### 下一阶段任务
+### Version 3.0 (修复之前的 bug 继续增加功能)
 
 - [ ] 修复已经出现的bugs [0] (详细见 [issue](https://github.com/LeeeeoLiu/Compiler/issues))
-	
 	- [x] #16 函数跳转问题 没有函数的时候不应该启用funcstart变量 [Leeeeo]
 	- [ ] #14 目标代码 JZ 没有标号 [Loke]
 	- [x] #12 变量重定义		[Leeeeo]
 	- [ ] #11 初始化所有变量		[Leeeeo]
-	- [ ] #6  数组中间代码优化问题	[Loke]
+	- [x] #6  数组中间代码优化问题	[Loke]
 	- [ ] #5  中间定义新变量问题		[Loke]
-- [ ] 数组支持char float struct [Sakura]
+- [ ] 数组支持char float struct
+	- [x] 四元式生成[Sakura]
+	- [ ] 目标代码生成[Loke]
 - [x] 添加函数嵌套使用	[Leeeeo]
 - [ ] 语义分析报错信息,明确到行并显示到屏幕上 [Leeeeo]
+- [ ] 二维数组 [Leeeeo]
 - [ ] 宏定义
-- [ ] 强制类型转换
-- [ ] 编译器编辑文本后自动预编译 [delay]
-- [ ] 代码高亮 [delay]
+	- [x] 四元式生成 [Sakura]
+	- [ ] 目标代码生成 [Loke]
+- [ ] 自增自减
+	- [x] 四元式生成 [Sakura]
+	- [ ] 目标代码生成 [Sakura]
+- [ ] += -= *= /= [Leeeeo]
 
-### Version 2.0 Todo List
+### Version 2.0 (增加一些功能)
 - [x] 添加 cout
 	- [x] cout 四元式     [Loke]
 	- [x] cout 目标代码    [Koala]
 - [x] 添加数组
 	- [x] 添加数组四元式      [Leeeeo]
 	- [x] 数组目标代码生成 		[Koala]
-- [ ] 添加结构体
+- [x] 添加结构体
 	- [x] 添加结构体四元式  [Leeeeo]
-	- [ ] 结构体目标代码生成  	[Loke]
+	- [x] 结构体目标代码生成  	[Loke]
 - [x] 添加函数
 	- [x] void 函数 call ret四元式生成 	[Leeeeo]
 	- [x] 带返回值函数call ret四元式生成 	[Leeeeo]
@@ -73,90 +78,7 @@
 ##文法
 
 
-### 文法定义(C 语言)
->  程序 -> 多个结构体定义 多个函数定义
 
->  多个结构体定义 -> {结构体}
-
->  结构体 -> struct 标识符 { 多个变量声明 } ;
-
-
->  多个变量声明 -> {单个变量声明}
-
-
-> 单个变量声明 -> 变量类型 变量 ;| 变量类型 [长度];
-
-
-> 变量 -> 标识符
-
-
->  变量类型 -> int|float|char
-
-
->  多个函数定义 -> {函数定义}
-
-
-> 函数定义 -> 函数返回值类型 函数名称标识符 ( 参数列表 ) { 复合语句 返回语句 }
-
-
-> 函数返回值类型 -> 变量类型|void
-
-
-> 返回语句 -> return 算数表达式E ;|return ;|return 常量 ;
-
-
-> 函数名称标识符 -> 标识符|main
-
-
-> 参数列表 -> 变量类型 标识符 , 参数列表|空
-
-
->  复合语句 -> 多个变量声明 多个语句
-
-
->  多个语句 -> { 语句 }
-
-
->  语句 -> 初始化语句|赋值语句|while语句|if语句|cout语句
-
-
->  初始化语句 -> 变量类型 初始化赋值表
-
-
->  初始化赋值表 -> 标识符 , 初始化赋值表|标识符 = 算数表达式E , 初始化赋值表|;
-
-
->  赋值语句 -> 标识符 = 算数表达式E ;
-
-
->  算数表达式
-
-
->  > E -> T E1
-
-
->  > E1 -> w0 T E1|空
-
-
->  > T -> F T1
-
-
->  > T1 -> w1 F T1|空
-
-
->  > F -> I|( E )
-
->  while语句 -> while ( 算数表达式 ) { 多个语句 }
-
-
->  if语句 -> if ( 算数表达式 ) { 多个语句 } 否则语句
-
-
->  否则语句 -> else { 多个语句 }|空
-
->  cout语句->cout
-
->  cout  -><< 变量;|算术表达式;
 
 ## 函数调用四元式 [Leeeeo]
 调用函数 test();
@@ -294,20 +216,158 @@ struct hh
 |=.|75	| |
 |call|76	| |
 |ret|77	| |
-| |78	| |
-| |79	| |
-| |80	| |
-| |81	| |
-| |82	| |
-| |83	| |
-| |84	| |
-| |85	| |
+|++ |78	| |
+|-- |79	| |
+|+= |80	| |
+|-= |81	| |
+|*= |82	| |
+|/= |83	| |
+|# |84	| |
+|define|85	| |
 | |86	| |
 | |87	| | |
 
 ## 语法分析器的设计 [Leeeeo]
-输入:
-输出:
+### 功能
+#### 输入
+词法分析生成的TOKEN序列
+#### 输出
+在TOKEN序列有语法错误时输出相应的错误信息，否则返回isGrammarCorrect 
+#### 主要思想及原理
+检查词法分析生成的Token序列是否有语法错误。如果有错误，就将其存储起来，并继续扫描后面的错误。为了便于四元式的生成，本程序采用递归下降子程序法。本程序采用的文法是LL(1)文法，可以保证递归下降子程序的正确运行。在语法分析的过程当中，能够将遇到的语法分析通过的变量标识符填入定义的符号表中。
+#### 文法定义
+>  程序 -> 多个结构体定义 多个函数定义
+
+>  多个结构体定义 -> {结构体}
+
+>  结构体 -> struct 标识符 { 多个变量声明 } ;
+
+
+>  多个变量声明 -> {单个变量声明}
+
+
+> 单个变量声明 -> 变量类型 变量 ;| 变量类型 [长度];
+
+
+> 变量 -> 标识符
+
+
+>  变量类型 -> int|float|char
+
+
+>  多个函数定义 -> {函数定义}
+
+
+> 函数定义 -> 函数返回值类型 函数名称标识符 ( 参数列表 ) { 复合语句 返回语句 }
+
+
+> 函数返回值类型 -> 变量类型|void
+
+
+> 返回语句 -> return 算数表达式E ;|return ;|return 常量 ;
+
+
+> 函数名称标识符 -> 标识符|main
+
+
+> 参数列表 -> 变量类型 标识符 , 参数列表|空
+
+
+>  复合语句 -> 多个变量声明 多个语句
+
+
+>  多个语句 -> { 语句 }
+
+
+>  语句 -> 初始化语句|赋值语句|while语句|if语句|cout语句
+
+
+>  初始化语句 -> 变量类型 初始化赋值表
+
+
+>  初始化赋值表 -> 标识符 , 初始化赋值表|标识符 = 算数表达式E , 初始化赋值表|;
+
+
+>  赋值语句 -> 标识符 = 算数表达式E ;
+
+
+>  算数表达式
+
+
+>  > E -> T E1
+
+
+>  > E1 -> w0 T E1|空
+
+
+>  > T -> F T1
+
+
+>  > T1 -> w1 F T1|空
+
+
+>  > F -> I|( E )
+
+>  while语句 -> while ( 算数表达式 ) { 多个语句 }
+
+
+>  if语句 -> if ( 算数表达式 ) { 多个语句 } 否则语句
+
+
+>  否则语句 -> else { 多个语句 }|空
+
+>  cout语句->cout
+
+>  cout  -><< 变量;|算术表达式;
+
+#### 数据结构
+1.	单个语法错误MJSyntaxError类
+a)	构造函数MJSyntaxError(string errorMessage, int afterIndex)
+i.	Parameter errorMessage: 错误的信息
+ii.	Parameter afterIndex: 错误在token串中的位置
+2.	语法错误集合MJErrorContainer类
+a)	添加一个错误bool addError(MJSyntaxError newError)
+i.	Returns 如果在token串的同一个位置的错误多于一个，就代表发生了不能忽略的错误，这时，返回false，停止语法分析。
+b)	在屏幕上输出所有的错误void printErrors()
+3.	存储变量标识符的栈vector<Token> sym_list_stack
+4.	符号表vector<synbl> SYNBL
+5.	四元式序列vector<quadruple> inter_pro
+6.	操作数栈vector<Token> sem
+7. 关键字表 vector<string> keywords
+8. TOKEN序列vector<Token> token
+
+#### 主要函数：
+```
+bool syntax_analysis()//主函数，判断是否有语法错误
+void errorHappenedWithMessage(string message)//生成错误信息
+bool next()  //读取下一字符
+int isSynblExist()//查符号表
+void retQuat()//生成函数返回的四元式
+void callQuat(Token fun)//生成函数调用的四元式
+void cal_QUAT(int op)//生成计算表达式的四元式
+void arrGetQuat()//生成取值的四元式
+void arrStoreQuat()//生成存数组的四元式
+void struGetQuat()//生成取结构体成员变量的四元式
+void struStoreQuat()//生成存结构体成员变量的四元式
+void equa_QUAT(int op)//生成赋值表达式的四元式
+void F(),void T(),void E()//算术表达式的递归下降子程序识别
+void A()//>  <　>=  <=的识别
+void type_list()//判断是否为数据类型
+void symbol_list(int type)//识别标识符并将新标识符压入符号表
+void symbolList_init(int type)//初始化赋值表
+int isStructSys()//识别变量是否为结构体标识符
+int isFuncVar()//识别变量是否为函数标识符
+int isStructVar()//识别变量是否为结构体
+void var_declaration()//识别变量声明
+void var_declarationStruct()//识别结构体声明
+void senten_list()//识别语句表
+void param_list()//参数表
+void structure()//识别结构体
+compound_sen()//复合语句
+```
+#### 优点及创新：
+模块化设计，便于函数的调用以及错误的修改，函数复用性很高，功能强大，能够识别多种语法错误并详细的指明错误的具体位置及相关信息，有利于源程序语法错误的修改
+
 ## 中间代码生成及优化 [Loke]
 
 ##### 功能
