@@ -14,6 +14,8 @@ extern vector<synbl> SYNBL;
 extern vector<typel> TYPEL;
 extern vector<Token> sem;
 extern vector<string> check_list;
+extern vector<rinfl> RINFL;
+extern vector<ainfl> AINFL;
 extern int inter_pro_pointer;//中间代码
 
 void Psynbl();

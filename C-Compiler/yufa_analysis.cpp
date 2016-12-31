@@ -458,7 +458,7 @@ void F() {
             next();
             int tempArrIndex2=stoi(ConstNum[currentToken.value]);
             if (SYNBL[i].cat==5)
-                if(AINFL[SYNBL[i].addr].up>tempArrIndex2)
+                if(AINFL[SYNBL[i].addr].up>=tempArrIndex2)
                 {
                     sem.push_back(preToken);
                     sem.push_back(currentToken);

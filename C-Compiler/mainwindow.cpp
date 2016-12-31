@@ -85,6 +85,8 @@ void MainWindow::initAll()
     ConstString.clear(); //字符串常量表
     ConstChar.clear();   //字符常量表
     SYNBL.clear();
+    RINFL.clear();
+    AINFL.clear();
     keywords.clear();
     inter_pro.clear();
     token.clear();
@@ -113,7 +115,6 @@ void MainWindow::outputRecord(QString tempMess)
 void MainWindow::on_btnCompile_clicked()
 {
     initAll();
-//    ui->btnCompile->setEnabled(false);
     File_actionSave_Slot();
     outputRecord("Start Cifa Analysising......");
     cifa_main(path.toStdString());
@@ -287,17 +288,76 @@ void MainWindow::displaySYNBL()
 
 void MainWindow::displayRINFL()
 {
-
+    QStandardItemModel  *model = new QStandardItemModel();
+    model->setColumnCount(5);
+    model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("NUM"));
+    model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("NAME"));
+    model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("TYPE"));
+    model->setHeaderData(3,Qt::Horizontal,QString::fromLocal8Bit("OFF"));
+    model->setHeaderData(4,Qt::Horizontal,QString::fromLocal8Bit("TP"));
+    ui->tableViewRINFL->setModel(model);
+    for (int i = 0; i < RINFL.size(); i++)
+    {
+        model->setItem(i,0,new QStandardItem(QString::number(RINFL[i].num)));
+        model->item(i,0)->setTextAlignment(Qt::AlignCenter);
+        QString tempName="";
+        switch (RINFL[i].name.code)
+        {
+        case 0:tempName=QString::fromStdString(Id[SYNBL[i].name.value]); break;
+        case 1:tempName=QString::fromStdString(ConstChar[SYNBL[i].name.value]); break;
+        case 2:tempName=QString::fromStdString(ConstString[SYNBL[i].name.value]); break;
+        case 3:tempName=QString::fromStdString(ConstNum[SYNBL[i].name.value]); break;
+        case 4:tempName=QString::fromStdString(ConstNum[SYNBL[i].name.value]); break;
+        default:tempName=QString::fromStdString(keywords[SYNBL[i].name.code]);
+        }
+        model->setItem(i,1,new QStandardItem(tempName));
+        model->item(i,1)->setTextAlignment(Qt::AlignCenter);
+        model->setItem(i,2,new QStandardItem(QString::number(RINFL[i].type)));
+        model->item(i,2)->setTextAlignment(Qt::AlignCenter);
+        model->setItem(i,3,new QStandardItem(QString::number(RINFL[i].off)));
+        model->item(i,3)->setTextAlignment(Qt::AlignCenter);
+        model->setItem(i,4,new QStandardItem(QString::number(RINFL[i].tp)));
+        model->item(i,4)->setTextAlignment(Qt::AlignCenter);
+    }
+    ui->tableViewRINFL->horizontalHeader()->setStretchLastSection(true);
 }
+
 
 void MainWindow::displayAINFL()
 {
-
+    QStandardItemModel  *model = new QStandardItemModel();
+    model->setColumnCount(1);
+    model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("NUM"));
+    ui->tableViewConstNum->setModel(model);
+    for (int i = 0; i < ConstNum.size(); i++)
+    {
+        model->setItem(i,0,new QStandardItem(QString::fromStdString(ConstNum[i])));
+        model->item(i,0)->setTextAlignment(Qt::AlignCenter);
+    }
+    ui->tableViewConstNum->horizontalHeader()->setStretchLastSection(true);
 }
 
 void MainWindow::displayConstNum()
 {
-
+    QStandardItemModel  *model = new QStandardItemModel();
+    model->setColumnCount(4);
+    model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("LOW"));
+    model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("UP"));
+    model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("CTP"));
+    model->setHeaderData(3,Qt::Horizontal,QString::fromLocal8Bit("CLEN"));
+    ui->tableViewAINFL->setModel(model);
+    for (int i = 0; i < AINFL.size(); i++)
+    {
+        model->setItem(i,0,new QStandardItem(QString::number(AINFL[i].low)));
+        model->item(i,0)->setTextAlignment(Qt::AlignCenter);
+        model->setItem(i,1,new QStandardItem(QString::number(AINFL[i].up)));
+        model->item(i,1)->setTextAlignment(Qt::AlignCenter);
+        model->setItem(i,2,new QStandardItem(QString::number(AINFL[i].ctp)));
+        model->item(i,2)->setTextAlignment(Qt::AlignCenter);
+        model->setItem(i,3,new QStandardItem(QString::number(AINFL[i].clen)));
+        model->item(i,3)->setTextAlignment(Qt::AlignCenter);
+    }
+    ui->tableViewAINFL->horizontalHeader()->setStretchLastSection(true);
 }
 
 
