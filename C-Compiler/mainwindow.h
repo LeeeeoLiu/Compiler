@@ -14,6 +14,9 @@
 #include <QMainWindow>
 #include <QGLWidget>
 #include "cifa.h"
+#include "src/codeeditor.h"
+#include "src/myhighlighter.h"
+#include "src/typedef.h"
 
 extern int row;
 extern char ww;
@@ -21,6 +24,12 @@ extern int tp;
 extern int cnum;
 extern int front;
 extern char filec[10000];
+
+struct ExtraSelection
+    {
+        QTextCursor cursor;
+        QTextCharFormat format;
+    };
 
 namespace Ui {
 class MainWindow;
@@ -55,6 +64,7 @@ private:
     QString codeRecord;
     QString asmCode;
     QString asmPath;
+    CodeEditor *configEditor;
 };
 
 #endif // MAINWINDOW_H

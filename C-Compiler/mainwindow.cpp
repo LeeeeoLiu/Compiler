@@ -11,8 +11,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->codeArea->show();
-
+//    ui->codeArea->show();
+    configEditor = new CodeEditor();
+    configEditor->setMode(EDIT);
+    ui->codeArea->addWidget(configEditor);
+    MyHighLighter *highlighter = new MyHighLighter(configEditor->document());
     connect(ui->actionHelp, SIGNAL(triggered(bool)), this, SLOT(Help_actionHelp_Slot()));
     connect(ui->actionOpen,SIGNAL(triggered(bool)),this,SLOT(File_actionOpen_Slot()));
     connect(ui->actionSave,SIGNAL(triggered(bool)),this,SLOT(File_actionSave_Slot()));
@@ -33,6 +36,8 @@ void MainWindow::Help_actionHelp_Slot()
 
 void MainWindow::File_actionOpen_Slot()
 {
+    configEditor->setPlainText("");
+//    ui->codeArea->setPlainText("");
     path = QFileDialog::getOpenFileName(this, tr("Open File"), ".", tr("Code Files(*.c)"));
             if(path.length() == 0) {
                     QMessageBox::information(NULL, tr("Path"), tr("You didn't select any files."));
@@ -50,7 +55,8 @@ void MainWindow::File_actionOpen_Slot()
              QString line = in.readLine();
              code =code+line+"\n";
          }
-     ui->codeArea->setText(code);
+//     ui->codeArea->appendPlainText(code);
+         configEditor->appendPlainText(code);
 }
 
 void MainWindow::File_actionSave_Slot()
@@ -69,7 +75,8 @@ void MainWindow::File_actionSave_Slot()
                   QMessageBox::information(NULL, tr("Path"), tr("Open failed."));
              }
              QTextStream txtOutput(&f);
-             QString codeSave =ui->codeArea->toPlainText();
+             QString codeSave = configEditor->toPlainText();
+//             QString codeSave =ui->codeArea->toPlainText();
              txtOutput << codeSave;
              f.close();
      }
@@ -303,12 +310,12 @@ void MainWindow::displayRINFL()
         QString tempName="";
         switch (RINFL[i].name.code)
         {
-        case 0:tempName=QString::fromStdString(Id[SYNBL[i].name.value]); break;
-        case 1:tempName=QString::fromStdString(ConstChar[SYNBL[i].name.value]); break;
-        case 2:tempName=QString::fromStdString(ConstString[SYNBL[i].name.value]); break;
-        case 3:tempName=QString::fromStdString(ConstNum[SYNBL[i].name.value]); break;
-        case 4:tempName=QString::fromStdString(ConstNum[SYNBL[i].name.value]); break;
-        default:tempName=QString::fromStdString(keywords[SYNBL[i].name.code]);
+        case 0:tempName=QString::fromStdString(Id[RINFL[i].name.value]); break;
+        case 1:tempName=QString::fromStdString(ConstChar[RINFL[i].name.value]); break;
+        case 2:tempName=QString::fromStdString(ConstString[RINFL[i].name.value]); break;
+        case 3:tempName=QString::fromStdString(ConstNum[RINFL[i].name.value]); break;
+        case 4:tempName=QString::fromStdString(ConstNum[RINFL[i].name.value]); break;
+        default:tempName=QString::fromStdString(keywords[RINFL[i].name.code]);
         }
         model->setItem(i,1,new QStandardItem(tempName));
         model->item(i,1)->setTextAlignment(Qt::AlignCenter);
@@ -383,3 +390,4 @@ void MainWindow::on_saveAsm_clicked()
              f.close();
      }
 }
+

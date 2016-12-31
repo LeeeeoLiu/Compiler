@@ -118,7 +118,7 @@
        <property name="autoFillBackground">
         <bool>true</bool>
        </property>
-       <layout class="QGridLayout" name="gridLayout_2">
+       <layout class="QGridLayout" name="gridLayout_20">
         <item row="0" column="0">
          <widget class="QLabel" name="label">
           <property name="text">
@@ -126,19 +126,15 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="0" column="2">
          <widget class="QPushButton" name="btnCompile">
           <property name="text">
            <string>编译</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="2">
-         <widget class="QTextEdit" name="codeArea">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-         </widget>
+        <item row="1" column="0" colspan="3">
+         <layout class="QGridLayout" name="codeArea"/>
         </item>
        </layout>
       </widget>
