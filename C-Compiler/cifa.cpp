@@ -51,6 +51,7 @@ void Psynbl()
         case 6:cout << "STRUCT DEFINE\n"; break;
         case 7:cout << "STRUCT VARI\n"; break;
         case 8:cout << "STRUCT ARRY\n"; break;
+        case 9:cout << "#define\n";break;
         default:cout << "ERRO\n"; break;
         }
 

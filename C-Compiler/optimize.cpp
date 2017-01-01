@@ -210,7 +210,7 @@ void DAG_optimaize(int front, int end){
                 if (pointer_c == -1){		//C需要新建
                     vex_node vex_temp;
                     vex_temp.op.code = -1;		//新建的结点没有运算符
-                    vex_temp.labels.push_back(inter_pro[pointer].arg2);	//把C作为第一个标记
+                    vex_temp.labels.push_back(inter_pro[pointer].arg2);	//把B作为第一个标记
                     vex_temp.arc = { -1, -1 };
                     DAG.push_back(vex_temp);
                     pointer_c = DAG.size() - 1;
