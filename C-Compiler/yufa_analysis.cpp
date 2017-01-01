@@ -269,6 +269,7 @@ void self_Quat1(int code)//78和79，以++a为例
     temp.res=sem.back();
     sem.pop_back();
     temp.pointer=NULL;
+    temp.optimize_flag=1;
     inter_pro.push_back(temp);
 }
 
@@ -292,6 +293,7 @@ void self_Quat(int code){//78~83
     temp.res=sem.back();
     sem.pop_back();
     temp.pointer=NULL;
+    temp.optimize_flag=1;
     inter_pro.push_back(temp);
 }
 
@@ -411,7 +413,10 @@ void equa_QUAT(int op) {
     else {
         temp.label = 0;
     }
-
+    if(op==85)
+        temp.optimize_flag=1;
+    else
+        temp.optimize_flag=0;
     temp.pointer = NULL;
     temp.res = sem.back();//赋值给=左边的符号
     sem.pop_back();
@@ -1426,8 +1431,14 @@ void senten_list() {
                            temp.res = Token(-1, -1);
                            temp.arg1 = sem.back();//res(E)
                            sem.pop_back();
-
-                           temp.label = 3;//特殊语句
+                           if (in_flag) {
+                               temp.label = 2;
+                               in_flag = 0;
+                           }
+                           else {
+                               temp.label = 0;
+                           }
+                           temp.optimize_flag=1;
                            temp.pointer = NULL;//未知
                            inter_pro.push_back(temp);//四元式生成插入
                            next();

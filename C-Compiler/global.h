@@ -57,6 +57,7 @@ struct quadruple{		//四元式定义
     Token arg2;
     Token res;
     int pointer;	//跳转指向
+    int optimize_flag;//是否参与优化，0表示参与优化，1表示不参与优化
 };
 
 struct flow_graph{
