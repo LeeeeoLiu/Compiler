@@ -1,5 +1,6 @@
+
 #define q 100
-/*
+
 struct hh{
     int a;
     char c;
@@ -27,14 +28,13 @@ int max(int maxVar1,int maxVar2)
     maxVar=maxVar+3;
     return maxVar;
 }
-*/
+
+
 int main()
 {
-    /*
-    int b=0;
+
     int e,f,g,i,j,k;
     float h;
-    int aadd[3];
     char w,v;
     hh test;
     hh testarr[10];
@@ -48,14 +48,16 @@ int main()
     g = 0;
     bb[2]=6;
     f=bb[2];
+
     aadd[2]=q;
     b++;
     b+=7;
     b*=6;
     --b;
-    */
     int aaaaa;
     aaaaa=q;
+    testarr[3].a=10;
+
     return 0;
 
 }
