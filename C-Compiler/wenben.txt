@@ -28,10 +28,8 @@ int max(int maxVar1,int maxVar2)
     maxVar=maxVar+3;
     return maxVar;
 }
-
 int main()
 {
-
     int b=0;
     int e,f,g,i,j,k;
     float h;

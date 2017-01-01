@@ -1398,13 +1398,14 @@ void CSEG(){
                 code_pointer->arg2 = "AX";
                 code_pointer->arg1 = Id[inter_pro[inter_pro_pointer].res.value] + "[" +
                         itos(stoi(ConstNum[inter_pro[inter_pro_pointer].arg2.value])*2) + "]";
-
                 code_pointer->flag = 2;
                 code_pointer->next = NULL;
                 code_last->next = code_pointer;
                 code_last = code_pointer;
             }
+            if(inter_pro[inter_pro_pointer].op.code>=78&&inter_pro[inter_pro_pointer].op.code<=83){ //双目运算
 
+                //读入第一个操作数
             if(inter_pro[inter_pro_pointer].op.code == 75){     //数组取数
                      code_pointer = new targe;
                 if (inter_pro[inter_pro_pointer].label == 2){
