@@ -15,7 +15,7 @@ vector<Token> sym_list_stack;
 /**
  类型应该分配的长度
  **/
-vector<typel> TYPEL = { { "char", 2 }, { "inta", 2 }, { "float", 2 } ,{"struct",}};
+vector<typel> TYPEL = { { "char", 2 }, { "inta", 2 }, { "float", 2 } ,{"struct",},{"#define",}};
 /**
  符号表
  */
@@ -248,17 +248,14 @@ void cal_QUAT(int op) {
     temp_num++;
 }
 
-/*
- * 前++和前--的四元式 （++，1，a,a)
-*/
-void self_Quat1(int code)//78和79，以++a为例
+
+void self_Quat1(int code)//++ -- (++,a,_,a)
 {
     quadruple temp;
-    temp.op=Token(code,-1);//++
-    temp.arg1=sem.back();//这里实际是++符号的token
+    temp.op=Token(code,-1);
+    temp.arg1=sem.back();
     sem.pop_back();
-    temp.arg2=sem.back();//a
-    sem.pop_back();
+    temp.arg2=Token(-1,-1);
     if (in_flag) {
         temp.label = 2;
         in_flag = 0;
@@ -268,19 +265,21 @@ void self_Quat1(int code)//78和79，以++a为例
     }
     temp.res=sem.back();
     sem.pop_back();
+    sem.push_back(temp.res);
     temp.pointer=NULL;
     inter_pro.push_back(temp);
+    temp_num++;
 }
 
 /*
- * 生成++ -- += -= *= /=的四元式，约定是后++  (++,a,1,a)
+ * 生成 += -= *= /=的四元式(+=,a,6,a)
 */
-void self_Quat(int code){//78~83
+void self_Quat2(int code){//80~83
     quadruple temp;
-    temp.op=Token(code,-1);//++
-    temp.arg2=sem.back();//这里是++符号的
+    temp.op=Token(code,-1);
+    temp.arg2=sem.back();
     sem.pop_back();
-    temp.arg1=sem.back();//a
+    temp.arg1=sem.back();
     sem.pop_back();
     if (in_flag) {
         temp.label = 2;
@@ -293,6 +292,7 @@ void self_Quat(int code){//78~83
     sem.pop_back();
     temp.pointer=NULL;
     inter_pro.push_back(temp);
+    temp_num++;
 }
 
 
@@ -513,15 +513,37 @@ void F() {
             else
                 cout<<"函数调用错误"<<endl;
             callQuat(preToken);
-        }else{
+        }
+        else if(currentToken.code == 78||currentToken.code == 79)//a=a++ --
+        {
+            sem.push_back(preToken);
+            equa_QUAT(17);
+            sem.push_back(preToken);
+            sem.push_back(preToken);
+            self_Quat1(currentToken.code);
+            sem.pop_back();
+            next();
+        }
+        else{//；
             sem.push_back(preToken);    //入操作数栈
         }
         return;
     }
-    else if(currentToken.code==1||currentToken.code==2||currentToken.code==78||currentToken.code==79)// 字符常量或字符串常量 ++ --
+    else if(currentToken.code==1||currentToken.code==2)// 字符常量或字符串常量
     {
         sem.push_back(currentToken);//++和--压进去的是符号！！
         next();
+    }
+    else if(currentToken.code==78||currentToken.code==79)//a++和a=++b
+    {
+        Token preToken=currentToken;
+        next();
+        if(currentToken.code==0){
+            sem.push_back(currentToken);
+            sem.push_back(currentToken);
+            self_Quat1(preToken.code);
+            next();
+        }
     }
     else if(currentToken.code==80||currentToken.code==81||currentToken.code==82||currentToken.code==83)// += -= *= /=
     {
@@ -1042,7 +1064,7 @@ void senten_list() {
                         isArr=true;
                         next();
                         int tempArrIndex2=stoi(ConstNum[currentToken.value]);
-                        if(AINFL[SYNBL[i].addr].up>=tempArrIndex2)
+                        if(AINFL[SYNBL[i].addr].up>tempArrIndex2)
                         {
                             sem.push_back(preToken);
                             sem.push_back(currentToken);
@@ -1050,8 +1072,9 @@ void senten_list() {
                             sem.push_back(currentToken);
                             arrGetQuat();
                         }
-                        else
+                        else{
                             errorHappenedWithMessage("数组使用错误");
+                        }
                         next();
                         if(currentToken.code==20)//]
                         {
@@ -1084,7 +1107,7 @@ void senten_list() {
                 else{
                     sem.push_back(preToken);
                 }
-                if (currentToken.code == 17)    //  =
+                if (currentToken.code == 17) //  =
                     next();
                 else {
                     token_pointer -= 2;//kk
@@ -1094,20 +1117,20 @@ void senten_list() {
                 }
                 E();    //然后，识别算术表达式
                 if (currentToken.code == 21) {    //;    赋值语句最后必须有分号
-//                    if(!funcstart)
-//                        SYNBL[getSynblIndex(currentFunctionToken)].addr =inter_pro.size()-1;
+                //   if(!funcstart)
+                //   SYNBL[getSynblIndex(currentFunctionToken)].addr =inter_pro.size()-1;
                     equa_QUAT(17);
                     next();
                     if(currentToken.code==16 &&funcArea==true &&whileArea==false&&ifArea==false&&elseArea==false)   //}
                     {
                         retQuat();
-                        funcArea==false;
+                        funcArea=false;
                         currentFunctionToken=Token(-1,-1);
                     }
                 }
                 else {
                     token_pointer -= 2;//kk
-                    //errorHappenedWithMessage("标识符赋值语句缺少分号");
+                //errorHappenedWithMessage("标识符赋值语句缺少分号");
                     next();
                     next();
                 }
@@ -1202,6 +1225,7 @@ void senten_list() {
                     next();
                 }
                 Token preToken=currentToken;
+                int aaaaa=0;//识别a=a++
                 next();
                 if(currentToken.code == 19){       // [
                     isArr=true;
@@ -1228,14 +1252,18 @@ void senten_list() {
                 if (currentToken.code == 17)    //  =
                 {
                     next();
-                    if(currentToken.code == 23||currentToken.code==22){
+                    if(currentToken.code==0){
+                        next();
+                        if(currentToken.code==78||currentToken.code==79)
+                            aaaaa=121;
+                        token_pointer-=2;
                         next();
                     }
-                }                
-                else if(currentToken.code==78||currentToken.code==79||currentToken.code==80||currentToken.code==81||currentToken.code==82||currentToken.code==83)//++ -- += -= *= /=
+                }
+                else if((currentToken.code>=78)&&(currentToken.code<=83))// a++ -- += -= *= /=
                 {
                     sem.push_back(preToken);
-                    preToken=currentToken;//!!注意这里preToken已经变了
+                    preToken=currentToken;
                 }
                 else {
                     token_pointer -= 2;//kk
@@ -1244,17 +1272,25 @@ void senten_list() {
                     next();
                 }
                 E();    //然后，识别算术表达式
-                if(currentToken.code==22||currentToken.code==23) next();
                 if (currentToken.code == 21) {    //;    赋值语句最后必须有分号
-                    if(preToken.code==78||preToken.code==79||preToken.code==80||preToken.code==81||preToken.code==82||preToken.code==83){
-                        self_Quat(preToken.code);
+//                    if(!funcstart)
+//                        SYNBL[getSynblIndex(currentFunctionToken)].addr =inter_pro.size()-1;
+                    if((preToken.code>=80)&&(preToken.code<=83)){
+                        self_Quat2(preToken.code);
                     }
-                    else
-                        equa_QUAT(17);
+                    else if(preToken.code==78||preToken.code==79){
+                        self_Quat1(preToken.code);
+                        sem.pop_back();
+                    }
+                    else if(aaaaa==121){
+                        aaaaa=0;
+                    }
+                    else equa_QUAT(17);
                     next();
                     if(currentToken.code==16 &&funcArea==true &&whileArea==false&&ifArea==false&&elseArea==false)   //}
                     {
                         retQuat();
+                        funcArea==false;
                         currentFunctionToken=Token(-1,-1);
                     }
                 }
@@ -1459,7 +1495,6 @@ void senten_list() {
                 next();
                 sem.push_back(currentToken);
                 sem.push_back(currentToken);
-                sem.push_back(preToken);
                 next();
                 if(currentToken.code==21){
                     self_Quat1(preToken.code);
@@ -1596,11 +1631,18 @@ void structure() {
 }
 
 void programStartSymbol() {
-    //下面先识别结构体
-    structure();
-    if(currentToken.code==84){//宏定义 #
+    while(currentToken.code==84){//宏定义 #
         next();
         if(currentToken.code==85){//define
+            if(currentToken.code == 85 && isSynblExist()==0)
+            {
+                synbl temp;
+                temp.name = currentToken;
+                temp.type = 4;
+                temp.cat = 9;
+                temp.addr = inter_pro.size();
+                SYNBL.push_back(temp);    //压入符号表
+            }
             next();
             sem.push_back(currentToken);
             next();
@@ -1609,6 +1651,9 @@ void programStartSymbol() {
             next();
         }
     }
+    //下面先识别结构体
+    structure();
+
     //识别函数，这里可以识别多个函数
         while (currentToken.code == 7 || currentToken.code == 8 || currentToken.code == 9 || currentToken.code == 29) {	//int|float|char|void，他们都是函数的返回值
             Token returnToken=currentToken;
