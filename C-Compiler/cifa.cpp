@@ -14,9 +14,11 @@ vector<string> ConstNum;	//常数表code=3
 vector<string> ConstString;	//字符串常量表code=2
 vector<string> ConstChar;		//字符常量表code=1
 vector<string> Id;			//符号表code=0
+
 char ww;//ww指示当前字符
 char filec[10000], word[60];
 int tp, row;//tp是filec的指针，指向当前字符   row记录行数
+vector<int>rowCount;    //记录 token 所在行数
 int key;//key是种别码，sum用于判断整数溢出
 int cnum = 0; //wnum记录文本单词总数,cnum记录文本字符总数
 int front = 0;
@@ -85,7 +87,7 @@ int readFile(string path){
 int duAsm()
 {
     tp = 0;
-    FILE *fp = fopen("D:/code/Compiler/C-Compiler/test.asm", "r");
+    FILE *fp = fopen("D:\\QT/code/Compiler/C-Compiler/test.asm", "r");
     if (fp == NULL){ printf("No File\n"); fclose(fp); return 0; }
     else
     {
@@ -114,6 +116,7 @@ void initl(){
                tok.code = 0;
                tok.value = i;
                token.push_back(tok);
+               rowCount.push_back(row);
                break;
     }
     case 1:{//字符常量
@@ -127,6 +130,7 @@ void initl(){
                tok.code = 1;
                tok.value = i;
                token.push_back(tok);
+               rowCount.push_back(row);
                break;
     }
     case 2:{//字符串常量
@@ -140,6 +144,7 @@ void initl(){
                tok.code = 2;
                tok.value = i;
                token.push_back(tok);
+               rowCount.push_back(row);
                break;
     }
     case 3:{//常数
@@ -153,6 +158,7 @@ void initl(){
                tok.code = 3;
                tok.value = i;
                token.push_back(tok);
+               rowCount.push_back(row);
                break;
     }
     case -2:row++; break;//换行
@@ -161,6 +167,7 @@ void initl(){
                 tok.code = key;
                 tok.value = 0;
                 token.push_back(tok);
+                rowCount.push_back(row);
                 break;
     }
     }

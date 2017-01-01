@@ -1,7 +1,7 @@
 
 #include "yufa_analysis.h"
 
-
+string errorMessage;
 /**
  语法分析结果中，所有的错误集合
  如果缺少了一个符号，程序会直接向下分析，而不会停止。但是如果当处符号错误，就不能继续分析了。
@@ -15,7 +15,7 @@ vector<Token> sym_list_stack;
 /**
  类型应该分配的长度
  **/
-vector<typel> TYPEL = { { "char", 2 }, { "inta", 2 }, { "float", 2 } ,{"struct",}};
+vector<typel> TYPEL = { { "char", 2 }, { "inta", 2 }, { "float", 2 } ,{"struct",0}};
 /**
  符号表
  */
@@ -269,6 +269,7 @@ void self_Quat1(int code)//78和79，以++a为例
     temp.res=sem.back();
     sem.pop_back();
     temp.pointer=NULL;
+    temp.optimize_flag=1;
     inter_pro.push_back(temp);
 }
 
@@ -292,6 +293,7 @@ void self_Quat(int code){//78~83
     temp.res=sem.back();
     sem.pop_back();
     temp.pointer=NULL;
+    temp.optimize_flag=1;
     inter_pro.push_back(temp);
 }
 
@@ -411,7 +413,10 @@ void equa_QUAT(int op) {
     else {
         temp.label = 0;
     }
-
+    if(op==85)
+        temp.optimize_flag=1;
+    else
+        temp.optimize_flag=0;
     temp.pointer = NULL;
     temp.res = sem.back();//赋值给=左边的符号
     sem.pop_back();
@@ -439,18 +444,21 @@ void F() {
     if (currentToken.code == 3 || currentToken.code == 0) {	//i为变量(标示符0)或常量（数字常量）
         //先查一下符号表
         int i;
-        for (i = 0; i < SYNBL.size(); i++)
+        if(currentToken.code==0)
         {
-            if (currentToken.value == SYNBL[i].name.value)
+            for (i = 0; i < SYNBL.size(); i++)
             {
-                break;
+                if (currentToken.value == SYNBL[i].name.value)
+                {
+                    break;
+                }
             }
-        }
-        if (i == SYNBL.size())
-        {
-            token_pointer--;
-            //errorHappenedWithMessage("未定义的标识符");
-            next();
+            if (i == SYNBL.size())
+            {
+                token_pointer--;
+                errorHappenedWithMessage("未定义的标识符");
+                next();
+            }
         }
         Token preToken=currentToken;
         next();
@@ -466,9 +474,9 @@ void F() {
                     next();
                     next();
                 }else
-                    errorHappenedWithMessage("数组使用错误");
+                    errorHappenedWithMessage("数组标号超过指定范围");
             else
-                errorHappenedWithMessage("数组使用错误");
+                errorHappenedWithMessage("该标识符不是数组");
 
         }
         else if(currentToken.code == 73)           //.
@@ -720,7 +728,7 @@ int isStructSys()
     if (i == SYNBL.size())      //未定义标识符
     {
         token_pointer--;
-        //errorHappenedWithMessage("未定义的标识符");
+        errorHappenedWithMessage("未定义的标识符");
         next();
         return 0;
     }else{
@@ -747,7 +755,7 @@ int isFuncVar()
     if (i == SYNBL.size())      //未定义标识符
     {
         token_pointer--;
-        //errorHappenedWithMessage("未定义的标识符");
+        errorHappenedWithMessage("未定义的标识符");
         next();
         return 0;
     }else{
@@ -775,7 +783,7 @@ int isStructVar()
     if (i == SYNBL.size())      //未定义标识符
     {
         token_pointer--;
-        //errorHappenedWithMessage("未定义的标识符");
+        errorHappenedWithMessage("未定义的标识符");
         next();
         return 0;
     }else{
@@ -803,7 +811,7 @@ void var_declaration() {
             if (i == SYNBL.size())      //未定义标识符
             {
                 token_pointer--;
-                //errorHappenedWithMessage("未定义的标识符");
+                errorHappenedWithMessage("未定义的标识符");
                 next();
             }else{
                 Token preToken=currentToken;
@@ -1006,7 +1014,7 @@ void senten_list() {
             if (i == SYNBL.size())      //未定义标识符
             {
                 token_pointer--;
-                //errorHappenedWithMessage("未定义的标识符");
+                errorHappenedWithMessage("未定义的标识符");
                 next();
             }
             else{
@@ -1088,7 +1096,7 @@ void senten_list() {
                     next();
                 else {
                     token_pointer -= 2;//kk
-                    //errorHappenedWithMessage("标识符赋值语句缺少等号");
+                    errorHappenedWithMessage("标识符赋值语句缺少等号");
                     next();
                     next();
                 }
@@ -1107,7 +1115,7 @@ void senten_list() {
                 }
                 else {
                     token_pointer -= 2;//kk
-                    //errorHappenedWithMessage("标识符赋值语句缺少分号");
+                    errorHappenedWithMessage("标识符赋值语句缺少分号");
                     next();
                     next();
                 }
@@ -1126,7 +1134,7 @@ void senten_list() {
             if (i == SYNBL.size())      //未定义标识符
             {
                 token_pointer--;
-                //errorHappenedWithMessage("未定义的标识符");
+                errorHappenedWithMessage("未定义的标识符");
                 next();
             }else{
                 Token preToken=currentToken;
@@ -1151,7 +1159,7 @@ void senten_list() {
                 }
                 else {
                     token_pointer -= 2;//kk
-                    //errorHappenedWithMessage("标识符赋值语句缺少分号");
+                    errorHappenedWithMessage("标识符赋值语句缺少分号");
                     next();
                     next();
                 }
@@ -1198,7 +1206,7 @@ void senten_list() {
                 if (i == SYNBL.size())
                 {
                     token_pointer--;
-                    //errorHappenedWithMessage("未定义的标识符");
+                    errorHappenedWithMessage("未定义的标识符");
                     next();
                 }
                 Token preToken=currentToken;
@@ -1218,9 +1226,19 @@ void senten_list() {
                             next();
                             next();
                         }else
-                            errorHappenedWithMessage("数组使用错误");
+                        {
+                            token_pointer--;
+                            errorHappenedWithMessage("数组下标不在允许范围之内");
+                            next();
+                        }
                     else
-                        errorHappenedWithMessage("数组使用错误");
+                    {
+                        token_pointer--;
+                        token_pointer--;
+                        errorHappenedWithMessage("该标识符不是数组");
+                        next();
+                        next();
+                    }
 
                 }else{
                     sem.push_back(preToken);    //入操作数栈
@@ -1239,7 +1257,7 @@ void senten_list() {
                 }
                 else {
                     token_pointer -= 2;//kk
-                    //errorHappenedWithMessage("标识符赋值语句缺少等号");
+                    errorHappenedWithMessage("标识符赋值语句缺少等号");
                     next();
                     next();
                 }
@@ -1260,7 +1278,7 @@ void senten_list() {
                 }
                 else {
                     token_pointer -= 2;//kk
-                    //errorHappenedWithMessage("标识符赋值语句缺少分号");
+                    errorHappenedWithMessage("标识符赋值语句缺少分号");
                     next();
                     next();
                 }
@@ -1426,8 +1444,14 @@ void senten_list() {
                            temp.res = Token(-1, -1);
                            temp.arg1 = sem.back();//res(E)
                            sem.pop_back();
-
-                           temp.label = 3;//特殊语句
+                           if (in_flag) {
+                               temp.label = 2;
+                               in_flag = 0;
+                           }
+                           else {
+                               temp.label = 0;
+                           }
+                           temp.optimize_flag=1;
                            temp.pointer = NULL;//未知
                            inter_pro.push_back(temp);//四元式生成插入
                            next();
@@ -1502,7 +1526,7 @@ void param_list() {		//参数表
     }
     else {
         token_pointer -= 2;//kk
-        //errorHappenedWithMessage("函数参数表中缺少标识符（参数名称）");
+        errorHappenedWithMessage("函数参数表中缺少标识符（参数名称）");
         next();
         next();
     }
@@ -1528,7 +1552,7 @@ void param_list() {		//参数表
             next();
         }else {
             token_pointer -= 2;//kk
-            //errorHappenedWithMessage("函数参数表中缺少标识符（参数名称）");
+            errorHappenedWithMessage("函数参数表中缺少标识符（参数名称）");
             next();
             next();
         }
@@ -1538,7 +1562,9 @@ void param_list() {		//参数表
 
 void compound_sen() {	//复合语句
         var_declaration();	//变量说明
+
         senten_list();		//语句表
+
 }
 
 /**
@@ -1553,7 +1579,7 @@ void structure() {
             next();
         }else {
             token_pointer -= 2;//kk
-            //errorHappenedWithMessage("结构体struct标记后没有接标识符");
+            errorHappenedWithMessage("结构体struct标记后没有接标识符");
             next();
             next();
         }
@@ -1600,8 +1626,15 @@ void programStartSymbol() {
         next();
         if(currentToken.code==85){//define
             next();
+            synbl temp;
+            temp.name = currentToken;
+            temp.type = 2;
+            temp.cat = 8;
             sem.push_back(currentToken);
             next();
+            temp.addr = ConstNum.size();
+            SYNBL.push_back(temp);    //压入符号表
+            ConstNum.push_back(ConstNum[currentToken.value]);
             sem.push_back(currentToken);
             equa_QUAT(85);
             next();
@@ -1647,7 +1680,6 @@ void programStartSymbol() {
             }
 
             param_list();			//参数表
-
             if (currentToken.code == 25)		//)
                 next();
             else {
@@ -1731,9 +1763,10 @@ bool syntax_analysis() {
     isGrammarCorrect = true;
     next();
     programStartSymbol();
-
+cout<<"testbugadf"<<endl;
     if (!isGrammarCorrect) {    //如果文法有误，就打印出错误
         sharedErrorContainer.printErrors();
+        sharedErrorContainer.clearErrors();
     }
     return isGrammarCorrect;
 }

@@ -25,6 +25,7 @@ extern int cnum;
 extern int front;
 extern char filec[10000];
 
+
 struct ExtraSelection
     {
         QTextCursor cursor;
@@ -50,6 +51,7 @@ public:
     void displayRINFL();
     void displayConstNum();
     void displayAINFL();
+    void printErrors();
 
 private slots:
     void Help_actionHelp_Slot();

@@ -10,6 +10,9 @@ extern vector<string> Id;			//符号表code=0
 extern vector<string> ConstNum;	//常数表code=3
 extern vector<string> ConstString;	//字符串常量表code=2
 extern vector<string> ConstChar;		//字符常量表code=1
+extern vector<int>rowCount;    //记录 token 所在行数
+extern string errorMessage;
+extern string itos(int num);
 
 /**
  Syntax error indicator.
@@ -71,19 +74,28 @@ public:
      Print all the errors on the screen. If multiple errors happens at the same position of the token chain, only the first error will be printed.
      */
     void printErrors() {
+        errorMessage="error message:\n";
         for (int number = 0; number < errors.size(); number++) {
-            cout << errors[number].indexInTokenArrayAfter << ".";
+            cout <<rowCount[errors[number].indexInTokenArrayAfter] << ".";
+            errorMessage=errorMessage+"line "+itos(rowCount[errors[number].indexInTokenArrayAfter]) +":";
             switch (token[errors[number].indexInTokenArrayAfter].code)
             {    //先输出错误位置的token内容
-            case 0:cout << Id[token[errors[number].indexInTokenArrayAfter].value] << " "; break;
-            case 1:cout << ConstChar[token[errors[number].indexInTokenArrayAfter].value] << " "; break;
-            case 2:cout << ConstString[token[errors[number].indexInTokenArrayAfter].value] << " "; break;
-            case 3:cout << ConstNum[token[errors[number].indexInTokenArrayAfter].value] << " "; break;
-            default:cout << keywords[token[errors[number].indexInTokenArrayAfter].code] << " ";
+            case 0:errorMessage=errorMessage+Id[token[errors[number].indexInTokenArrayAfter].value]+" "; cout << Id[token[errors[number].indexInTokenArrayAfter].value] << " "; break;
+            case 1:errorMessage=errorMessage+ConstChar[token[errors[number].indexInTokenArrayAfter].value] + " "; break;
+            case 2:errorMessage=errorMessage+ConstString[token[errors[number].indexInTokenArrayAfter].value] + " "; break;
+            case 3:errorMessage=errorMessage+ConstNum[token[errors[number].indexInTokenArrayAfter].value] + " "; break;
+            default:errorMessage=errorMessage+keywords[token[errors[number].indexInTokenArrayAfter].code] + " ";
             }
+            errorMessage=errorMessage+errors[number].message+"\n";
             cout<< errors[number].message << endl;    //输出错误信息
         }
     }
+
+    void clearErrors()
+    {
+        errors.clear();
+    }
+
 };
 
 

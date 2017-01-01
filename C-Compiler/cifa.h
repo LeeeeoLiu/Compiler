@@ -17,6 +17,9 @@ extern vector<string> check_list;
 extern vector<rinfl> RINFL;
 extern vector<ainfl> AINFL;
 extern int inter_pro_pointer;//中间代码
+extern vector<int>rowCount;    //记录 token 所在行数
+extern string errorMessage;
+extern vector<string>functionName;
 
 void Psynbl();
 int InsertConstNum(string strToken);

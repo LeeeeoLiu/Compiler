@@ -109,8 +109,8 @@ void MainWindow::initAll()
     row=0;
     mainStartId=0; //记录 main 开始的位置
     tp=cnum=front=0; //cnum记录文本字符总数;
-    row=1;
-
+    asmCode="";
+    functionName.clear();
 }
 
 void MainWindow::outputRecord(QString tempMess)
@@ -128,6 +128,7 @@ void MainWindow::on_btnCompile_clicked()
     outputRecord("Cifa Analysis Succeed!We've put the token list into the left table.");
     displayToken();
     outputRecord("Start Yufa Analysising......");
+
     if (syntax_analysis())
     {
         outputRecord("Yufa Analysis Succeed!We've put the SYNBL information into the left table.");
@@ -146,9 +147,11 @@ void MainWindow::on_btnCompile_clicked()
         outputRecord("Yufa Analysis Failed!");
         outputRecord("Yufa Analysis Failed!");
         outputRecord("Yufa Analysis Failed!");
+        outputRecord(QString::fromStdString(errorMessage));
     }
 
 }
+
 
 
 void MainWindow::displayQuat(int front, int end)
@@ -221,9 +224,10 @@ void MainWindow::displayQuat(int front, int end)
 void MainWindow::displayToken()
 {
     QStandardItemModel  *model = new QStandardItemModel();
-    model->setColumnCount(2);
+    model->setColumnCount(3);
     model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("Token"));
     model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("Word"));
+    model->setHeaderData(2,Qt::Horizontal,QString::fromLocal8Bit("Line"));
     ui->tableViewToken->setModel(model);
     for (int i = 0; i < token.size(); i++)
     {
@@ -245,7 +249,8 @@ void MainWindow::displayToken()
         }//switch
         model->setItem(i,1,new QStandardItem(tempChar));
         model->item(i,1)->setTextAlignment(Qt::AlignCenter);
-
+        model->setItem(i,2,new QStandardItem(QString::number(rowCount[i])));
+        model->item(i,2)->setTextAlignment(Qt::AlignCenter);
     }
     ui->tableViewToken->horizontalHeader()->setStretchLastSection(true);
 }

@@ -32,8 +32,8 @@
 	- [x] 四元式生成 [Sakura]
 	- [ ] 目标代码生成 [Sakura]
 - [ ] += -= *= /= [Leeeeo]
-- [ ] 代码高亮	[Leeeeo]
-- [ ] 添加行号	[Leeeeo]
+- [x] 代码高亮	[Leeeeo]
+- [x] 代码编辑区添加行号	[Leeeeo]
 
 ### Version 2.0 (增加一些功能)
 - [x] 添加 cout

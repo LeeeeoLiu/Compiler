@@ -319,7 +319,7 @@ void creat_quad(int start_pointer, int end_pointer){
         if (inter_pro[quad_pointer + i].label != 0&&inter_pro[quad_pointer + i].label != 3){
             label = inter_pro[quad_pointer + i].label;
         }
-        if(inter_pro[quad_pointer + i].label ==3)//特殊语句，即不跳入也不跳转
+        if(inter_pro[quad_pointer + i].optimize_flag ==1)//不参与优化的句子
               quad_pointer++;
         inter_pro[quad_pointer + i] = new_inter[i];
         inter_pro[quad_pointer + i].label = label;
@@ -329,6 +329,8 @@ void creat_quad(int start_pointer, int end_pointer){
     for (; quad_pointer <= end_pointer; quad_pointer++){
         if (inter_pro[quad_pointer].label != 0)
             break;
+        else if(inter_pro[quad_pointer].optimize_flag==1)
+            continue;
         else{
             inter_pro[quad_pointer].op = Token(-1, -1);
             inter_pro[quad_pointer].arg1 = Token(-1, -1);
@@ -394,21 +396,21 @@ void output_inter_pro(int front, int end){
 
 void optimization(){
     cout << "before optimize:" << endl;
-    output_inter_pro(0, inter_pro.size() - 1);
+//    output_inter_pro(0, inter_pro.size() - 1);
     basic_block();
     for (int i = 0; i < flowGraph.size(); i++){
         DAG_optimaize(flowGraph[i].front, flowGraph[i].end);
        // cout<<i<<"nd"<<endl;
-       //  output_inter_pro(flowGraph[i].front, flowGraph[i].end);
+       // output_inter_pro(flowGraph[i].front, flowGraph[i].end);
         creat_quad(flowGraph[i].front, flowGraph[i].end);
         DAG.clear();
     }
-    system("pause");
+//    system("pause");
     if (flowGraph.size() != 0)
     {
 
         cout << "after optimize:" << endl;
-        output_inter_pro(0, inter_pro.size() - 1);
+//        output_inter_pro(0, inter_pro.size() - 1);
     }
     else {
         cout << "Can Not optimize" << endl;
