@@ -1,3 +1,4 @@
+
 #define q 100
 struct hh{
     int a;
