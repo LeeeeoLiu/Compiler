@@ -63,7 +63,7 @@ int InsertConstNum(string strToken){
 
 int readFile(){
     int i = 0;
-    FILE *fp=fopen("D:/code/Compiler/C-Compiler/wenben.txt", "r");
+    FILE *fp=fopen("D:\\QT/code/Compiler/C-Compiler/wenben.txt", "r");
     if (fp == NULL){
         cout << "No such file exists!" << endl;
         fclose(fp);
@@ -84,7 +84,7 @@ int readFile(){
 int duAsm()
 {
     tp = 0;
-    FILE *fp = fopen("D:/code/Compiler/C-Compiler/test.asm", "r");
+    FILE *fp = fopen("D:\\QT/code/Compiler/C-Compiler/test.asm", "r");
     if (fp == NULL){ printf("No File\n"); fclose(fp); return 0; }
     else
     {

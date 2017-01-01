@@ -40,33 +40,58 @@ void DSEG(){
     int_num = 0;
     float_num = 0;
     char_num = 0;
-    arr_list temp;
+
     for (int i = 0; i < SYNBL.size(); i++){
         switch (SYNBL[i].type){
         case 0:{char_num++; break; }
         case 1:{int_num++; break; }
         case 2:{float_num++; break; }
+        default:break;
         }
         switch (SYNBL[i].cat){
         case 5:{
+               arr_list temp;
                temp.name=Id[SYNBL[i].name.value];
                temp.size=AINFL[arr_num].up-AINFL[arr_num].low+1;
                arr_num++;
-               Arr_list.push_back(temp);break;
+               Arr_list.push_back(temp);
+               break;
                }
         case 7:{
+               arr_list temp;
                temp.name=Id[SYNBL[i].name.value];
                for(int i=0;i<RINFL.size();i++)
                {
                    if(RINFL[i].num==SYNBL[i].addr)
                        struct_num++;
+                   if(RINFL[i].num>SYNBL[i].addr)
+                       break;
                }
                temp.size=struct_num;
                struct_num=0;
                Arr_list.push_back(temp);
                break;
+               }
+         case 8:{
+               arr_list temp;
+               temp.name=Id[SYNBL[i].name.value];
+               for(int i=0;i<RINFL.size();i++)
+               {
+                   if(RINFL[i].num==AINFL[arr_num].ctp)
+                       struct_num++;
+                   if(RINFL[i].num>AINFL[arr_num].ctp)
+                       break;
+               }
+               temp.size=struct_num;
+               arr_num++;
+               struct_num=0;
+               Arr_list.push_back(temp);
+               cout<<temp.size<<endl;
+               break;
+               }
+         default:break;
         }
-        }
+     // cout<<i<<endl;
     }
     targe* last_data;
     last_data = &data;
@@ -81,6 +106,9 @@ void DSEG(){
         last_data = data_pointer;
     }
     for (int i = 0;i < TYPEL.size(); i++){
+        if(TYPEL[i].lenth==0)
+            continue;
+        else{
         data_pointer = new targe;
         data_pointer->cw = TYPEL[i].name;
         switch (TYPEL[i].lenth){
@@ -99,6 +127,7 @@ void DSEG(){
         data_pointer->next = NULL;
         last_data->next = data_pointer;
         last_data = data_pointer;
+        }
     }
     data_pointer = new targe;
     data_pointer->cw = "TEMP";
@@ -1440,10 +1469,12 @@ void compilization(){
             jump_label++;
         }
     }
+
     DSEG();
     if(mainStartId!=0){
         func_label=1;
-    }CSEG();
+    }
+    CSEG();
 
     ofstream ofile("D:\\QT/code/Compiler/C-Compiler/test.asm",ios::out);
 
