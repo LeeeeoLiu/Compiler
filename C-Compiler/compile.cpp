@@ -41,6 +41,7 @@ void DSEG(){
     float_num = 0;
     char_num = 0;
     arr_list temp;
+    Arr_list.clear();
     for (int i = 0; i < SYNBL.size(); i++){
         switch (SYNBL[i].type){
         case 0:{char_num++; break; }

@@ -135,6 +135,7 @@ void MainWindow::on_btnCompile_clicked()
         displaySYNBL();
         outputRecord("Ready to make Quats......");
         displayQuat(0, inter_pro.size() - 1);
+
         outputRecord("Try to get asm code......");
         asmCode=QString::fromStdString(compilization());
         outputRecord(asmCode);

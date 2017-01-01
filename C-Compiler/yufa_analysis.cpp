@@ -1762,8 +1762,9 @@ bool syntax_analysis() {
     VALL_pointer = 0;
     isGrammarCorrect = true;
     next();
+    cout<<"tsetsstsltjsdkjfl"<<endl;
     programStartSymbol();
-cout<<"testbugadf"<<endl;
+
     if (!isGrammarCorrect) {    //如果文法有误，就打印出错误
         sharedErrorContainer.printErrors();
         sharedErrorContainer.clearErrors();
