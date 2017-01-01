@@ -390,6 +390,7 @@ void output_inter_pro(int front, int end){
                         }
             }
             cout << ")" << endl;
+
         }
     }
 }

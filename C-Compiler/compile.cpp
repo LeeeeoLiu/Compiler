@@ -701,52 +701,44 @@ targe* creatFunction(targe* code_last){
 
                     //读入第一个操作数
 
-
+                     code_pointer = new targe;
                     if (inter_pro[inter_pro_pointer].label == 2){
                         code_pointer->label = check_list[inter_pro_pointer];
                     }
 
                     switch (inter_pro[inter_pro_pointer].arg1.code){
                     case 0:{
-                               code_pointer = new targe;
+
                                code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
                                code_pointer->arg1 = "AX";
                                code_pointer->arg2 = the_first_data_label + "[" +
                                    itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
-                               code_pointer->flag = 2;
-                               code_pointer->next = NULL;
-                               code_last->next = code_pointer;
-                               code_last = code_pointer;
+
                                break;
                     }
                     case 3:{
-                               if(ConstNum[inter_pro[inter_pro_pointer].arg2.value]=="1")
-                                   break;
-                               else{
-                               code_pointer = new targe;
+
+
                                code_pointer->cw = "MOV";		//mov ax,const[i]
                                code_pointer->arg1 = "AX";
                                code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
-                               code_pointer->flag = 2;
-                               code_pointer->next = NULL;
-                               code_last->next = code_pointer;
-                               code_last = code_pointer;
-                               break;}
+
+                               break;
                     }
                     case -2:{
-                                code_pointer = new targe;
+
                                 code_pointer->cw = "MOV";		//mov ax,temp[i]
                                 code_pointer->arg1 = "AX";
                                 code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
-                                code_pointer->flag = 2;
-                                code_pointer->next = NULL;
-                                code_last->next = code_pointer;
-                                code_last = code_pointer;
+
                                 break;
                     }
                     }
 
-
+                    code_pointer->flag = 2;
+                    code_pointer->next = NULL;
+                    code_last->next = code_pointer;
+                    code_last = code_pointer;
 
                     //读入第二个操作数
 
@@ -765,9 +757,7 @@ targe* creatFunction(targe* code_last){
                                break;
                     }
                     case 3:{
-                               if(ConstNum[inter_pro[inter_pro_pointer].arg2.value]=="1")
-                                   break;
-                               else{
+
                                     code_pointer = new targe;
                                     code_pointer->cw = "MOV";		//mov bx,const[i]
                                     code_pointer->arg1 = "BX";
@@ -776,7 +766,7 @@ targe* creatFunction(targe* code_last){
                                     code_pointer->next = NULL;
                                     code_last->next = code_pointer;
                                     code_last = code_pointer;
-                               break;}
+                               break;
                           }
                     case -2:{
                                 code_pointer = new targe;
@@ -1138,6 +1128,68 @@ void CSEG(){
     int inter_pro_pointer;//中间代码
     inter_pro_pointer = mainStartId;
     code_last = &code;
+    for(int i=0;i<mainStartId;i++){//宏定义目标代码生成
+        if(inter_pro[i].op.code==85){
+            code_pointer = new targe;
+            if (inter_pro[i].label == 2){
+                code_pointer->label = check_list[i];
+            }
+
+            switch (inter_pro[i].arg1.code){
+            case 0:{
+                       code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
+                       code_pointer->arg1 = "AX";
+                       code_pointer->arg2 = the_first_data_label + "[" +
+                           itos(inter_pro[i].arg1.value * TYPEL[SYNBL[inter_pro[i].arg1.value].type].lenth) + "]";
+                       break;
+            }
+            case 3:{
+                       code_pointer->cw = "MOV";		//mov ax,const[i]
+                       code_pointer->arg1 = "AX";
+                       code_pointer->arg2 = "CONST[" + itos(inter_pro[i].arg1.value * 2) + "]";
+                       break;
+            }
+            case -2:{
+                        code_pointer->cw = "MOV";		//mov ax,temp[i]
+                        code_pointer->arg1 = "AX";
+                        code_pointer->arg2 = "TEMP[" + itos(inter_pro[i].arg1.value * 2) + "]";
+                        break;
+            }
+            }
+            code_pointer->flag = 2;
+            code_pointer->next = NULL;
+            code_last->next = code_pointer;
+            code_last = code_pointer;
+
+            //结果存到res
+            code_pointer = new targe;
+            switch (inter_pro[i].res.code){
+            case 0:{
+                       code_pointer->cw = "MOV";		//mov int|char|float[i],ax
+                       code_pointer->arg2 = "AX";
+                       code_pointer->arg1 = the_first_data_label + "[" +
+                           itos(inter_pro[i].res.value * TYPEL[SYNBL[inter_pro[i].res.value].type].lenth) + "]";
+                       break;
+            }
+            case 3:{
+                       code_pointer->cw = "MOV";		//mov const[i],ax
+                       code_pointer->arg2 = "AX";
+                       code_pointer->arg1 = "CONST[" + itos(inter_pro[i].res.value * 2) + "]";
+                       break;
+            }
+            case -2:{	//反正也不应该有
+                        code_pointer->cw = "MOV";		//mov temp[i],ax
+                        code_pointer->arg2 = "AX";
+                        code_pointer->arg1 = "TEMP[" + itos(inter_pro[i].res.value * 2) + "]";
+                        break;
+            }
+            }
+            code_pointer->flag = 2;
+            code_pointer->next = NULL;
+            code_last->next = code_pointer;
+            code_last = code_pointer;
+        }
+    }
     for (;inter_pro_pointer < inter_pro.size(); inter_pro_pointer++){
 
         if (inter_pro[inter_pro_pointer].label != -1){
@@ -1321,7 +1373,6 @@ void CSEG(){
             if (inter_pro[inter_pro_pointer].op.code == 17){
                 //读出到AX
                 code_pointer = new targe;
-
                 if (inter_pro[inter_pro_pointer].label == 2){
                     code_pointer->label = check_list[inter_pro_pointer];
                 }
@@ -1752,52 +1803,44 @@ void CSEG(){
 
                 //读入第一个操作数
 
-
+                 code_pointer = new targe;
                 if (inter_pro[inter_pro_pointer].label == 2){
                     code_pointer->label = check_list[inter_pro_pointer];
                 }
 
                 switch (inter_pro[inter_pro_pointer].arg1.code){
                 case 0:{
-                           code_pointer = new targe;
+
                            code_pointer->cw = "MOV";		//mov ax,int|char|float[i]
                            code_pointer->arg1 = "AX";
                            code_pointer->arg2 = the_first_data_label + "[" +
                                itos(inter_pro[inter_pro_pointer].arg1.value * TYPEL[SYNBL[inter_pro[inter_pro_pointer].arg1.value].type].lenth) + "]";
-                           code_pointer->flag = 2;
-                           code_pointer->next = NULL;
-                           code_last->next = code_pointer;
-                           code_last = code_pointer;
+
                            break;
                 }
                 case 3:{
-                           if(ConstNum[inter_pro[inter_pro_pointer].arg2.value]=="1")
-                               break;
-                           else{
-                           code_pointer = new targe;
+
+
                            code_pointer->cw = "MOV";		//mov ax,const[i]
                            code_pointer->arg1 = "AX";
                            code_pointer->arg2 = "CONST[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
-                           code_pointer->flag = 2;
-                           code_pointer->next = NULL;
-                           code_last->next = code_pointer;
-                           code_last = code_pointer;
-                           break;}
+
+                           break;
                 }
                 case -2:{
-                            code_pointer = new targe;
+
                             code_pointer->cw = "MOV";		//mov ax,temp[i]
                             code_pointer->arg1 = "AX";
                             code_pointer->arg2 = "TEMP[" + itos(inter_pro[inter_pro_pointer].arg1.value * 2) + "]";
-                            code_pointer->flag = 2;
-                            code_pointer->next = NULL;
-                            code_last->next = code_pointer;
-                            code_last = code_pointer;
+
                             break;
                 }
                 }
 
-
+                code_pointer->flag = 2;
+                code_pointer->next = NULL;
+                code_last->next = code_pointer;
+                code_last = code_pointer;
 
                 //读入第二个操作数
 
@@ -1816,9 +1859,7 @@ void CSEG(){
                            break;
                 }
                 case 3:{
-                           if(ConstNum[inter_pro[inter_pro_pointer].arg2.value]=="1")
-                               break;
-                           else{
+
                                 code_pointer = new targe;
                                 code_pointer->cw = "MOV";		//mov bx,const[i]
                                 code_pointer->arg1 = "BX";
@@ -1827,7 +1868,7 @@ void CSEG(){
                                 code_pointer->next = NULL;
                                 code_last->next = code_pointer;
                                 code_last = code_pointer;
-                           break;}
+                           break;
                       }
                 case -2:{
                             code_pointer = new targe;
@@ -1963,7 +2004,7 @@ void CSEG(){
         }
     }
 }
-
+}
 
 void compilization(){
     check_list.resize(inter_pro.size());

@@ -39,6 +39,7 @@ int main()
     int bb[10];
     test.a=e;
     w=test.c;
+
     f = 10;
     e = max(3,4);
     functt();
