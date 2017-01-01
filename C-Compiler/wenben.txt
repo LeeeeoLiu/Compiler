@@ -36,9 +36,11 @@ int main()
     int aadd[3];
     char w,v;
     hh test;
+    hh testarr[10];
     int bb[10];
     test.a=e;
     w=test.c;
+
     f = 10;
     e = max(3,4);
     functt();
@@ -46,12 +48,14 @@ int main()
     f = 3+4;
     g = f;
     bb[2]=6;
-   // f=bb[2];
+    f=bb[2];
     aadd[2]=q;
     b++;
     b+=7;
     b*=6;
     --b;
+    int aaaaa;
+    aaaaa=q;
     return 0;
 
 }
