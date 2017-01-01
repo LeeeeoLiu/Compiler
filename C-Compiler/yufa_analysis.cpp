@@ -1647,14 +1647,14 @@ void programStartSymbol() {
         if(currentToken.code==85){//define
             if(currentToken.code == 85 && isSynblExist()==0)
             {
-                next();
                 synbl temp;
                 temp.name = currentToken;
-                temp.type = 1;
+                temp.type = 4;
                 temp.cat = 9;
                 temp.addr = inter_pro.size();
                 SYNBL.push_back(temp);    //压入符号表
             }
+            next();
             sem.push_back(currentToken);
             next();
             sem.push_back(currentToken);
