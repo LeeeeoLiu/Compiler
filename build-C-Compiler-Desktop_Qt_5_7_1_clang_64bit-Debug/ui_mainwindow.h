@@ -24,7 +24,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableView>
-#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
@@ -46,31 +46,34 @@ public:
     QTabWidget *tabWidget;
     QWidget *tab_8;
     QGridLayout *gridLayout_8;
-    QTableView *tableView_4;
+    QTableView *tableViewToken;
     QWidget *tab_5;
     QGridLayout *gridLayout_7;
-    QTableView *tableView_3;
-    QWidget *tab_6;
-    QGridLayout *gridLayout_6;
-    QTableView *tableView_2;
-    QWidget *tab_7;
-    QGridLayout *gridLayout_5;
-    QTableView *tableView;
+    QTableView *tableViewSYNBL;
     QWidget *tab_9;
     QGridLayout *gridLayout_9;
-    QTableView *tableView_5;
+    QTableView *tableViewQuat;
+    QWidget *tab_6;
+    QGridLayout *gridLayout_6;
+    QTableView *tableViewRINFL;
+    QWidget *tab_7;
+    QGridLayout *gridLayout_5;
+    QTableView *tableViewAINFL;
+    QWidget *tab;
+    QGridLayout *gridLayout_19;
+    QTableView *tableViewConstNum;
     QScrollArea *scrollArea;
     QWidget *scrollAreaWidgetContents;
-    QGridLayout *gridLayout_2;
+    QGridLayout *gridLayout_20;
     QLabel *label;
-    QTextEdit *codeArea;
-    QPushButton *pushButton;
+    QPushButton *btnCompile;
+    QGridLayout *codeArea;
     QScrollArea *scrollArea_3;
     QWidget *scrollAreaWidgetContents_3;
     QGridLayout *gridLayout_4;
     QLabel *label_2;
-    QLabel *statusArea;
-    QPushButton *pushButton_2;
+    QTextBrowser *statusArea;
+    QPushButton *saveAsm;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuOperations;
@@ -117,10 +120,10 @@ public:
         gridLayout_8->setSpacing(6);
         gridLayout_8->setContentsMargins(11, 11, 11, 11);
         gridLayout_8->setObjectName(QStringLiteral("gridLayout_8"));
-        tableView_4 = new QTableView(tab_8);
-        tableView_4->setObjectName(QStringLiteral("tableView_4"));
+        tableViewToken = new QTableView(tab_8);
+        tableViewToken->setObjectName(QStringLiteral("tableViewToken"));
 
-        gridLayout_8->addWidget(tableView_4, 0, 0, 1, 1);
+        gridLayout_8->addWidget(tableViewToken, 0, 0, 1, 1);
 
         tabWidget->addTab(tab_8, QString());
         tab_5 = new QWidget();
@@ -129,22 +132,34 @@ public:
         gridLayout_7->setSpacing(6);
         gridLayout_7->setContentsMargins(11, 11, 11, 11);
         gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
-        tableView_3 = new QTableView(tab_5);
-        tableView_3->setObjectName(QStringLiteral("tableView_3"));
+        tableViewSYNBL = new QTableView(tab_5);
+        tableViewSYNBL->setObjectName(QStringLiteral("tableViewSYNBL"));
 
-        gridLayout_7->addWidget(tableView_3, 0, 0, 1, 1);
+        gridLayout_7->addWidget(tableViewSYNBL, 0, 0, 1, 1);
 
         tabWidget->addTab(tab_5, QString());
+        tab_9 = new QWidget();
+        tab_9->setObjectName(QStringLiteral("tab_9"));
+        gridLayout_9 = new QGridLayout(tab_9);
+        gridLayout_9->setSpacing(6);
+        gridLayout_9->setContentsMargins(11, 11, 11, 11);
+        gridLayout_9->setObjectName(QStringLiteral("gridLayout_9"));
+        tableViewQuat = new QTableView(tab_9);
+        tableViewQuat->setObjectName(QStringLiteral("tableViewQuat"));
+
+        gridLayout_9->addWidget(tableViewQuat, 0, 0, 1, 1);
+
+        tabWidget->addTab(tab_9, QString());
         tab_6 = new QWidget();
         tab_6->setObjectName(QStringLiteral("tab_6"));
         gridLayout_6 = new QGridLayout(tab_6);
         gridLayout_6->setSpacing(6);
         gridLayout_6->setContentsMargins(11, 11, 11, 11);
         gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
-        tableView_2 = new QTableView(tab_6);
-        tableView_2->setObjectName(QStringLiteral("tableView_2"));
+        tableViewRINFL = new QTableView(tab_6);
+        tableViewRINFL->setObjectName(QStringLiteral("tableViewRINFL"));
 
-        gridLayout_6->addWidget(tableView_2, 0, 0, 1, 1);
+        gridLayout_6->addWidget(tableViewRINFL, 0, 0, 1, 1);
 
         tabWidget->addTab(tab_6, QString());
         tab_7 = new QWidget();
@@ -153,24 +168,24 @@ public:
         gridLayout_5->setSpacing(6);
         gridLayout_5->setContentsMargins(11, 11, 11, 11);
         gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
-        tableView = new QTableView(tab_7);
-        tableView->setObjectName(QStringLiteral("tableView"));
+        tableViewAINFL = new QTableView(tab_7);
+        tableViewAINFL->setObjectName(QStringLiteral("tableViewAINFL"));
 
-        gridLayout_5->addWidget(tableView, 0, 0, 1, 1);
+        gridLayout_5->addWidget(tableViewAINFL, 0, 0, 1, 1);
 
         tabWidget->addTab(tab_7, QString());
-        tab_9 = new QWidget();
-        tab_9->setObjectName(QStringLiteral("tab_9"));
-        gridLayout_9 = new QGridLayout(tab_9);
-        gridLayout_9->setSpacing(6);
-        gridLayout_9->setContentsMargins(11, 11, 11, 11);
-        gridLayout_9->setObjectName(QStringLiteral("gridLayout_9"));
-        tableView_5 = new QTableView(tab_9);
-        tableView_5->setObjectName(QStringLiteral("tableView_5"));
+        tab = new QWidget();
+        tab->setObjectName(QStringLiteral("tab"));
+        gridLayout_19 = new QGridLayout(tab);
+        gridLayout_19->setSpacing(6);
+        gridLayout_19->setContentsMargins(11, 11, 11, 11);
+        gridLayout_19->setObjectName(QStringLiteral("gridLayout_19"));
+        tableViewConstNum = new QTableView(tab);
+        tableViewConstNum->setObjectName(QStringLiteral("tableViewConstNum"));
 
-        gridLayout_9->addWidget(tableView_5, 0, 0, 1, 1);
+        gridLayout_19->addWidget(tableViewConstNum, 0, 0, 1, 1);
 
-        tabWidget->addTab(tab_9, QString());
+        tabWidget->addTab(tab, QString());
 
         gridLayout_3->addWidget(tabWidget, 0, 0, 1, 1);
 
@@ -184,25 +199,26 @@ public:
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
         scrollAreaWidgetContents->setGeometry(QRect(0, 0, 391, 231));
-        scrollAreaWidgetContents->setAutoFillBackground(false);
-        gridLayout_2 = new QGridLayout(scrollAreaWidgetContents);
-        gridLayout_2->setSpacing(6);
-        gridLayout_2->setContentsMargins(11, 11, 11, 11);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        scrollAreaWidgetContents->setAutoFillBackground(true);
+        gridLayout_20 = new QGridLayout(scrollAreaWidgetContents);
+        gridLayout_20->setSpacing(6);
+        gridLayout_20->setContentsMargins(11, 11, 11, 11);
+        gridLayout_20->setObjectName(QStringLiteral("gridLayout_20"));
         label = new QLabel(scrollAreaWidgetContents);
         label->setObjectName(QStringLiteral("label"));
 
-        gridLayout_2->addWidget(label, 0, 0, 1, 1);
+        gridLayout_20->addWidget(label, 0, 0, 1, 1);
 
-        codeArea = new QTextEdit(scrollAreaWidgetContents);
+        btnCompile = new QPushButton(scrollAreaWidgetContents);
+        btnCompile->setObjectName(QStringLiteral("btnCompile"));
+
+        gridLayout_20->addWidget(btnCompile, 0, 2, 1, 1);
+
+        codeArea = new QGridLayout();
+        codeArea->setSpacing(6);
         codeArea->setObjectName(QStringLiteral("codeArea"));
 
-        gridLayout_2->addWidget(codeArea, 1, 0, 1, 2);
-
-        pushButton = new QPushButton(scrollAreaWidgetContents);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-
-        gridLayout_2->addWidget(pushButton, 0, 1, 1, 1);
+        gridLayout_20->addLayout(codeArea, 1, 0, 1, 3);
 
         scrollArea->setWidget(scrollAreaWidgetContents);
 
@@ -214,6 +230,7 @@ public:
         scrollAreaWidgetContents_3 = new QWidget();
         scrollAreaWidgetContents_3->setObjectName(QStringLiteral("scrollAreaWidgetContents_3"));
         scrollAreaWidgetContents_3->setGeometry(QRect(0, 0, 391, 231));
+        scrollAreaWidgetContents_3->setAutoFillBackground(true);
         gridLayout_4 = new QGridLayout(scrollAreaWidgetContents_3);
         gridLayout_4->setSpacing(6);
         gridLayout_4->setContentsMargins(11, 11, 11, 11);
@@ -223,22 +240,25 @@ public:
 
         gridLayout_4->addWidget(label_2, 0, 0, 1, 1);
 
-        statusArea = new QLabel(scrollAreaWidgetContents_3);
+        statusArea = new QTextBrowser(scrollAreaWidgetContents_3);
         statusArea->setObjectName(QStringLiteral("statusArea"));
-        statusArea->setFrameShape(QFrame::Panel);
 
         gridLayout_4->addWidget(statusArea, 1, 0, 1, 2);
 
-        pushButton_2 = new QPushButton(scrollAreaWidgetContents_3);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+        saveAsm = new QPushButton(scrollAreaWidgetContents_3);
+        saveAsm->setObjectName(QStringLiteral("saveAsm"));
 
-        gridLayout_4->addWidget(pushButton_2, 0, 1, 1, 1);
+        gridLayout_4->addWidget(saveAsm, 0, 1, 1, 1);
 
         scrollArea_3->setWidget(scrollAreaWidgetContents_3);
 
         gridLayout->addWidget(scrollArea_3, 1, 1, 1, 1);
 
         MainWindow->setCentralWidget(centralWidget);
+        scrollArea_2->raise();
+        scrollArea->raise();
+        scrollArea_3->raise();
+        saveAsm->raise();
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 820, 22));
@@ -266,7 +286,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(4);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -282,14 +302,17 @@ public:
         actionSave->setText(QApplication::translate("MainWindow", "Save", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_8), QApplication::translate("MainWindow", "Token", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_5), QApplication::translate("MainWindow", "\347\254\246\345\217\267\350\241\250", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(tab_6), QApplication::translate("MainWindow", "\345\217\230\351\207\217\350\241\250", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(tab_7), QApplication::translate("MainWindow", "\345\270\270\351\207\217\350\241\250", Q_NULLPTR));
         tabWidget->setTabText(tabWidget->indexOf(tab_9), QApplication::translate("MainWindow", " \345\233\233\345\205\203\345\274\217", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab_6), QApplication::translate("MainWindow", "\347\273\223\346\236\204\344\275\223\350\241\250", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab_7), QApplication::translate("MainWindow", "\346\225\260\347\273\204\350\241\250", Q_NULLPTR));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "\345\270\270\346\225\260\350\241\250", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "\346\272\220\347\240\201\345\214\272", Q_NULLPTR));
-        pushButton->setText(QApplication::translate("MainWindow", "\347\274\226\350\257\221", Q_NULLPTR));
-        label_2->setText(QApplication::translate("MainWindow", "\347\273\223\346\236\234\350\276\223\345\207\272\345\214\272", Q_NULLPTR));
-        statusArea->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
-        pushButton_2->setText(QApplication::translate("MainWindow", "\350\277\220\350\241\214\346\261\207\347\274\226\344\273\243\347\240\201", Q_NULLPTR));
+        btnCompile->setText(QApplication::translate("MainWindow", "\347\274\226\350\257\221", Q_NULLPTR));
+        label_2->setText(QApplication::translate("MainWindow", "\347\273\223\346\236\234\346\230\276\347\244\272\345\214\272", Q_NULLPTR));
+#ifndef QT_NO_TOOLTIP
+        statusArea->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        saveAsm->setText(QApplication::translate("MainWindow", "\344\277\235\345\255\230\346\261\207\347\274\226\344\273\243\347\240\201", Q_NULLPTR));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", Q_NULLPTR));
         menuOperations->setTitle(QApplication::translate("MainWindow", "Operations", Q_NULLPTR));
         menuHelp->setTitle(QApplication::translate("MainWindow", "Help", Q_NULLPTR));

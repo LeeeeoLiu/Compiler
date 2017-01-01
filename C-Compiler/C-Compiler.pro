@@ -31,7 +31,9 @@ SOURCES += main.cpp\
     compile.cpp \
     optimize.cpp \
     help.cpp \
-    view.cpp
+    view.cpp \
+    src/codeeditor.cpp \
+    src/myhighlighter.cpp
 
 HEADERS  += mainwindow.h \
     global.h \
@@ -40,7 +42,10 @@ HEADERS  += mainwindow.h \
     compile.h \
     optimize.h \
     help.h \
-    view.h
+    view.h \
+    src/codeeditor.h \
+    src/myhighlighter.h \
+    src/typedef.h
 
 FORMS    += mainwindow.ui \
     help.ui

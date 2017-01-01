@@ -111,6 +111,8 @@ void MainWindow::initAll()
     tp=cnum=front=0; //cnum记录文本字符总数;
     asmCode="";
     functionName.clear();
+    structIndex=0;
+    tempStructIndex=0;
 }
 
 void MainWindow::outputRecord(QString tempMess)

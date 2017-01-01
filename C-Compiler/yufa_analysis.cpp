@@ -37,8 +37,8 @@ vector<rinfl> RINFL;
 /**
  结构体标号
 */
-int structIndex=0;
-int tempStructIndex=0;
+int structIndex;
+int tempStructIndex;
 int structOFF=0;
 bool isArr=false;
 bool isStruct=false;
@@ -119,6 +119,7 @@ void errorHappenedWithMessage(string message) {
     MJSyntaxError newError = MJSyntaxError(message, token_pointer);
     if (!sharedErrorContainer.addError(newError)) {
         //如果同一个位置错误超过一个，就不能继续识别下一个错误了。
+        cout<<"同一个位置错误超过两个不能继续分析"<<endl;
         exit(0);
     }
 }
@@ -474,10 +475,18 @@ void F() {
                     next();
                     next();
                 }else
+                {
+                    token_pointer--;
                     errorHappenedWithMessage("数组标号超过指定范围");
+                    next();
+                }
             else
+            {   token_pointer--;
+                token_pointer--;
                 errorHappenedWithMessage("该标识符不是数组");
-
+                next();
+                next();
+            }
         }
         else if(currentToken.code == 73)           //.
         {
@@ -494,6 +503,7 @@ void F() {
                             sem.push_back(currentToken);
                             struGetQuat();
                             next();
+                            break;
                         }
                     }
                 }
@@ -774,13 +784,8 @@ int isFuncVar()
             break;
         }
     }
-    if (i == SYNBL.size())      //未定义标识符
+    if (i != SYNBL.size())      //未定义标识符
     {
-        token_pointer--;
-        errorHappenedWithMessage("未定义的标识符");
-        next();
-        return 0;
-    }else{
         if(SYNBL[i].cat==1)     //结构体定义
             return 1;
         else
@@ -802,13 +807,8 @@ int isStructVar()
             break;
         }
     }
-    if (i == SYNBL.size())      //未定义标识符
+    if (i != SYNBL.size())      //未定义标识符
     {
-        token_pointer--;
-        errorHappenedWithMessage("未定义的标识符");
-        next();
-        return 0;
-    }else{
         if(SYNBL[i].cat==7||SYNBL[i].cat==8)     //结构体定义
             return 1;
         else
@@ -1600,6 +1600,7 @@ void compound_sen() {	//复合语句
 
         senten_list();		//语句表
 
+
 }
 
 /**
@@ -1806,7 +1807,7 @@ bool syntax_analysis() {
     VALL_pointer = 0;
     isGrammarCorrect = true;
     next();
-    cout<<"tsetsstsltjsdkjfl"<<endl;
+
     programStartSymbol();
 
     if (!isGrammarCorrect) {    //如果文法有误，就打印出错误

@@ -9,6 +9,14 @@
 
 ## 版本记录
 
+### Todolist
+- [ ] 完善语义分析报错功能(可能需要重写该模块)
+- [ ] 添加快捷键
+- [ ] 添加 switch case 语句
+- [ ] 添加 for 语句
+- [ ] 添加 多维数组
+- [ ] 添加 += -= *= /=
+
 ### Version 3.0 (修复之前的 bug 继续增加功能)
 
 - [ ] 修复已经出现的bugs [0] (详细见 [issue](https://github.com/LeeeeoLiu/Compiler/issues))
@@ -23,15 +31,13 @@
 	- [ ] 目标代码生成[Loke]
 - [x] 添加函数嵌套使用	[Leeeeo]
 - [x] 添加显示结构体表,数组表,常数表 [Leeeeo]
-- [ ] 语义分析报错信息,明确到行并显示到屏幕上 [Leeeeo]
-- [ ] 二维数组 [Leeeeo]
+- [x] 语义分析报错信息,明确到行并显示到屏幕上 [Leeeeo]
 - [ ] 宏定义
 	- [x] 四元式生成 [Sakura]
 	- [ ] 目标代码生成 [Loke]
 - [ ] 自增自减
 	- [x] 四元式生成 [Sakura]
-	- [ ] 目标代码生成 [Sakura]
-- [ ] += -= *= /= [Leeeeo]
+	- [x] 目标代码生成 [Loke]
 - [x] 代码高亮	[Leeeeo]
 - [x] 代码编辑区添加行号	[Leeeeo]
 

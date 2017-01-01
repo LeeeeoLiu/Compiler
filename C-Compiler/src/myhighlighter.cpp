@@ -14,10 +14,10 @@ MyHighLighter::MyHighLighter(QTextDocument *parent)
                     << "\\blong\\b" << "\\bnamespace\\b" << "\\boperator\\b"
                     << "\\bprivate\\b" << "\\bprotected\\b" << "\\bpublic\\b"
                     << "\\bshort\\b" << "\\bsignals\\b" << "\\bsigned\\b"
-                    << "\\bslots\\b" << "\\bstatic\\b" << "\\bstruct\\b"
+                    << "\\bslots\\b" << "\\bstatic\\b" << "\\bstruct\\b"<<"\\breturn\\b"
                     << "\\btemplate\\b" << "\\btypedef\\b" << "\\btypename\\b"
-                    << "\\bunion\\b" << "\\bunsigned\\b" << "\\bvirtual\\b"
-                    << "\\bvoid\\b" << "\\bvolatile\\b";
+                    << "\\bunion\\b" << "\\bunsigned\\b" << "\\bvirtual\\b" <<"\\bcout\\b"
+                    << "\\bvoid\\b" << "\\bvolatile\\b" << "\\bfloat\\b";
     foreach (const QString &pattern, keywordPatterns) {
         rule.pattern = QRegExp(pattern);
         rule.format = keywordFormat;

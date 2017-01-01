@@ -55,9 +55,13 @@ SOURCES       = ../C-Compiler/main.cpp \
 		../C-Compiler/compile.cpp \
 		../C-Compiler/optimize.cpp \
 		../C-Compiler/help.cpp \
-		../C-Compiler/view.cpp moc_mainwindow.cpp \
+		../C-Compiler/view.cpp \
+		../C-Compiler/src/codeeditor.cpp \
+		../C-Compiler/src/myhighlighter.cpp moc_mainwindow.cpp \
 		moc_help.cpp \
-		moc_view.cpp
+		moc_view.cpp \
+		moc_codeeditor.cpp \
+		moc_myhighlighter.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		cifa.o \
@@ -66,9 +70,13 @@ OBJECTS       = main.o \
 		optimize.o \
 		help.o \
 		view.o \
+		codeeditor.o \
+		myhighlighter.o \
 		moc_mainwindow.o \
 		moc_help.o \
-		moc_view.o
+		moc_view.o \
+		moc_codeeditor.o \
+		moc_myhighlighter.o
 DIST          = ../C-Compiler/wenben.txt \
 		../../Qt/5.7/clang_64/mkspecs/features/spec_pre.prf \
 		../../Qt/5.7/clang_64/mkspecs/qdevice.pri \
@@ -185,7 +193,6 @@ DIST          = ../C-Compiler/wenben.txt \
 		../../Qt/5.7/clang_64/mkspecs/features/qt_config.prf \
 		../../Qt/5.7/clang_64/mkspecs/macx-clang/qmake.conf \
 		../../Qt/5.7/clang_64/mkspecs/features/spec_post.prf \
-		../C-Compiler/.qmake.stash \
 		../../Qt/5.7/clang_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.7/clang_64/mkspecs/features/mac/sdk.prf \
 		../../Qt/5.7/clang_64/mkspecs/features/toolchain.prf \
@@ -218,14 +225,19 @@ DIST          = ../C-Compiler/wenben.txt \
 		../C-Compiler/compile.h \
 		../C-Compiler/optimize.h \
 		../C-Compiler/help.h \
-		../C-Compiler/view.h ../C-Compiler/main.cpp \
+		../C-Compiler/view.h \
+		../C-Compiler/src/codeeditor.h \
+		../C-Compiler/src/myhighlighter.h \
+		../C-Compiler/src/typedef.h ../C-Compiler/main.cpp \
 		../C-Compiler/mainwindow.cpp \
 		../C-Compiler/cifa.cpp \
 		../C-Compiler/yufa_analysis.cpp \
 		../C-Compiler/compile.cpp \
 		../C-Compiler/optimize.cpp \
 		../C-Compiler/help.cpp \
-		../C-Compiler/view.cpp
+		../C-Compiler/view.cpp \
+		../C-Compiler/src/codeeditor.cpp \
+		../C-Compiler/src/myhighlighter.cpp
 QMAKE_TARGET  = C-Compiler
 DESTDIR       = 
 TARGET        = C-Compiler.app/Contents/MacOS/C-Compiler
@@ -353,7 +365,6 @@ Makefile: ../C-Compiler/C-Compiler.pro ../../Qt/5.7/clang_64/mkspecs/macx-clang/
 		../../Qt/5.7/clang_64/mkspecs/features/qt_config.prf \
 		../../Qt/5.7/clang_64/mkspecs/macx-clang/qmake.conf \
 		../../Qt/5.7/clang_64/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		../../Qt/5.7/clang_64/mkspecs/features/exclusive_builds.prf \
 		../../Qt/5.7/clang_64/mkspecs/features/mac/sdk.prf \
 		../../Qt/5.7/clang_64/mkspecs/features/toolchain.prf \
@@ -500,7 +511,6 @@ Makefile: ../C-Compiler/C-Compiler.pro ../../Qt/5.7/clang_64/mkspecs/macx-clang/
 ../../Qt/5.7/clang_64/mkspecs/features/qt_config.prf:
 ../../Qt/5.7/clang_64/mkspecs/macx-clang/qmake.conf:
 ../../Qt/5.7/clang_64/mkspecs/features/spec_post.prf:
-.qmake.stash:
 ../../Qt/5.7/clang_64/mkspecs/features/exclusive_builds.prf:
 ../../Qt/5.7/clang_64/mkspecs/features/mac/sdk.prf:
 ../../Qt/5.7/clang_64/mkspecs/features/toolchain.prf:
@@ -560,8 +570,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../C-Compiler/mainwindow.h ../C-Compiler/global.h ../C-Compiler/cifa.h ../C-Compiler/yufa_analysis.h ../C-Compiler/compile.h ../C-Compiler/optimize.h ../C-Compiler/help.h ../C-Compiler/view.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../C-Compiler/main.cpp ../C-Compiler/mainwindow.cpp ../C-Compiler/cifa.cpp ../C-Compiler/yufa_analysis.cpp ../C-Compiler/compile.cpp ../C-Compiler/optimize.cpp ../C-Compiler/help.cpp ../C-Compiler/view.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../C-Compiler/mainwindow.h ../C-Compiler/global.h ../C-Compiler/cifa.h ../C-Compiler/yufa_analysis.h ../C-Compiler/compile.h ../C-Compiler/optimize.h ../C-Compiler/help.h ../C-Compiler/view.h ../C-Compiler/src/codeeditor.h ../C-Compiler/src/myhighlighter.h ../C-Compiler/src/typedef.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../C-Compiler/main.cpp ../C-Compiler/mainwindow.cpp ../C-Compiler/cifa.cpp ../C-Compiler/yufa_analysis.cpp ../C-Compiler/compile.cpp ../C-Compiler/optimize.cpp ../C-Compiler/help.cpp ../C-Compiler/view.cpp ../C-Compiler/src/codeeditor.cpp ../C-Compiler/src/myhighlighter.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../C-Compiler/mainwindow.ui ../C-Compiler/help.ui $(DISTDIR)/
 
 
@@ -572,7 +582,6 @@ clean: compiler_clean
 
 distclean: clean 
 	-$(DEL_FILE) -r C-Compiler.app
-	-$(DEL_FILE) .qmake.stash
 	-$(DEL_FILE) Makefile
 
 
@@ -588,13 +597,48 @@ benchmark: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_help.cpp moc_view.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_help.cpp moc_view.cpp moc_codeeditor.cpp moc_myhighlighter.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_help.cpp moc_view.cpp
-moc_mainwindow.cpp: ../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
+	-$(DEL_FILE) moc_mainwindow.cpp moc_help.cpp moc_view.cpp moc_codeeditor.cpp moc_myhighlighter.cpp
+moc_mainwindow.cpp: ../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QtOpenGL \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglcolormap.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglframebufferobject.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglfunctions.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglpixelbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglshaderprogram.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglglobal.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglversion.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
 		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
 		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QGLWidget \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
+		../C-Compiler/cifa.h \
+		../C-Compiler/global.h \
+		../C-Compiler/yufa_analysis.h \
+		../C-Compiler/compile.h \
+		../C-Compiler/optimize.h \
+		../C-Compiler/mainwindow.h \
+		../C-Compiler/src/codeeditor.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QPlainTextEdit \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qplaintextedit.h \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QResizeEvent \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QSize \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qsize.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../C-Compiler/src/typedef.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QSyntaxHighlighter \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
+		../C-Compiler/src/myhighlighter.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextCharFormat \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextformat.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextDocument \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextdocument.h \
 		../C-Compiler/mainwindow.h \
 		../../Qt/5.7/clang_64/bin/moc
 	/Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/mkspecs/macx-clang -I/Users/liuyuanxing/Code/Compiler/C-Compiler -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtWidgets.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtGui.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib ../C-Compiler/mainwindow.h -o moc_mainwindow.cpp
@@ -624,29 +668,41 @@ moc_view.cpp: ../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QtOpenGL \
 		../../Qt/5.7/clang_64/bin/moc
 	/Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/mkspecs/macx-clang -I/Users/liuyuanxing/Code/Compiler/C-Compiler -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtWidgets.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtGui.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib ../C-Compiler/view.h -o moc_view.cpp
 
+moc_codeeditor.cpp: ../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QPlainTextEdit \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qplaintextedit.h \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QResizeEvent \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QSize \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qsize.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../C-Compiler/src/typedef.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QSyntaxHighlighter \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
+		../C-Compiler/src/codeeditor.h \
+		../../Qt/5.7/clang_64/bin/moc
+	/Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/mkspecs/macx-clang -I/Users/liuyuanxing/Code/Compiler/C-Compiler -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtWidgets.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtGui.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib ../C-Compiler/src/codeeditor.h -o moc_codeeditor.cpp
+
+moc_myhighlighter.cpp: ../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QSyntaxHighlighter \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextCharFormat \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextformat.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextDocument \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextdocument.h \
+		../C-Compiler/src/myhighlighter.h \
+		../../Qt/5.7/clang_64/bin/moc
+	/Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/mkspecs/macx-clang -I/Users/liuyuanxing/Code/Compiler/C-Compiler -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtWidgets.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtGui.framework/Headers -I/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib/QtCore.framework/Headers -I. -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1 -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.3.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include -F/Users/liuyuanxing/Code/Qt/5.7/clang_64/lib ../C-Compiler/src/myhighlighter.h -o moc_myhighlighter.cpp
+
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
 compiler_uic_make_all: ui_mainwindow.h ui_help.h
 compiler_uic_clean:
 	-$(DEL_FILE) ui_mainwindow.h ui_help.h
 ui_mainwindow.h: ../C-Compiler/mainwindow.ui \
-		../../Qt/5.7/clang_64/bin/uic \
-		../C-Compiler/view.h \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QtOpenGL \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglbuffer.h \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglcolormap.h \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglframebufferobject.h \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglfunctions.h \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglpixelbuffer.h \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglshaderprogram.h \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglglobal.h \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglversion.h \
-		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QPoint \
-		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qpoint.h \
-		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
-		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qevent.h \
-		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QWheelEvent
+		../../Qt/5.7/clang_64/bin/uic
 	/Users/liuyuanxing/Code/Qt/5.7/clang_64/bin/uic ../C-Compiler/mainwindow.ui -o ui_mainwindow.h
 
 ui_help.h: ../C-Compiler/help.ui \
@@ -666,27 +722,8 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 ####### Compile
 
 main.o: ../C-Compiler/main.cpp ../C-Compiler/mainwindow.h \
-		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
-		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QGLWidget \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
-		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QApplication \
-		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qapplication.h \
-		../C-Compiler/cifa.h \
-		../C-Compiler/global.h \
-		../C-Compiler/yufa_analysis.h \
-		../C-Compiler/compile.h \
-		../C-Compiler/optimize.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../C-Compiler/main.cpp
-
-mainwindow.o: ../C-Compiler/mainwindow.cpp ../C-Compiler/mainwindow.h \
-		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
-		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QGLWidget \
-		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
-		ui_mainwindow.h \
-		../C-Compiler/view.h \
 		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QtOpenGL \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
 		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglbuffer.h \
 		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglcolormap.h \
 		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglframebufferobject.h \
@@ -695,21 +732,120 @@ mainwindow.o: ../C-Compiler/mainwindow.cpp ../C-Compiler/mainwindow.h \
 		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglshaderprogram.h \
 		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglglobal.h \
 		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglversion.h \
-		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QPoint \
-		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qpoint.h \
-		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QMouseEvent \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QGLWidget \
+		../C-Compiler/cifa.h \
+		../C-Compiler/global.h \
+		../C-Compiler/yufa_analysis.h \
+		../C-Compiler/compile.h \
+		../C-Compiler/optimize.h \
+		../C-Compiler/src/codeeditor.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QPlainTextEdit \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qplaintextedit.h \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
 		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qevent.h \
-		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QWheelEvent \
-		../C-Compiler/help.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QResizeEvent \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QSize \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qsize.h \
 		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QWidget \
-		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidget.h
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../C-Compiler/src/typedef.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QSyntaxHighlighter \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
+		../C-Compiler/src/myhighlighter.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextCharFormat \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextformat.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextDocument \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextdocument.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QApplication \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qapplication.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../C-Compiler/main.cpp
+
+mainwindow.o: ../C-Compiler/mainwindow.cpp ../C-Compiler/mainwindow.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QtOpenGL \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglcolormap.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglframebufferobject.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglfunctions.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglpixelbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglshaderprogram.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglglobal.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglversion.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QGLWidget \
+		../C-Compiler/cifa.h \
+		../C-Compiler/global.h \
+		../C-Compiler/yufa_analysis.h \
+		../C-Compiler/compile.h \
+		../C-Compiler/optimize.h \
+		../C-Compiler/src/codeeditor.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QPlainTextEdit \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qplaintextedit.h \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QResizeEvent \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QSize \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qsize.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../C-Compiler/src/typedef.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QSyntaxHighlighter \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
+		../C-Compiler/src/myhighlighter.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextCharFormat \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextformat.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextDocument \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextdocument.h \
+		ui_mainwindow.h \
+		../C-Compiler/help.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../C-Compiler/mainwindow.cpp
 
 cifa.o: ../C-Compiler/cifa.cpp ../C-Compiler/cifa.h \
 		../C-Compiler/global.h \
 		../C-Compiler/yufa_analysis.h \
 		../C-Compiler/compile.h \
-		../C-Compiler/optimize.h
+		../C-Compiler/optimize.h \
+		../C-Compiler/mainwindow.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QtOpenGL \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qgl.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglcolormap.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglframebufferobject.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglfunctions.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglpixelbuffer.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qglshaderprogram.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglglobal.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/qtopenglversion.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QMainWindow \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../../Qt/5.7/clang_64/lib/QtOpenGL.framework/Headers/QGLWidget \
+		../C-Compiler/src/codeeditor.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QPlainTextEdit \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qplaintextedit.h \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QResizeEvent \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QSize \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qsize.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../C-Compiler/src/typedef.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QSyntaxHighlighter \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
+		../C-Compiler/src/myhighlighter.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextCharFormat \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextformat.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextDocument \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextdocument.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cifa.o ../C-Compiler/cifa.cpp
 
 yufa_analysis.o: ../C-Compiler/yufa_analysis.cpp ../C-Compiler/yufa_analysis.h \
@@ -748,6 +884,158 @@ view.o: ../C-Compiler/view.cpp ../C-Compiler/view.h \
 		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QWheelEvent
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o view.o ../C-Compiler/view.cpp
 
+codeeditor.o: ../C-Compiler/src/codeeditor.cpp ../C-Compiler/src/codeeditor.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QPlainTextEdit \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qplaintextedit.h \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QObject \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qobject.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QPaintEvent \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qevent.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QResizeEvent \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/QSize \
+		../../Qt/5.7/clang_64/lib/QtCore.framework/Headers/qsize.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QWidget \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidget.h \
+		../C-Compiler/src/typedef.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QSyntaxHighlighter \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/QtWidgets \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qaccessiblewidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qcolordialog.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qdialog.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qerrormessage.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qfiledialog.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qfilesystemmodel.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qfontdialog.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qinputdialog.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmessagebox.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qprogressdialog.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwizard.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicseffect.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicsanchorlayout.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicsgridlayout.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicsitem.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicsitemanimation.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicslayout.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicslayoutitem.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicslinearlayout.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicsproxywidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicsscene.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicssceneevent.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicstransform.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicsview.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgraphicswidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qabstractitemdelegate.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qabstractitemview.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qcolumnview.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qdatawidgetmapper.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qdirmodel.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qfileiconprovider.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qheaderview.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qitemdelegate.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qitemeditorfactory.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qlistview.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qlistwidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qstyleditemdelegate.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtableview.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtablewidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtreeview.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtreewidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtreewidgetitemiterator.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qaction.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qactiongroup.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qapplication.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qboxlayout.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qdesktopwidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qformlayout.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgesture.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgesturerecognizer.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgridlayout.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qlayout.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qlayoutitem.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qopenglwidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qshortcut.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qsizepolicy.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qstackedlayout.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtooltip.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwhatsthis.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qwidgetaction.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qkeyeventtransition.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmouseeventtransition.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qcommonstyle.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qdrawutil.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qproxystyle.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qstyle.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qstylefactory.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qstyleoption.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qstylepainter.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qstyleplugin.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qcolormap.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qcompleter.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qscroller.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qscrollerproperties.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qsystemtrayicon.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qundogroup.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qundostack.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qundoview.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qabstractbutton.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qabstractscrollarea.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qabstractslider.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qabstractspinbox.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qbuttongroup.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qcalendarwidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qcheckbox.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qcombobox.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qcommandlinkbutton.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qdatetimeedit.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qdial.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qdialogbuttonbox.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qdockwidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qfocusframe.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qfontcombobox.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qframe.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qgroupbox.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qkeysequenceedit.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qlabel.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qlcdnumber.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qlineedit.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmdiarea.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmdisubwindow.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmenu.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qmenubar.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qprogressbar.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qpushbutton.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qradiobutton.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qrubberband.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qscrollarea.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qscrollbar.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qsizegrip.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qslider.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qspinbox.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qsplashscreen.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qsplitter.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qstackedwidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qstatusbar.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtabbar.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtabwidget.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtextbrowser.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtextedit.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtoolbar.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtoolbox.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtoolbutton.h \
+		../../Qt/5.7/clang_64/lib/QtWidgets.framework/Headers/qtwidgetsversion.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o codeeditor.o ../C-Compiler/src/codeeditor.cpp
+
+myhighlighter.o: ../C-Compiler/src/myhighlighter.cpp ../C-Compiler/src/myhighlighter.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QSyntaxHighlighter \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qsyntaxhighlighter.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextCharFormat \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextformat.h \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/QTextDocument \
+		../../Qt/5.7/clang_64/lib/QtGui.framework/Headers/qtextdocument.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o myhighlighter.o ../C-Compiler/src/myhighlighter.cpp
+
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
 
@@ -756,6 +1044,12 @@ moc_help.o: moc_help.cpp
 
 moc_view.o: moc_view.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_view.o moc_view.cpp
+
+moc_codeeditor.o: moc_codeeditor.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_codeeditor.o moc_codeeditor.cpp
+
+moc_myhighlighter.o: moc_myhighlighter.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_myhighlighter.o moc_myhighlighter.cpp
 
 ####### Install
 

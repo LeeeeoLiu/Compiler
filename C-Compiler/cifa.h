@@ -20,6 +20,8 @@ extern int inter_pro_pointer;//中间代码
 extern vector<int>rowCount;    //记录 token 所在行数
 extern string errorMessage;
 extern vector<string>functionName;
+extern int structIndex;
+extern int tempStructIndex;
 
 void Psynbl();
 int InsertConstNum(string strToken);
