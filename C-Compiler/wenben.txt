@@ -1,20 +1,16 @@
-
 #define q 100
 struct hh{
     int a;
+    float b;
     char c;
 };
 void func(){
-    hh funxtest;
-    funxtest.c=2;
-    cout <<4+12;
+    int testfunc;
+    testfunc+=2;
+    cout <<testfunc;
 }
 void functt(){
-    int lalal;
-    lalal=22;
-    lalal++;
-   // func();
-    cout <<3;
+    func();
 }
 int max(int maxVar1,int maxVar2)
 {
@@ -25,37 +21,29 @@ int max(int maxVar1,int maxVar2)
     }else{
         maxVar=maxVar2;
     }
-    maxVar=maxVar+3;
+    maxVar++;
     return maxVar;
 }
 int main()
 {
-    int b=0;
-    int e,f,g,i,j,k;
-    float h;
-    int aadd[3];
-    char w,v;
-    hh test;
+    int e;
+    int b;
+    int f;
+    hh teststruct;
     hh testarr[10];
     int bb[10];
-    test.a=e;
-    w=test.c;
-
-    f = 10;
     e = max(3,4);
+    teststruct.a=e;
     functt();
-    cout<<f+g;
-    f = 3+4;
-    g = f;
-    bb[2]=6;
+    bb[2]=14;
     f=bb[2];
-    aadd[2]=q;
+    bb[3]=q;
     b++;
     b+=7;
     b*=6;
     --b;
-    int aaaaa;
-    aaaaa=q;
+    cout<<b;
+
     return 0;
 
 }

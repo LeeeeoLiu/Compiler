@@ -1646,7 +1646,6 @@ void CSEG(){
                 code_last->next = code_pointer;
                 code_last = code_pointer;
             }
-            if(inter_pro[inter_pro_pointer].op.code>=78&&inter_pro[inter_pro_pointer].op.code<=83){ //双目运算
 
                 //读入第一个操作数
             if(inter_pro[inter_pro_pointer].op.code == 75){     //数组取数
@@ -1982,7 +1981,7 @@ void CSEG(){
             }
         }
     }
-}
+
 }
 
 <<<<<<< HEAD

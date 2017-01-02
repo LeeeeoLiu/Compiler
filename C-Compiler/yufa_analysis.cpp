@@ -1385,7 +1385,8 @@ void senten_list() {
                 else {
                     errorHappenedWithMessage("while语句没有右大括号}结束");
                 }
-            } else if (currentToken.code == 6) {		//if
+            } else if (currentToken.code == 6)
+            {		//if
                 ifArea=true;
                 int mark;
                 next();
