@@ -100,14 +100,17 @@ void DSEG(){
         last_data->next = data_pointer;
         last_data = data_pointer;
     }
-    data_pointer = new targe;
-    data_pointer->cw = "TEMP";
-    data_pointer->arg1 = "DW";
-    data_pointer->arg2 = itos(temp_num) + " DUP(0)";
-    data_pointer->flag = 2;
-    data_pointer->next = NULL;
-    last_data->next = data_pointer;
-    last_data = data_pointer;
+    if(temp_num)
+    {
+        data_pointer = new targe;
+        data_pointer->cw = "TEMP";
+        data_pointer->arg1 = "DW";
+        data_pointer->arg2 = itos(temp_num) + " DUP(0)";
+        data_pointer->flag = 2;
+        data_pointer->next = NULL;
+        last_data->next = data_pointer;
+        last_data = data_pointer;
+    }
 
     data_pointer = new targe;
     data_pointer->cw = "CONST";

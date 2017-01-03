@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 //    ui->codeArea->show();
+    ui->btnCompile->setEnabled(false);
+    ui->saveAsm->setEnabled(false);
     configEditor = new CodeEditor();
     configEditor->setMode(EDIT);
     ui->codeArea->addWidget(configEditor);
@@ -57,6 +59,7 @@ void MainWindow::File_actionOpen_Slot()
          }
 //     ui->codeArea->appendPlainText(code);
          configEditor->appendPlainText(code);
+         ui->btnCompile->setEnabled(true);
 }
 
 void MainWindow::File_actionSave_Slot()
@@ -112,6 +115,8 @@ void MainWindow::initAll()
     functionName.clear();
     structIndex=0;
     tempStructIndex=0;
+    strstrstr="";
+    ui->btnCompile->setEnabled(false);
 }
 
 void MainWindow::outputRecord(QString tempMess)
@@ -143,6 +148,7 @@ void MainWindow::on_btnCompile_clicked()
         displayRINFL();
         displayAINFL();
         displayConstNum();
+        ui->saveAsm->setEnabled(true);
     }
     else
     {
@@ -150,6 +156,7 @@ void MainWindow::on_btnCompile_clicked()
         outputRecord("Yufa Analysis Failed!");
         outputRecord("Yufa Analysis Failed!");
         outputRecord(QString::fromStdString(errorMessage));
+        ui->btnCompile->setEnabled(true);
     }
 
 }

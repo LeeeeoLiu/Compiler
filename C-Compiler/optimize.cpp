@@ -11,6 +11,7 @@ string ftos(float num){
     return result;
 }
 
+string strstrstr;
 void basic_block(){			//基本块划分，结果储存在flow_graph
     int inter_pointer = 0;
     flow_graph node;
@@ -65,7 +66,7 @@ void DAG_optimaize(int front, int end){
     pointer = front;
     while (pointer <= end){
         if (inter_pro[pointer].op.code == 17 || inter_pro[pointer].op.code == 11 || inter_pro[pointer].op.code == 12 || inter_pro[pointer].op.code == 13 || inter_pro[pointer].op.code == 14
-            ||inter_pro[pointer].op.code == 72 || inter_pro[pointer].op.code == 71||inter_pro[pointer].op.code == 67||inter_pro[pointer].op.code==69
+            ||inter_pro[pointer].op.code == 72 || inter_pro[pointer].op.code == 71
               ||inter_pro[pointer].op.code == 74 || inter_pro[pointer].op.code == 75   ){	//除赋值表达式,[,],>,<,+ - * /外不参加优化
             //(1)
             if ((inter_pro[pointer].arg1.code == 0 || inter_pro[pointer].arg1.code == -2) && inter_pro[pointer].arg2.code == -1)	//(=,B,_,A)
@@ -116,10 +117,10 @@ void DAG_optimaize(int front, int end){
             else if (inter_pro[pointer].arg1.code == 3 && (inter_pro[pointer].arg2.code == 3 || inter_pro[pointer].arg2.code == -1)){//(w,C1,C2,A) 或 (=,C1,_,A)
                 //指向活动记录中临时变量
                 Token temp_token;
-                string str;
+
                 float constnum;
                 if (inter_pro[pointer].arg2.code == -1)
-                    str = ConstNum[inter_pro[pointer].arg1.value];	//只有C1，在下面的循环中会在constnum中找到对应的value值
+                    strstrstr = ConstNum[inter_pro[pointer].arg1.value];	//只有C1，在下面的循环中会在constnum中找到对应的value值
                 else{
                     if(inter_pro[pointer].op.code == 11)
                     constnum = atof(ConstNum[inter_pro[pointer].arg1.value].c_str())+atof(ConstNum[inter_pro[pointer].arg2.value].c_str());
@@ -131,19 +132,19 @@ void DAG_optimaize(int front, int end){
                     constnum = atof(ConstNum[inter_pro[pointer].arg1.value].c_str())/atof(ConstNum[inter_pro[pointer].arg2.value].c_str());
 
                     char temp[10];
-                    str = ftos(constnum);
+                    strstrstr = ftos(constnum);
 
                 }
                 int k;
                 temp_token.code = 3;
                 for (k = 0; k < ConstNum.size(); k++){
-                    if (!ConstNum[k].compare(str)){
+                    if (!ConstNum[k].compare(strstrstr)){
                         temp_token.value = k;
                         break;
                     }
                 }
                 if (k == ConstNum.size())	//上面的循环没找到
-                    temp_token.value = InsertConstNum(str);	//在这里应该在常数表里插入一个由C1C2相乘得到的值,但这里只是在常量表里把两个相乘的数的string连接起来，再插到常数表尾部
+                    temp_token.value = InsertConstNum(strstrstr);	//在这里应该在常数表里插入一个由C1C2相乘得到的值,但这里只是在常量表里把两个相乘的数的string连接起来，再插到常数表尾部
 
                 int i, j, pointer_const = -1, pointer_a = -1, pointer_al = -1;	//用作标记是否找到,后面两个分别指向A的结点和label位置
                 for (i = 0; i < DAG.size(); i++){	//从前往后找,把最新生成的找出来,找A B,规模不会太大所以全部走一遍

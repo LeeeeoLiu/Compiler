@@ -22,6 +22,7 @@ extern string errorMessage;
 extern vector<string>functionName;
 extern int structIndex;
 extern int tempStructIndex;
+extern string strstrstr;
 
 void Psynbl();
 int InsertConstNum(string strToken);

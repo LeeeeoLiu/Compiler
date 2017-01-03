@@ -29,6 +29,7 @@ vector<ainfl> AINFL;
   */
 int arrIndex=0;
 int tempArrIndex=0;
+int returnmark=0;
 
 /**
  结构体表
@@ -241,7 +242,10 @@ void cal_QUAT(int op) {
     else {
         temp.label = 0;
     }
-
+    if(op==67||op==69)
+    {
+        temp.optimize_flag=1;
+    }
     temp.pointer = NULL;
     temp.res = Token(-2, temp_num);//赋值给ti
     sem.push_back(Token(-2, temp_num));
@@ -421,6 +425,14 @@ void equa_QUAT(int op) {
     temp.pointer = NULL;
     temp.res = sem.back();//赋值给=左边的符号
     sem.pop_back();
+//    if(returnmark==1)
+//    {
+//        Token tmp;
+//        tmp=temp.arg1;
+//        temp.arg1=temp.res;
+//        temp.res=tmp;
+//        returnmark=0;
+//    }
     inter_pro.push_back(temp);//四元式生成插入
     if(isArr==true&&isStruct==true){
         sem.push_back(temp.res);
@@ -1191,6 +1203,7 @@ void senten_list() {
         else if(currentToken.code == 31){      //识别 return 语句
             next();
             sem.push_back(currentToken);
+            returnmark=1;
             retQuat();
             next();
             if(currentToken.code == 21)
@@ -1303,7 +1316,23 @@ void senten_list() {
                     else if(aaaaa==121){
                         aaaaa=0;
                     }
-                    else equa_QUAT(17);
+                    else
+                    {
+                        if(returnmark==1)
+                        {
+                            Token tmp1;
+                            Token tmp2;
+                            tmp1=sem.back();
+                            sem.pop_back();
+                            tmp2=sem.back();
+                            sem.pop_back();
+                            sem.push_back(tmp1);
+                            sem.push_back(tmp2);
+                            returnmark=0;
+                        }
+                        equa_QUAT(17);
+                    }
+
                     next();
                     if(currentToken.code==16 &&funcArea==true &&whileArea==false&&ifArea==false&&elseArea==false)   //}
                     {
