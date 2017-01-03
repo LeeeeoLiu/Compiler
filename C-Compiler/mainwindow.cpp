@@ -102,7 +102,6 @@ void MainWindow::initAll()
     temp_num=0;
     check_list.clear();
     inter_pro_pointer=0;
-    TYPEL.clear();
     sym_list_stack.clear();
     VALL_pointer=0;  //表示活动记录当前指向
     temp_num=0;//临时变量ti指针，从零开始，code = -2

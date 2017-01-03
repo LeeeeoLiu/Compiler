@@ -1666,7 +1666,7 @@ void programStartSymbol() {
             {
                 synbl temp;
                 temp.name = currentToken;
-                temp.type = 4;
+                temp.type = 1;
                 temp.cat = 9;
                 temp.addr = inter_pro.size();
                 SYNBL.push_back(temp);    //压入符号表

@@ -41,7 +41,6 @@ void DSEG(){
     float_num = 0;
     char_num = 0;
     arr_list temp;
-    Arr_list.clear();
     for (int i = 0; i < SYNBL.size(); i++){
         switch (SYNBL[i].type){
         case 0:{char_num++; break; }
@@ -81,7 +80,7 @@ void DSEG(){
         last_data->next = data_pointer;
         last_data = data_pointer;
     }
-    for (int i = 0;i < TYPEL.size(); i++){
+    for (int i = 0;i < TYPEL.size()-2; i++){
         data_pointer = new targe;
         data_pointer->cw = TYPEL[i].name;
         switch (TYPEL[i].lenth){
@@ -669,8 +668,6 @@ targe* creatFunction(targe* code_last){
                        //显示十进制数
 
                 }
-<<<<<<< HEAD
-=======
                 if(inter_pro[inter_pro_pointer].op.code>=78&&inter_pro[inter_pro_pointer].op.code<=83){ //双目运算
 
                     //读入第一个操作数
@@ -850,7 +847,6 @@ targe* creatFunction(targe* code_last){
                     code_last->next = code_pointer;
                     code_last = code_pointer;
                 }
->>>>>>> master
                 if(inter_pro[inter_pro_pointer].op.code == 71){     //数组取数
                          code_pointer = new targe;
                     if (inter_pro[inter_pro_pointer].label == 2){
@@ -1646,7 +1642,6 @@ void CSEG(){
                 code_last->next = code_pointer;
                 code_last = code_pointer;
             }
-
                 //读入第一个操作数
             if(inter_pro[inter_pro_pointer].op.code == 75){     //数组取数
                      code_pointer = new targe;
@@ -1773,9 +1768,6 @@ void CSEG(){
                 code_last->next = code_pointer;
                 code_last = code_pointer;
             }
-<<<<<<< HEAD
-
-=======
             if(inter_pro[inter_pro_pointer].op.code>=78&&inter_pro[inter_pro_pointer].op.code<=83){ //双目运算
 
                 //读入第一个操作数
@@ -1955,7 +1947,6 @@ void CSEG(){
                 code_last->next = code_pointer;
                 code_last = code_pointer;
             }
->>>>>>> master
             if(inter_pro[inter_pro_pointer].op.code == 76 ){       //函数 call
                 code_pointer = new targe;
                 code_pointer->cw = "CALL";
@@ -1981,16 +1972,11 @@ void CSEG(){
             }
         }
     }
-
 }
 
-<<<<<<< HEAD
 string compilization(){
     jump_label=0;
     string asmCode;
-=======
-void compilization(){
->>>>>>> master
     check_list.resize(inter_pro.size());
     for (int i = 0; i < inter_pro.size(); i++){
         if (inter_pro[i].label == 2){
@@ -2086,6 +2072,6 @@ void compilization(){
     }
     ofile << "CSEG\tENDS\n\tEND\tSTART" << endl;
     asmCode=asmCode+"CSEG\tENDS\n\tEND\tSTART\n";
-
+    Arr_list.clear();
     return asmCode;
  }
