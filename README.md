@@ -7,6 +7,35 @@
 | 中间代码生成及优化|Loke|
 | 目标代码生成|Koala|
 
+## 开发环境
+```
+MacOS:
+
+Qt Creator 4.2.0 (4.2.0)
+Based on Qt 5.7.1 (Clang 7.0 (Apple), 64 bit)
+
+Built on Dec 9 2016 12:24:11
+
+From revision 5071dd80cb
+
+Copyright 2008-2016 The Qt Company Ltd. All rights reserved.
+
+The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+```
+```
+Windows:
+
+Qt Creator 4.2.0 (4.2.0)
+Based on Qt 5.7.1 (MSVC 2015, 32 bit)
+
+Built on Dec 9 2016 12:30:00
+
+From revision 5071dd80cb
+
+Copyright 2008-2016 The Qt Company Ltd. All rights reserved.
+
+The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+```
 ## 版本记录
 
 ### Todolist
