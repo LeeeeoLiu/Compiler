@@ -30,10 +30,9 @@ SOURCES += main.cpp\
     yufa_analysis.cpp \
     compile.cpp \
     optimize.cpp \
-    help.cpp \
-    view.cpp \
     src/codeeditor.cpp \
-    src/myhighlighter.cpp
+    src/myhighlighter.cpp \
+    help.cpp
 
 HEADERS  += mainwindow.h \
     global.h \
@@ -41,11 +40,10 @@ HEADERS  += mainwindow.h \
     yufa_analysis.h \
     compile.h \
     optimize.h \
-    help.h \
-    view.h \
     src/codeeditor.h \
     src/myhighlighter.h \
-    src/typedef.h
+    src/typedef.h \
+    help.h
 
 FORMS    += mainwindow.ui \
     help.ui

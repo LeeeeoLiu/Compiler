@@ -654,42 +654,6 @@ void type_list() {	//类型
     }
 }
 
-/*
- Old contents:
-
- 识别标识符，并将新标识符压入符号表。
-void symbol_list(int type) {		//标识符表
-    if (currentToken.code == 0) {		//标识符
-        synbl temp;
-        temp.name = currentToken;
-        temp.type = type;
-        temp.cat = 2;
-        temp.addr = VALL_pointer;
-        VALL_pointer = VALL_pointer + TYPEL[type].lenth;
-        SYNBL.push_back(temp);		//压入符号表
-        next();
-    } else {
-        errorHappenedWithMessage("缺少标识符");
-    }
-
-    while (currentToken.code == 18) {		//,
-        next();
-        if (currentToken.code == 0) {		//标识符
-            synbl temp;
-            temp.name = currentToken;
-            temp.type = type;
-            temp.cat = 2;
-            temp.addr = VALL_pointer;
-            VALL_pointer = VALL_pointer + TYPEL[type].lenth;
-            SYNBL.push_back(temp);
-            next();
-        }
-        else {
-            errorHappenedWithMessage("相邻的标识符之间，缺失了逗号(,)");
-        }
-    }
-}
-*/
 
 /**
  初始化赋值表
