@@ -8,7 +8,7 @@
 | 语法分析,符号表总表,测试,合并代码|Leeeeo|
 | 中间代码生成及优化|Loke|
 | 目标代码生成|Koala|
-
+Koala 由于不太熟悉 git 使用,所编写代码均由 Leeeeo 和 Loke 代传 github.
 ## 版本记录
 
 ### Version 3.0 (修复之前的 bug 继续增加功能)
