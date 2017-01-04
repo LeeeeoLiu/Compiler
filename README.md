@@ -7,6 +7,8 @@
 | 中间代码生成及优化|Loke|
 | 目标代码生成|Koala|
 
+Koala 由于不太熟悉 git 使用,所编写代码均由 Leeeeo 和 Loke 代传 github.
+
 ## 开发环境
 ```
 MacOS:
