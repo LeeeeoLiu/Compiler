@@ -36,6 +36,8 @@ Copyright 2008-2016 The Qt Company Ltd. All rights reserved.
 
 The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 ```
+##### 图形界面需要配置 Opengl 环境(glut32见 UI.md)
+
 ## 版本记录
 
 ### Todolist
